@@ -1,1 +1,18 @@
-{}
+{
+  "AA4TE-10:KCGR-FUEL": {
+    "identity": "AA4TE-10:KCGR-FUEL",
+    "callsign": "AA4TE-10",
+    "category_wire": "KCGR-FUEL",
+    "category_mapped": "KCGR-FUEL-fuel",
+    "lat": 34.1715,
+    "lon": -80.7905,
+    "received_time": "2026-07-13T21:04:42.935008993+01:00",
+    "raw_comment": "OP GD Elgin BP 2458 Main St Elgin SC 131556",
+    "status_wire": "OP",
+    "status_mapped": "OP-open",
+    "specifier": "GD",
+    "location": "Elgin BP 2458 Main St Elgin SC",
+    "timestamp_field": "131556",
+    "parsed_cleanly": true
+  }
+}

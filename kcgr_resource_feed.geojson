@@ -1,5 +1,31 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-13T20:02:08.875170+00:00",
-  "features": []
+  "generated_at": "2026-07-13T20:04:54.588836+00:00",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.7905,
+          34.1715
+        ]
+      },
+      "properties": {
+        "ObjectName": "KCGR-FUEL-fuel",
+        "Status": "OP-open",
+        "ReportCount": 1,
+        "Location": "Elgin BP 2458 Main St Elgin SC",
+        "Comment": "OP GD Elgin BP 2458 Main St Elgin SC 131556",
+        "Contributors": [
+          {
+            "callsign": "AA4TE-10",
+            "received_time": "2026-07-13T21:04:42.935008993+01:00",
+            "status_mapped": "OP-open",
+            "location": "Elgin BP 2458 Main St Elgin SC"
+          }
+        ]
+      }
+    }
+  ]
 }
