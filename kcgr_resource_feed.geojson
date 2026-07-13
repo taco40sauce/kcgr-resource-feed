@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-13T21:00:02.212559+00:00",
+  "generated_at": "2026-07-13T21:36:40.422043+00:00",
   "features": [
     {
       "type": "Feature",
@@ -14,6 +14,9 @@
       "properties": {
         "ObjectName": "KCGR-FUEL-fuel",
         "Status": "OP-open",
+        "Specifier": "GD-gas+diesel",
+        "DateTime": "131556",
+        "ReportedBy": "AA4TE-10",
         "ReportCount": 1,
         "Location": "Elgin BP 2458 Main St Elgin SC",
         "Comment": "OP GD Elgin BP 2458 Main St Elgin SC 131556",
