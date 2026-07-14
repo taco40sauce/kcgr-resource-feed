@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-13T21:36:40.422043+00:00",
+  "generated_at": "2026-07-14T01:26:32.687777+00:00",
   "features": [
     {
       "type": "Feature",
@@ -20,6 +20,8 @@
         "ReportCount": 1,
         "Location": "Elgin BP 2458 Main St Elgin SC",
         "Comment": "OP GD Elgin BP 2458 Main St Elgin SC 131556",
+        "name": "KCGR-FUEL-fuel \u2014 Elgin BP 2458 Main St Elgin SC",
+        "description": "OP-open | GD-gas+diesel | Reported: 131556 | By: AA4TE-10",
         "Contributors": [
           {
             "callsign": "AA4TE-10",
