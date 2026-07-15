@@ -1,7 +1,37 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-15T20:45:09.593923+00:00",
+  "generated_at": "2026-07-15T23:45:34.700819+00:00",
   "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.59183333333333,
+          34.247166666666665
+        ]
+      },
+      "properties": {
+        "ObjectName": "KCGR-FUEL-fuel",
+        "Status": "OP-open",
+        "Specifier": "",
+        "DateTime": "151935",
+        "ReportedBy": "AA4TE-10",
+        "ReportCount": 1,
+        "Location": "HF Mex Rest. Serving victims",
+        "Comment": "OP HF Mex Rest. Serving victims 151935",
+        "name": "KCGR-FUEL-fuel \u2014 HF Mex Rest. Serving victims",
+        "description": "OP-open |  | Reported: 151935 | By: AA4TE-10",
+        "Contributors": [
+          {
+            "callsign": "AA4TE-10",
+            "received_time": "2026-07-16T00:36:07.146852588+01:00",
+            "status_mapped": "OP-open",
+            "location": "HF Mex Rest. Serving victims"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "geometry": {
@@ -58,36 +88,6 @@
             "received_time": "2026-07-15T20:15:43.006412966+01:00",
             "status_mapped": "CL-closed",
             "location": "Detour past constr. work very slow"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -80.7905,
-          34.1715
-        ]
-      },
-      "properties": {
-        "ObjectName": "KCGR-FUEL-fuel",
-        "Status": "OP-open",
-        "Specifier": "GD-gas+diesel",
-        "DateTime": "131556",
-        "ReportedBy": "AA4TE-10",
-        "ReportCount": 1,
-        "Location": "Elgin BP 2458 Main St Elgin SC",
-        "Comment": "OP GD Elgin BP 2458 Main St Elgin SC 131556",
-        "name": "KCGR-FUEL-fuel \u2014 Elgin BP 2458 Main St Elgin SC",
-        "description": "OP-open | GD-gas+diesel | Reported: 131556 | By: AA4TE-10",
-        "Contributors": [
-          {
-            "callsign": "AA4TE-10",
-            "received_time": "2026-07-13T21:04:42.935008993+01:00",
-            "status_mapped": "OP-open",
-            "location": "Elgin BP 2458 Main St Elgin SC"
           }
         ]
       }
