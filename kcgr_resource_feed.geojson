@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-15T18:53:54.819292+00:00",
+  "generated_at": "2026-07-15T19:41:02.116672+00:00",
   "features": [
     {
       "type": "Feature",
@@ -25,7 +25,7 @@
         "Contributors": [
           {
             "callsign": "AA4TE-10",
-            "received_time": "2026-07-15T19:53:32.948878522+01:00",
+            "received_time": "2026-07-15T20:15:43.006412966+01:00",
             "status_mapped": "CL-closed",
             "location": "Detour past constr. work very slow"
           }
