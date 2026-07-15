@@ -1,7 +1,37 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-15T19:41:02.116672+00:00",
+  "generated_at": "2026-07-15T20:30:05.942973+00:00",
   "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.77333333333333,
+          34.727666666666664
+        ]
+      },
+      "properties": {
+        "ObjectName": "KCGR-HW-health/welfare",
+        "Status": "CL-closed",
+        "Specifier": "HR-hours follow",
+        "DateTime": null,
+        "ReportedBy": "AA4TE-10",
+        "ReportCount": 1,
+        "Location": "1-4 Aug26",
+        "Comment": "CL HR 1-4 Aug26",
+        "name": "KCGR-HW-health/welfare \u2014 1-4 Aug26",
+        "description": "CL-closed | HR-hours follow | Reported: None | By: AA4TE-10",
+        "Contributors": [
+          {
+            "callsign": "AA4TE-10",
+            "received_time": "2026-07-15T21:23:57.206415322+01:00",
+            "status_mapped": "CL-closed",
+            "location": "1-4 Aug26"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "geometry": {

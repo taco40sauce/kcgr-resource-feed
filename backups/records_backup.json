@@ -30,5 +30,21 @@
     "location": "Detour past constr. work very slow",
     "timestamp_field": "151451",
     "parsed_cleanly": true
+  },
+  "AA4TE-10:KCGR-HW": {
+    "identity": "AA4TE-10:KCGR-HW",
+    "callsign": "AA4TE-10",
+    "category_wire": "KCGR-HW",
+    "category_mapped": "KCGR-HW-health/welfare",
+    "lat": 34.727666666666664,
+    "lon": -80.77333333333333,
+    "received_time": "2026-07-15T21:23:57.206415322+01:00",
+    "raw_comment": "CL HR 1-4 Aug26",
+    "status_wire": "CL",
+    "status_mapped": "CL-closed",
+    "specifier": "HR",
+    "location": "1-4 Aug26",
+    "timestamp_field": null,
+    "parsed_cleanly": true
   }
 }
