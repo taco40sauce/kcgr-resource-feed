@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-15T20:30:05.942973+00:00",
+  "generated_at": "2026-07-15T20:45:09.593923+00:00",
   "features": [
     {
       "type": "Feature",
@@ -25,7 +25,7 @@
         "Contributors": [
           {
             "callsign": "AA4TE-10",
-            "received_time": "2026-07-15T21:23:57.206415322+01:00",
+            "received_time": "2026-07-15T21:33:42.049060262+01:00",
             "status_mapped": "CL-closed",
             "location": "1-4 Aug26"
           }
