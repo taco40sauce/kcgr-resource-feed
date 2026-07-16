@@ -1,20 +1,4 @@
 {
-  "AA4TE-10:KCGR-FUEL": {
-    "identity": "AA4TE-10:KCGR-FUEL",
-    "callsign": "AA4TE-10",
-    "category_wire": "KCGR-FUEL",
-    "category_mapped": "KCGR-FUEL-fuel",
-    "lat": 34.247166666666665,
-    "lon": -80.59183333333333,
-    "received_time": "2026-07-16T01:26:10.432068314+01:00",
-    "raw_comment": "OP HF Mex Rest. Serving victims 151935",
-    "status_wire": "OP",
-    "status_mapped": "OP-open",
-    "specifier": null,
-    "location": "HF Mex Rest. Serving victims",
-    "timestamp_field": "151935",
-    "parsed_cleanly": true
-  },
   "AA4TE-10:KCGR-ROAD": {
     "identity": "AA4TE-10:KCGR-ROAD",
     "callsign": "AA4TE-10",

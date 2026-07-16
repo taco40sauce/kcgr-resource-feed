@@ -1,37 +1,7 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-16T00:30:45.428513+00:00",
+  "generated_at": "2026-07-16T00:43:44.503215+00:00",
   "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -80.59183333333333,
-          34.247166666666665
-        ]
-      },
-      "properties": {
-        "ObjectName": "KCGR-FUEL-fuel",
-        "Status": "OP-open",
-        "Specifier": "",
-        "DateTime": "151935",
-        "ReportedBy": "AA4TE-10",
-        "ReportCount": 1,
-        "Location": "HF Mex Rest. Serving victims",
-        "Comment": "OP HF Mex Rest. Serving victims 151935",
-        "name": "KCGR-FUEL-fuel \u2014 HF Mex Rest. Serving victims",
-        "description": "OP-open |  | Reported: 151935 | By: AA4TE-10",
-        "Contributors": [
-          {
-            "callsign": "AA4TE-10",
-            "received_time": "2026-07-16T01:26:10.432068314+01:00",
-            "status_mapped": "OP-open",
-            "location": "HF Mex Rest. Serving victims"
-          }
-        ]
-      }
-    },
     {
       "type": "Feature",
       "geometry": {
