@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-15T23:45:34.700819+00:00",
+  "generated_at": "2026-07-16T00:00:38.248052+00:00",
   "features": [
     {
       "type": "Feature",
@@ -25,7 +25,7 @@
         "Contributors": [
           {
             "callsign": "AA4TE-10",
-            "received_time": "2026-07-16T00:36:07.146852588+01:00",
+            "received_time": "2026-07-16T00:56:10.337082134+01:00",
             "status_mapped": "OP-open",
             "location": "HF Mex Rest. Serving victims"
           }
