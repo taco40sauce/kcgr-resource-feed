@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-16T00:43:44.503215+00:00",
+  "generated_at": "2026-07-16T00:43:46.357505+00:00",
   "features": [
     {
       "type": "Feature",
@@ -28,36 +28,6 @@
             "received_time": "2026-07-15T21:33:42.049060262+01:00",
             "status_mapped": "CL-closed",
             "location": "1-4 Aug26"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -80.69033333333333,
-          33.9425
-        ]
-      },
-      "properties": {
-        "ObjectName": "KCGR-ROAD-road/bridge",
-        "Status": "CL-closed",
-        "Specifier": "BR-bridge",
-        "DateTime": "151451",
-        "ReportedBy": "AA4TE-10",
-        "ReportCount": 1,
-        "Location": "Detour past constr. work very slow",
-        "Comment": "CL BR Detour past constr. work very slow 151451",
-        "name": "KCGR-ROAD-road/bridge \u2014 Detour past constr. work very slow",
-        "description": "CL-closed | BR-bridge | Reported: 151451 | By: AA4TE-10",
-        "Contributors": [
-          {
-            "callsign": "AA4TE-10",
-            "received_time": "2026-07-15T20:15:43.006412966+01:00",
-            "status_mapped": "CL-closed",
-            "location": "Detour past constr. work very slow"
           }
         ]
       }

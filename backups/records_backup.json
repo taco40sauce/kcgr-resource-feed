@@ -1,20 +1,4 @@
 {
-  "AA4TE-10:KCGR-ROAD": {
-    "identity": "AA4TE-10:KCGR-ROAD",
-    "callsign": "AA4TE-10",
-    "category_wire": "KCGR-ROAD",
-    "category_mapped": "KCGR-ROAD-road/bridge",
-    "lat": 33.9425,
-    "lon": -80.69033333333333,
-    "received_time": "2026-07-15T20:15:43.006412966+01:00",
-    "raw_comment": "CL BR Detour past constr. work very slow 151451",
-    "status_wire": "CL",
-    "status_mapped": "CL-closed",
-    "specifier": "BR",
-    "location": "Detour past constr. work very slow",
-    "timestamp_field": "151451",
-    "parsed_cleanly": true
-  },
   "AA4TE-10:KCGR-HW": {
     "identity": "AA4TE-10:KCGR-HW",
     "callsign": "AA4TE-10",
