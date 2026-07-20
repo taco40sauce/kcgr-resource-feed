@@ -1,18 +1,1 @@
-{
-  "AA4TE-10:KCGR-H2O": {
-    "identity": "AA4TE-10:KCGR-H2O",
-    "callsign": "AA4TE-10",
-    "category_wire": "KCGR-H2O",
-    "category_mapped": "KCGR-H2O-water",
-    "lat": 34.428666666666665,
-    "lon": -80.87266666666666,
-    "received_time": "2026-07-18T02:43:14.219772986+01:00",
-    "raw_comment": "OP DP LK WATEREE ST PARK PLENTY",
-    "status_wire": "OP",
-    "status_mapped": "OP-open",
-    "specifier": "DP",
-    "location": "LK WATEREE ST PARK PLENTY",
-    "timestamp_field": null,
-    "parsed_cleanly": true
-  }
-}
+{}

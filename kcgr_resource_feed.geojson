@@ -1,36 +1,5 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-18T01:45:26.888876+00:00",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -80.87266666666666,
-          34.428666666666665
-        ]
-      },
-      "properties": {
-        "ObjectName": "KCGR-H2O-water",
-        "Status": "OP-open",
-        "Specifier": "DP-distribution point",
-        "DateTime": null,
-        "ReportedBy": "AA4TE-10",
-        "ReportCount": 1,
-        "Location": "LK WATEREE ST PARK PLENTY",
-        "Comment": "OP DP LK WATEREE ST PARK PLENTY",
-        "name": "KCGR-H2O-water \u2014 LK WATEREE ST PARK PLENTY",
-        "description": "OP-open | DP-distribution point | Reported: None | By: AA4TE-10",
-        "Contributors": [
-          {
-            "callsign": "AA4TE-10",
-            "received_time": "2026-07-18T02:43:14.219772986+01:00",
-            "status_mapped": "OP-open",
-            "location": "LK WATEREE ST PARK PLENTY"
-          }
-        ]
-      }
-    }
-  ]
+  "generated_at": "2026-07-20T12:10:10.876498+00:00",
+  "features": []
 }
