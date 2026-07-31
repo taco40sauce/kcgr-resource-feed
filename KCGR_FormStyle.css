@@ -1,0 +1,82 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  max-width: 700px;
+  margin: 10px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.kcgr-header h2 {
+  margin-bottom: 2px;
+  border-bottom: 2px solid #333333;
+  padding-bottom: 6px;
+}
+
+.kcgr-sub {
+  color: #555555;
+  font-size: 0.9em;
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+
+.kcgr-note {
+  background-color: #fff8dc;
+  border: 1px solid #d4b800;
+  padding: 8px 12px;
+  margin: 10px 0 16px 0;
+}
+
+.kcgr-section {
+  border-top: 1px solid #cccccc;
+  padding-top: 10px;
+  margin-top: 16px;
+}
+
+.kcgr-section-title {
+  font-weight: bold;
+  font-size: 1.15em;
+  color: #1a3d6d;
+  margin-bottom: 6px;
+}
+
+.kcgr-optional {
+  background-color: #f2f2f2;
+  border: 1px dashed #999999;
+  padding: 8px 12px;
+}
+
+.kcgr-internal {
+  background-color: #eef4ff;
+  border: 1px solid #6688bb;
+  padding: 8px 12px;
+}
+
+.kcgr-field-note {
+  color: #666666;
+  font-size: 0.88em;
+  font-style: italic;
+  margin: 2px 0 10px 0;
+}
+
+.kcgr-field {
+  margin: 4px 0 10px 0;
+  padding: 3px;
+}
+
+label {
+  display: inline-block;
+  min-width: 140px;
+  font-weight: bold;
+  margin-top: 6px;
+}
+
+.kcgr-checkbox-line {
+  margin: 10px 0;
+}
+
+.kcgr-report-block {
+  border: 1px solid #888888;
+  padding: 10px 14px;
+  margin: 14px 0;
+  background-color: #fafafa;
+}
