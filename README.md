@@ -116,6 +116,43 @@ ST SPEC LOCATION DDHHMM
 - `LOCATION` — free-text place description
 - `DDHHMM` — day/hour/minute timestamp (optional, can be shortened or omitted)
 
+- ## Winlink report format
+
+Reports can also be filed via Winlink, using a three-file form set stored
+in `winlink_forms/`:
+
+- `KCGR_ResourceStatus.txt` — the message template. Defines the subject
+  line and plain-text message body, with `<var FieldName>` placeholders
+  that get filled in from the entry form. This is what a receiving
+  station sees if it doesn't have the entry/display forms installed —
+  nothing is lost, it just isn't rendered prettily.
+- `KCGR_ResourceStatus_Entry.html` — the fillable form a sender fills
+  out and submits. Supports up to 3 report blocks per message (same
+  category/status/specifier/location/date/time/notes/lat/long fields as
+  the APRS grammar above), so multiple observations can go in one
+  message.
+- `KCGR_ResourceStatus_Display.html` — a read-only rendering shown to
+  the *receiving* station once a report comes in, formatted to match
+  the entry form.
+- `KCGR_FormStyle.css` — legacy external stylesheet, kept for reference.
+  Current entry/display forms embed their CSS directly instead
+  (avoids a `{FormFolder}` path-substitution bug in some clients), so
+  this file is no longer referenced by them.
+
+**To install (Pat):** copy all files into
+`~/.local/share/pat/Standard_Forms/kcgr_forms/`.
+
+**To install (Winlink Express):** copy all files into
+`C:\RMS Express\Global Folders\Templates\KCGR\`.
+
+Once installed, select the KCGR Resource Status template from the
+client's message-template picker when composing a new message. Reports
+should be addressed to `KCGR-OPS`, a Winlink tactical address that
+auto-forwards incoming reports to the Hub Operator without requiring
+anyone to check in via telnet or RF. Per KCGR's vetting policy, Winlink
+reports from any FCC-licensed amateur callsign are auto-vetted and
+posted on receipt, same as APRS.
+
 A report that doesn't fully match this format is never discarded — it
 still gets published, with status forced to "unknown," so a report
 from an untrained operator is always better than no report at all.
