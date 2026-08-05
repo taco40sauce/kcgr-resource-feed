@@ -1,155 +1,22 @@
 <head>
 <style>
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  max-width: 700px;
-  margin: 10px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
+body { max-width: 700px; word-wrap: break-word; overflow-wrap: break-word; font-family: Arial, Helvetica, sans-serif; margin: 10px; }
+div, p, label, textarea, input, select { word-wrap: break-word; overflow-wrap: break-word; }
 
-.kcgr-header h2 {
-  margin-bottom: 2px;
-  border-bottom: 2px solid #333333;
-  padding-bottom: 6px;
-}
-
-.kcgr-sub {
-  color: #555555;
-  font-size: 0.9em;
-  margin-top: 0;
-  margin-bottom: 14px;
-}
-
-.kcgr-note {
-  background-color: #fff8dc;
-  border: 1px solid #d4b800;
-  padding: 8px 12px;
-  margin: 10px 0 16px 0;
-}
-
-.kcgr-section {
-  border-top: 1px solid #cccccc;
-  padding-top: 10px;
-  margin-top: 16px;
-}
-
-.kcgr-section-title {
-  font-weight: bold;
-  font-size: 1.15em;
-  color: #1a3d6d;
-  margin-bottom: 6px;
-}
-
-.kcgr-optional {
-  background-color: #f2f2f2;
-  border: 1px dashed #999999;
-  padding: 8px 12px;
-}
-
-.kcgr-internal {
-  background-color: #eef4ff;
-  border: 1px solid #6688bb;
-  padding: 8px 12px;
-}
-
-.kcgr-field-note {
-  color: #666666;
-  font-size: 0.88em;
-  font-style: italic;
-  margin: 2px 0 10px 0;
-}
-
-.kcgr-report-block {
-  border: 1px solid #888888;
-  padding: 10px 14px;
-  margin: 14px 0;
-  background-color: #fafafa;
-}
-
-/* --- Row layout: two label/field pairs per row, fixed columns so
-   wrapping can't cascade unpredictably. --- */
-.kcgr-row2 {
-  display: grid;
-  grid-template-columns: auto 1fr auto 1fr;
-  column-gap: 10px;
-  row-gap: 4px;
-  align-items: center;
-  margin: 6px 0;
-}
-
-.kcgr-row2 label {
-  font-weight: bold;
-  white-space: nowrap;
-  margin: 0;
-}
-
-.kcgr-row2 select,
-.kcgr-row2 input[type='text'],
-.kcgr-row2 input[type='date'],
-.kcgr-row2 input[type='time'] {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* --- Single label/field pair, full width (e.g. Location alone,
-   Incident Name, Send To). --- */
-.kcgr-row1 {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 10px;
-  align-items: center;
-  margin: 6px 0;
-}
-
-.kcgr-row1 label {
-  font-weight: bold;
-  white-space: nowrap;
-}
-
-.kcgr-row1 select,
-.kcgr-row1 input[type='text'] {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* --- Stacked label-above-field (Notes). --- */
-.kcgr-stack {
-  margin: 8px 0;
-}
-
-.kcgr-stack label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 3px;
-}
-
-.kcgr-stack textarea {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* --- Narrow fields: don't stretch to fill the grid cell. --- */
-.kcgr-narrow-2 {
-  width: 3.5em !important;
-}
-
-.kcgr-narrow-coord {
-  width: 7em !important;
-}
-
-.kcgr-narrow-phone {
-  width: 12em !important;
-}
-
-.kcgr-checkbox-line {
-  margin: 10px 0;
-}
-
-.kcgr-cal-hint {
-  color: #b91c1c;
-  font-weight: normal;
-}
+.kcgr-header h2 { margin-bottom: 2px; border-bottom: 2px solid #333333; padding-bottom: 6px; }
+.kcgr-sub { color: #555555; font-size: 0.9em; margin-top: 0; margin-bottom: 14px; }
+.kcgr-note { background-color: #fff8dc; border: 1px solid #d4b800; padding: 8px 12px; margin: 10px 0 16px 0; }
+.kcgr-section { border-top: 1px solid #cccccc; padding-top: 10px; margin-top: 16px; }
+.kcgr-section-title { font-weight: bold; font-size: 1.15em; color: #1a3d6d; margin-bottom: 6px; }
+.kcgr-optional { background-color: #f2f2f2; border: 1px dashed #999999; padding: 8px 12px; }
+.kcgr-internal { background-color: #eef4ff; border: 1px solid #6688bb; padding: 8px 12px; }
+.kcgr-field-note { color: #666666; font-size: 0.88em; font-style: italic; margin: 2px 0 10px 0; }
+.kcgr-field { margin: 4px 0 10px 0; padding: 3px; }
+input.kcgr-field, select.kcgr-field { display: block; width: 280px; max-width: 100%; }
+textarea.kcgr-field { display: block; max-width: 100%; }
+label { display: block; font-weight: bold; margin-top: 10px; margin-bottom: 2px; }
+.kcgr-checkbox-line { margin: 10px 0; }
+.kcgr-report-block { border: 1px solid #888888; padding: 10px 14px; margin: 14px 0; background-color: #fafafa; }
 </style>
 </head>
 <body>
@@ -174,10 +41,8 @@ body {
   <div class="kcgr-section-title">Send To</div>
   <p class="kcgr-field-note">Pending committee decision on tactical addresses.
   Leave as-is unless you've been told otherwise.</p>
-  <div class="kcgr-row1">
-    <label>To:</label>
-    <input type='text' name='SendTo' value='AA4TE'>
-  </div>
+  <label>To:</label>
+  <input class="kcgr-field" type='text' name='SendTo' value='KCGR-OPS'>
 </div>
 
 <div class="kcgr-section kcgr-optional">
@@ -186,25 +51,22 @@ body {
   the public map. They're here only for operators used to ICS-213-style
   headers. Safe to leave blank.</p>
 
-  <div class="kcgr-row2">
-    <label>Precedence:</label>
-    <select name='Precedence'>
-      <option value="Routine" selected>Routine</option>
-      <option value="Priority">Priority</option>
-      <option value="Emergency">Emergency</option>
-    </select>
-    <label>Message Number:</label>
-    <input type='text' name='MsgNr' value='001'>
-  </div>
-  <p class="kcgr-field-note">Message Number is optional, for your own tracking only
-  &mdash; works like National Traffic System numbering. If this is the third KCGR
-  message you've sent this year, mark it 003. If you don't track this yourself,
+  <label>Precedence:</label>
+  <select class="kcgr-field" name='Precedence'>
+    <option value="Routine" selected>Routine</option>
+    <option value="Priority">Priority</option>
+    <option value="Emergency">Emergency</option>
+  </select>
+
+  <label>Message Number:</label>
+  <input class="kcgr-field" type='text' name='MsgNr' value='001'>
+  <p class="kcgr-field-note">Optional, for your own tracking only &mdash; works
+  like National Traffic System numbering. If this is the third KCGR message
+  you've sent this year, mark it 003. If you don't track this yourself,
   leave it at 001 or blank.</p>
 
-  <div class="kcgr-row1">
-    <label>Incident Name:</label>
-    <input type='text' name='IncidentName' value=''>
-  </div>
+  <label>Incident Name:</label>
+  <input class="kcgr-field" type='text' name='IncidentName' value=''>
   <p class="kcgr-field-note">Only fill this in if the county Emergency
   Management office has already assigned an official name to this event
   (e.g. "Hurricane Helene 2026"). If you don't know of one, leave blank
@@ -213,50 +75,45 @@ body {
 
 <div class="kcgr-section">
   <div class="kcgr-section-title">Report Status</div>
-  <div class="kcgr-row1">
-    <label>Exercise or real event?</label>
-    <select name='IsExercise'>
-      <option value="REAL EVENT" selected>Real Event</option>
-      <option value="EXERCISE">Exercise</option>
-    </select>
-  </div>
+  <label>Is this an exercise or a real event?</label>
+  <select class="kcgr-field" name='IsExercise'>
+    <option value="REAL EVENT" selected>Real Event</option>
+    <option value="EXERCISE">Exercise</option>
+  </select>
 </div>
 
 <div class="kcgr-section">
   <div class="kcgr-section-title">Reporter Information</div>
 
-  <div class="kcgr-row2">
-    <label>Reporter Callsign:</label>
-    <input type='text' name='ReporterCall' value='{Callsign}'>
-    <label>Reporter Tier:</label>
-    <select name='ReporterTier'>
-      <option value="Tier 1 - Hub Operator">Tier 1 - Hub Operator</option>
-      <option value="Tier 2 - Vetted Contributor">Tier 2 - Vetted Contributor</option>
-      <option value="Tier 3 - Public Relay">Tier 3 - Public Relay</option>
-    </select>
-  </div>
+  <label>Reporter Callsign:</label>
+  <input class="kcgr-field" type='text' name='ReporterCall' value='{Callsign}'>
 
-  <div class="kcgr-row2">
-    <label>Observation Method:</label>
-    <select name='ObservationMethod'>
-      <option value="Direct observation">Direct observation</option>
-      <option value="Radio relay">Radio relay</option>
-      <option value="Public report relayed">Public report relayed</option>
-    </select>
-    <label>Time of Observation:</label>
-    <input type='time' name='ReportTimeOfDay' value=''>
-  </div>
+  <label>Reporter Tier:</label>
+  <select class="kcgr-field" name='ReporterTier'>
+    <option value="Tier 1 - Hub Operator">Tier 1 - Hub Operator</option>
+    <option value="Tier 2 - Vetted Contributor">Tier 2 - Vetted Contributor</option>
+    <option value="Tier 3 - Public Relay">Tier 3 - Public Relay</option>
+  </select>
 
-  <div class="kcgr-row2">
-    <label>Date of Observation <span class="kcgr-cal-hint">(click 📅 to pick)</span>:</label>
-    <input type='date' name='ReportDate' value=''>
-    <label>Confidence Level:</label>
-    <select name='ConfidenceLevel'>
-      <option value="High - personally observed">High - personally observed</option>
-      <option value="Medium - reported by known source">Medium - reported by known source</option>
-      <option value="Low - unverified, flagged for follow-up">Low - unverified, flagged for follow-up</option>
-    </select>
-  </div>
+  <label>Observation Method:</label>
+  <select class="kcgr-field" name='ObservationMethod'>
+    <option value="Direct observation">Direct observation</option>
+    <option value="Radio relay">Radio relay</option>
+    <option value="Public report relayed">Public report relayed</option>
+  </select>
+
+  <label>Date of Observation:</label>
+  <input class="kcgr-field" type='date' name='ReportDate' value=''>
+
+  <label>Time of Observation:</label>
+  <input class="kcgr-field" type='time' name='ReportTimeOfDay' value=''>
+
+  <label>Confidence Level:</label>
+  <select class="kcgr-field" name='ConfidenceLevel'>
+    <option value="High - personally observed">High - personally observed</option>
+    <option value="Medium - reported by known source">Medium - reported by known source</option>
+    <option value="Low - unverified, flagged for follow-up">Low - unverified, flagged for follow-up</option>
+  </select>
 </div>
 
 <div class="kcgr-section kcgr-internal">
@@ -265,12 +122,11 @@ body {
   report if needed, and are not published to the public map or kept
   afterward.</p>
 
-  <div class="kcgr-row2">
-    <label>Reporter Phone:</label>
-    <input class="kcgr-narrow-phone" type='text' name='ReporterPhone' value='' placeholder="(803) 555-1234">
-    <label>Reporter Email:</label>
-    <input type='text' name='ReporterEmail' value=''>
-  </div>
+  <label>Reporter Phone:</label>
+  <input class="kcgr-field" type='text' name='ReporterPhone' value=''>
+
+  <label>Reporter Email:</label>
+  <input class="kcgr-field" type='text' name='ReporterEmail' value=''>
 
   <p class="kcgr-checkbox-line">
   <input type='checkbox' name='OKToRecontact' value='Yes'>
@@ -281,183 +137,157 @@ body {
 
 <div class="kcgr-report-block">
   <div class="kcgr-section-title">Report 1</div>
-  <p class="kcgr-field-note">Specifier is the 2-letter code for your category
-  &mdash; see the KCGR reference sheet.</p>
 
-  <div class="kcgr-row2">
-    <label>Category:</label>
-    <select name='Category1'>
-      <option value="">-- select --</option>
-      <option value="KCGR-SHLT">KCGR-SHLT -- Emergency shelter</option>
-      <option value="KCGR-MED">KCGR-MED -- Medical facility</option>
-      <option value="KCGR-ROAD">KCGR-ROAD -- Road / bridge status</option>
-      <option value="KCGR-H2O">KCGR-H2O -- Potable water</option>
-      <option value="KCGR-FOOD">KCGR-FOOD -- Food / restaurant / grocery</option>
-      <option value="KCGR-FUEL">KCGR-FUEL -- Fuel availability</option>
-      <option value="KCGR-PWR">KCGR-PWR -- Power / charging / generator</option>
-      <option value="KCGR-CELL">KCGR-CELL -- Cell signal location</option>
-      <option value="KCGR-ATM">KCGR-ATM -- ATM / financial access</option>
-      <option value="KCGR-HW">KCGR-HW -- Health & welfare relay</option>
-    </select>
-    <label>Status:</label>
-    <select name='Status1'>
-      <option value="">-- select --</option>
-      <option value="OP">OP - Open / operational</option>
-      <option value="CL">CL - Closed</option>
-      <option value="LM">LM - Limited (hours/supply/capacity)</option>
-      <option value="CA">CA - Caution (accessible but hazardous)</option>
-      <option value="UK">UK - Unknown / not directly observed</option>
-    </select>
-  </div>
+  <label>Category:</label>
+  <select class="kcgr-field" name='Category1'>
+    <option value="">-- select --</option>
+    <option value="KCGR-SHLT">KCGR-SHLT -- Emergency shelter</option>
+    <option value="KCGR-MED">KCGR-MED -- Medical facility</option>
+    <option value="KCGR-ROAD">KCGR-ROAD -- Road / bridge status</option>
+    <option value="KCGR-H2O">KCGR-H2O -- Potable water</option>
+    <option value="KCGR-FOOD">KCGR-FOOD -- Food / restaurant / grocery</option>
+    <option value="KCGR-FUEL">KCGR-FUEL -- Fuel availability</option>
+    <option value="KCGR-PWR">KCGR-PWR -- Power / charging / generator</option>
+    <option value="KCGR-CELL">KCGR-CELL -- Cell signal location</option>
+    <option value="KCGR-ATM">KCGR-ATM -- ATM / financial access</option>
+    <option value="KCGR-HW">KCGR-HW -- Health & welfare relay</option>
+  </select>
 
-  <div class="kcgr-row2">
-    <label>Specifier:</label>
-    <input class="kcgr-narrow-2" type='text' name='Specifier1' value='' maxlength="2">
-    <label>Location:</label>
-    <input type='text' name='Location1' value=''>
-  </div>
+  <label>Status:</label>
+  <select class="kcgr-field" name='Status1'>
+    <option value="">-- select --</option>
+    <option value="OP">OP - Open / operational</option>
+    <option value="CL">CL - Closed</option>
+    <option value="LM">LM - Limited (hours/supply/capacity)</option>
+    <option value="CA">CA - Caution (accessible but hazardous)</option>
+    <option value="UK">UK - Unknown / not directly observed</option>
+  </select>
 
-  <div class="kcgr-row2">
-    <label>Time:</label>
-    <input type='time' name='Time1' value=''>
-    <label>Date <span class="kcgr-cal-hint">(click 📅)</span>:</label>
-    <input type='date' name='Date1' value=''>
-  </div>
-  <p class="kcgr-field-note">Time defaults to right now &mdash; change it if this
-  observation happened much earlier.</p>
+  <label>Specifier (2-letter code, see reference sheet):</label>
+  <input class="kcgr-field" type='text' name='Specifier1' value='' maxlength="2" size="3">
 
-  <div class="kcgr-stack">
-    <label>Notes:</label>
-    <textarea name='Notes1' rows="3" cols="40"></textarea>
-  </div>
+  <label>Location:</label>
+  <input class="kcgr-field" type='text' name='Location1' value=''>
 
-  <div class="kcgr-row2">
-    <label>Latitude (optional):</label>
-    <input class="kcgr-narrow-coord" type='text' name='Latitude1' value='' placeholder="34.12345">
-    <label>Longitude (optional):</label>
-    <input class="kcgr-narrow-coord" type='text' name='Longitude1' value='' placeholder="-80.12345">
-  </div>
+  <label>Date:</label>
+  <input class="kcgr-field" type='date' name='Date1' value=''>
+
+  <label>Time:</label>
+  <input class="kcgr-field" type='time' name='Time1' value=''>
+
+  <label>Notes:</label>
+  <textarea class="kcgr-field" name='Notes1' rows="3" cols="40"></textarea>
+
+  <label>Latitude (optional):</label>
+  <input class="kcgr-field" type='text' name='Latitude1' value=''>
+
+  <label>Longitude (optional):</label>
+  <input class="kcgr-field" type='text' name='Longitude1' value=''>
 </div>
 
 <div class="kcgr-report-block">
   <div class="kcgr-section-title">Report 2 <span class="kcgr-field-note">(optional)</span></div>
 
-  <div class="kcgr-row2">
-    <label>Category:</label>
-    <select name='Category2'>
-      <option value="">-- select --</option>
-      <option value="KCGR-SHLT">KCGR-SHLT -- Emergency shelter</option>
-      <option value="KCGR-MED">KCGR-MED -- Medical facility</option>
-      <option value="KCGR-ROAD">KCGR-ROAD -- Road / bridge status</option>
-      <option value="KCGR-H2O">KCGR-H2O -- Potable water</option>
-      <option value="KCGR-FOOD">KCGR-FOOD -- Food / restaurant / grocery</option>
-      <option value="KCGR-FUEL">KCGR-FUEL -- Fuel availability</option>
-      <option value="KCGR-PWR">KCGR-PWR -- Power / charging / generator</option>
-      <option value="KCGR-CELL">KCGR-CELL -- Cell signal location</option>
-      <option value="KCGR-ATM">KCGR-ATM -- ATM / financial access</option>
-      <option value="KCGR-HW">KCGR-HW -- Health & welfare relay</option>
-    </select>
-    <label>Status:</label>
-    <select name='Status2'>
-      <option value="">-- select --</option>
-      <option value="OP">OP - Open / operational</option>
-      <option value="CL">CL - Closed</option>
-      <option value="LM">LM - Limited (hours/supply/capacity)</option>
-      <option value="CA">CA - Caution (accessible but hazardous)</option>
-      <option value="UK">UK - Unknown / not directly observed</option>
-    </select>
-  </div>
+  <label>Category:</label>
+  <select class="kcgr-field" name='Category2'>
+    <option value="">-- select --</option>
+    <option value="KCGR-SHLT">KCGR-SHLT -- Emergency shelter</option>
+    <option value="KCGR-MED">KCGR-MED -- Medical facility</option>
+    <option value="KCGR-ROAD">KCGR-ROAD -- Road / bridge status</option>
+    <option value="KCGR-H2O">KCGR-H2O -- Potable water</option>
+    <option value="KCGR-FOOD">KCGR-FOOD -- Food / restaurant / grocery</option>
+    <option value="KCGR-FUEL">KCGR-FUEL -- Fuel availability</option>
+    <option value="KCGR-PWR">KCGR-PWR -- Power / charging / generator</option>
+    <option value="KCGR-CELL">KCGR-CELL -- Cell signal location</option>
+    <option value="KCGR-ATM">KCGR-ATM -- ATM / financial access</option>
+    <option value="KCGR-HW">KCGR-HW -- Health & welfare relay</option>
+  </select>
 
-  <div class="kcgr-row2">
-    <label>Specifier:</label>
-    <input class="kcgr-narrow-2" type='text' name='Specifier2' value='' maxlength="2">
-    <label>Location:</label>
-    <input type='text' name='Location2' value=''>
-  </div>
+  <label>Status:</label>
+  <select class="kcgr-field" name='Status2'>
+    <option value="">-- select --</option>
+    <option value="OP">OP - Open / operational</option>
+    <option value="CL">CL - Closed</option>
+    <option value="LM">LM - Limited (hours/supply/capacity)</option>
+    <option value="CA">CA - Caution (accessible but hazardous)</option>
+    <option value="UK">UK - Unknown / not directly observed</option>
+  </select>
 
-  <div class="kcgr-row2">
-    <label>Time:</label>
-    <input type='time' name='Time2' value=''>
-    <label>Date <span class="kcgr-cal-hint">(click 📅)</span>:</label>
-    <input type='date' name='Date2' value=''>
-  </div>
-  <p class="kcgr-field-note">Time defaults to right now &mdash; change it if this
-  observation happened much earlier.</p>
+  <label>Specifier (2-letter code, see reference sheet):</label>
+  <input class="kcgr-field" type='text' name='Specifier2' value='' maxlength="2" size="3">
 
-  <div class="kcgr-stack">
-    <label>Notes:</label>
-    <textarea name='Notes2' rows="3" cols="40"></textarea>
-  </div>
+  <label>Location:</label>
+  <input class="kcgr-field" type='text' name='Location2' value=''>
 
-  <div class="kcgr-row2">
-    <label>Latitude (optional):</label>
-    <input class="kcgr-narrow-coord" type='text' name='Latitude2' value='' placeholder="34.12345">
-    <label>Longitude (optional):</label>
-    <input class="kcgr-narrow-coord" type='text' name='Longitude2' value='' placeholder="-80.12345">
-  </div>
+  <label>Date:</label>
+  <input class="kcgr-field" type='date' name='Date2' value=''>
+
+  <label>Time:</label>
+  <input class="kcgr-field" type='time' name='Time2' value=''>
+
+  <label>Notes:</label>
+  <textarea class="kcgr-field" name='Notes2' rows="3" cols="40"></textarea>
+
+  <label>Latitude (optional):</label>
+  <input class="kcgr-field" type='text' name='Latitude2' value=''>
+
+  <label>Longitude (optional):</label>
+  <input class="kcgr-field" type='text' name='Longitude2' value=''>
 </div>
 
 <div class="kcgr-report-block">
   <div class="kcgr-section-title">Report 3 <span class="kcgr-field-note">(optional)</span></div>
 
-  <div class="kcgr-row2">
-    <label>Category:</label>
-    <select name='Category3'>
-      <option value="">-- select --</option>
-      <option value="KCGR-SHLT">KCGR-SHLT -- Emergency shelter</option>
-      <option value="KCGR-MED">KCGR-MED -- Medical facility</option>
-      <option value="KCGR-ROAD">KCGR-ROAD -- Road / bridge status</option>
-      <option value="KCGR-H2O">KCGR-H2O -- Potable water</option>
-      <option value="KCGR-FOOD">KCGR-FOOD -- Food / restaurant / grocery</option>
-      <option value="KCGR-FUEL">KCGR-FUEL -- Fuel availability</option>
-      <option value="KCGR-PWR">KCGR-PWR -- Power / charging / generator</option>
-      <option value="KCGR-CELL">KCGR-CELL -- Cell signal location</option>
-      <option value="KCGR-ATM">KCGR-ATM -- ATM / financial access</option>
-      <option value="KCGR-HW">KCGR-HW -- Health & welfare relay</option>
-    </select>
-    <label>Status:</label>
-    <select name='Status3'>
-      <option value="">-- select --</option>
-      <option value="OP">OP - Open / operational</option>
-      <option value="CL">CL - Closed</option>
-      <option value="LM">LM - Limited (hours/supply/capacity)</option>
-      <option value="CA">CA - Caution (accessible but hazardous)</option>
-      <option value="UK">UK - Unknown / not directly observed</option>
-    </select>
-  </div>
+  <label>Category:</label>
+  <select class="kcgr-field" name='Category3'>
+    <option value="">-- select --</option>
+    <option value="KCGR-SHLT">KCGR-SHLT -- Emergency shelter</option>
+    <option value="KCGR-MED">KCGR-MED -- Medical facility</option>
+    <option value="KCGR-ROAD">KCGR-ROAD -- Road / bridge status</option>
+    <option value="KCGR-H2O">KCGR-H2O -- Potable water</option>
+    <option value="KCGR-FOOD">KCGR-FOOD -- Food / restaurant / grocery</option>
+    <option value="KCGR-FUEL">KCGR-FUEL -- Fuel availability</option>
+    <option value="KCGR-PWR">KCGR-PWR -- Power / charging / generator</option>
+    <option value="KCGR-CELL">KCGR-CELL -- Cell signal location</option>
+    <option value="KCGR-ATM">KCGR-ATM -- ATM / financial access</option>
+    <option value="KCGR-HW">KCGR-HW -- Health & welfare relay</option>
+  </select>
 
-  <div class="kcgr-row2">
-    <label>Specifier:</label>
-    <input class="kcgr-narrow-2" type='text' name='Specifier3' value='' maxlength="2">
-    <label>Location:</label>
-    <input type='text' name='Location3' value=''>
-  </div>
+  <label>Status:</label>
+  <select class="kcgr-field" name='Status3'>
+    <option value="">-- select --</option>
+    <option value="OP">OP - Open / operational</option>
+    <option value="CL">CL - Closed</option>
+    <option value="LM">LM - Limited (hours/supply/capacity)</option>
+    <option value="CA">CA - Caution (accessible but hazardous)</option>
+    <option value="UK">UK - Unknown / not directly observed</option>
+  </select>
 
-  <div class="kcgr-row2">
-    <label>Time:</label>
-    <input type='time' name='Time3' value=''>
-    <label>Date <span class="kcgr-cal-hint">(click 📅)</span>:</label>
-    <input type='date' name='Date3' value=''>
-  </div>
-  <p class="kcgr-field-note">Time defaults to right now &mdash; change it if this
-  observation happened much earlier.</p>
+  <label>Specifier (2-letter code, see reference sheet):</label>
+  <input class="kcgr-field" type='text' name='Specifier3' value='' maxlength="2" size="3">
 
-  <div class="kcgr-stack">
-    <label>Notes:</label>
-    <textarea name='Notes3' rows="3" cols="40"></textarea>
-  </div>
+  <label>Location:</label>
+  <input class="kcgr-field" type='text' name='Location3' value=''>
 
-  <div class="kcgr-row2">
-    <label>Latitude (optional):</label>
-    <input class="kcgr-narrow-coord" type='text' name='Latitude3' value='' placeholder="34.12345">
-    <label>Longitude (optional):</label>
-    <input class="kcgr-narrow-coord" type='text' name='Longitude3' value='' placeholder="-80.12345">
-  </div>
+  <label>Date:</label>
+  <input class="kcgr-field" type='date' name='Date3' value=''>
+
+  <label>Time:</label>
+  <input class="kcgr-field" type='time' name='Time3' value=''>
+
+  <label>Notes:</label>
+  <textarea class="kcgr-field" name='Notes3' rows="3" cols="40"></textarea>
+
+  <label>Latitude (optional):</label>
+  <input class="kcgr-field" type='text' name='Latitude3' value=''>
+
+  <label>Longitude (optional):</label>
+  <input class="kcgr-field" type='text' name='Longitude3' value=''>
 </div>
 
 <div class="kcgr-section">
   <div class="kcgr-section-title">Additional Notes</div>
-  <textarea name='AddlNotes' rows="4" cols="40" style="width:100%; box-sizing:border-box;"></textarea>
+  <textarea class="kcgr-field" name='AddlNotes' rows="4" cols="40"></textarea>
 </div>
 
 <div class="kcgr-note">
@@ -474,21 +304,4 @@ body {
 </p>
 
 </form>
-
-<script>
-(function() {
-  function pad(n) { return n < 10 ? '0' + n : n; }
-  var now = new Date();
-  var hh = pad(now.getHours());
-  var mm = pad(now.getMinutes());
-  var nowStr = hh + ':' + mm;
-  var fieldsToDefault = ['ReportTimeOfDay', 'Time1', 'Time2', 'Time3'];
-  fieldsToDefault.forEach(function(name) {
-    var field = document.getElementsByName(name)[0];
-    if (field && !field.value) {
-      field.value = nowStr;
-    }
-  });
-})();
-</script>
 </body>
