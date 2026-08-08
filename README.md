@@ -1,4 +1,4 @@
-# KCGR Resource Feed / KCGR-Resource Statu
+# KCGR Resource Feed / KCGR-Resource Status
 
 Automated pipeline turning ham radio APRS and Winlink ground reports (KCGR: Kershaw
 County Ground Report) into a real-time public emergency resource map —
