@@ -43,10 +43,10 @@ public KCGR map
 No spreadsheet, no manual data entry, no gatekeeper between a report
 being radioed in and it appearing on the public map.
 
-## Status (as of July 2026)
+## Status (as of Augus 2026)
 
-Working end-to-end for a single manual test run. Not yet running as an
-unattended, continuously-scheduled service — currently triggered by
+Working end-to-end for a multiple manual test runs. Not yet tested as an
+unattended, continuously-scheduled service under diress — currently triggered by
 hand, on the Pi, via the commands below. Turning this into a proper
 always-on service (likely `systemd`) is the next planned step.
 
