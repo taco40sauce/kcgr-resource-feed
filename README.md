@@ -1,8 +1,9 @@
-# KCGR Resource Feed
+# KCGR Resource Feed / KCGR-Resource Statu
 
-Automated pipeline turning ham radio APRS ground reports (KCGR: Kershaw
+Automated pipeline turning ham radio APRS and Winlink ground reports (KCGR: Kershaw
 County Ground Report) into a real-time public emergency resource map —
 shelters, roads, water, fuel, power, and more.
+
 
 Built for KC4RC / Kershaw County EmComm on a Raspberry Pi running
 [Graywolf](https://github.com/chrissnell/graywolf) APRS software.
