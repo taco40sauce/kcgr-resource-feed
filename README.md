@@ -60,6 +60,7 @@ always-on service (likely `systemd`) is the next planned step.
 | `geojson_writer.py` | Clusters corroborating reports, builds the GeoJSON, backs up the record store, pushes to GitHub |
 | `remove_record.py` | Manual admin tool - deletes a record and republishes the map |
 | `credentials.env.example` | Template for the (never-committed) real credentials file |
+| `winlink_forms` | Template Winlink reports tested with WinlinkExpress and PAT-Linux-client (www.getpat.io) |
 
 ## Setup
 
