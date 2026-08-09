@@ -8,8 +8,8 @@ name: KCGR Winlink Poller
 # pipeline was built with.
 on:
   workflow_dispatch: {}
-  # schedule:
-  #   - cron: '*/15 * * * *'   # every 15 minutes, UTC
+  schedule:
+    - cron: '*/15 * * * *'   # every 15 minutes, UTC
 
 permissions:
   contents: write
