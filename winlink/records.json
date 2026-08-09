@@ -1,0 +1,19 @@
+{
+  "AA4TE:KCGR-FUEL:1": {
+    "identity": "AA4TE:KCGR-FUEL:1",
+    "callsign": "AA4TE",
+    "category_wire": "KCGR-FUEL",
+    "category_mapped": "KCGR-FUEL-fuel",
+    "lat": 34.2472,
+    "lon": -80.5912,
+    "received_time": "2026-08-09T23:18:02.523927+00:00",
+    "raw_comment": "test gas station - GATE",
+    "status_wire": "OP",
+    "status_mapped": "OP-open",
+    "specifier": "GD",
+    "location": "Dekalb Camden",
+    "timestamp_field": "2026-08-09 18:55",
+    "parsed_cleanly": true,
+    "source_channel": "winlink"
+  }
+}
