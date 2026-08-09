@@ -1,0 +1,44 @@
+name: KCGR Winlink Poller
+
+# Runs on a schedule once merged - but starts as manual-trigger-only
+# (workflow_dispatch below) until a real test message has been
+# confirmed to parse and commit correctly. Uncomment the schedule
+# block only after that manual test succeeds - same "test each piece
+# by itself before connecting them" discipline the rest of this
+# pipeline was built with.
+on:
+  workflow_dispatch: {}
+  # schedule:
+  #   - cron: '*/15 * * * *'   # every 15 minutes, UTC
+
+permissions:
+  contents: write
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Winlink poller
+        env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python3 kcgr_winlink_poller.py
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "kcgr-winlink-poller"
+          git config user.email "actions@github.com"
+          git add winlink/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Winlink poller: update records"
+            git push origin main
+          fi
