@@ -1,135 +1,200 @@
 """
-graywolf_client.py
+geojson_writer.py
 
-Thin client for Graywolf's local REST API:
-  - Logs in via POST /api/auth/login (session-cookie auth)
-  - Polls GET /api/packets for new APRS traffic
+CHANGED 8/9/2026 — role narrowed as part of moving the public map build
+off the Pi (see CORE, "merge step" design). This script used to do all
+three jobs below; it now does only the first two. The third (CLUSTER +
+TRANSLATE + WRITE the actual public GeoJSON) moved to
+kcgr_merge_and_publish.py, which runs on GitHub Actions instead of the
+Pi — so the public map can still update even if the Pi/shack loses
+power, the same reasoning that already drove the Winlink poller off
+the Pi.
 
-Credentials are loaded from ~/.kcgr_secrets/credentials.env (NOT part of
-this git repo) via python-dotenv, so nothing sensitive ever touches a
-tracked file.
+What this script still does:
+  1. BACKUP records.json into the repo (backups/records_backup.json),
+     so it survives an SD card failure, per CORE's backup design.
+  2. PUSH that backup to GitHub in one commit.
 
-Run this file directly for a quick manual test:
-    python3 graywolf_client.py
+That push is also the trigger for the merge step (see
+.github/workflows/merge-and-publish.yml, which fires on any push that
+touches backups/records_backup.json OR winlink/records.json) — so a
+report still reaches the public map promptly, just via an Actions run
+instead of this script doing it directly.
+
+The CLUSTER/TRANSLATE/build_geojson functions below are kept in this
+file (not deleted) because kcgr_merge_and_publish.py imports and reuses
+them directly — clustering logic exists in exactly one place, so the
+two channels can never drift out of sync with each other. This file
+just no longer CALLS write_geojson_file() or pushes the .geojson file
+itself.
+
+Run this file directly to do a one-time manual backup+push, useful for
+testing:
+    python3 geojson_writer.py
 """
-
-import os
+import json
+import math
+import subprocess
 from pathlib import Path
 from datetime import datetime, timezone
+from state_store import load_records
+from parser import STATUS_MAP, CATEGORY_MAP, SPECIFIER_LABELS
 
-import requests
-from dotenv import load_dotenv
+# --- Config --------------------------------------------------------------
+REPO_DIR = Path.home() / "kcgr-pipeline"
+GEOJSON_PATH = REPO_DIR / "kcgr_resource_feed.geojson"
+BACKUP_PATH = REPO_DIR / "backups" / "records_backup.json"
+CLUSTER_RADIUS_METERS = 100
 
-# --- Config -----------------------------------------------------------
+# --- Distance helper -------------------------------------------------------
+def _haversine_meters(lat1, lon1, lat2, lon2) -> float:
+    """Great-circle distance between two lat/lon points, in meters."""
+    R = 6371000
+    phi1, phi2 = math.radians(lat1), math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlambda = math.radians(lon2 - lon1)
+    a = (
+        math.sin(dphi / 2) ** 2
+        + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
+    )
+    return 2 * R * math.asin(math.sqrt(a))
 
-# Graywolf's own web UI/API, reachable locally since this runs on the Pi.
-GRAYWOLF_BASE_URL = "http://127.0.0.1:8080"
-
-# Credentials live outside the repo entirely - see CORE "Deployment setup".
-SECRETS_PATH = Path.home() / ".kcgr_secrets" / "credentials.env"
-
-
-# --- Client -------------------------------------------------------------
-
-class GraywolfClient:
-    """Handles auth + packet polling against a local Graywolf instance."""
-
-    def __init__(self, base_url: str = GRAYWOLF_BASE_URL):
-        self.base_url = base_url.rstrip("/")
-        self.session = requests.Session()
-        self._logged_in = False
-
-    def login(self) -> None:
-        """
-        Authenticates against Graywolf, storing the graywolf_session
-        cookie on self.session for subsequent requests.
-
-        NOTE: field names below (username/password) are a best-effort
-        guess based on common conventions - if Graywolf's actual login
-        endpoint expects different field names, check the Swagger/OpenAPI
-        page served from http://10.0.0.58:8080/ (per CORE: must be viewed
-        from the Pi's own address, not the chrissnell.com handbook copy)
-        and adjust the `payload` dict below accordingly.
-        """
-        load_dotenv(SECRETS_PATH)
-        username = os.environ.get("GRAYWOLF_USER")
-        password = os.environ.get("GRAYWOLF_PASS")
-
-        if not username or not password:
-            raise RuntimeError(
-                f"GRAYWOLF_USER / GRAYWOLF_PASS not found - check {SECRETS_PATH}"
+# --- Clustering (Corroboration & Duplicate-Report Handling) ---------------
+# Kept here for kcgr_merge_and_publish.py to import - single source of
+# truth for clustering logic, used regardless of which channel(s) a
+# record came from.
+def cluster_records(records: list) -> list:
+    clusters = []
+    sorted_records = sorted(
+        records, key=lambda r: r.get("received_time", ""), reverse=True
+    )
+    for record in sorted_records:
+        placed = False
+        for cluster in clusters:
+            if cluster["category_wire"] != record["category_wire"]:
+                continue
+            if record.get("lat") is None or record.get("lon") is None:
+                continue
+            dist = _haversine_meters(
+                cluster["lat"], cluster["lon"], record["lat"], record["lon"]
             )
-
-        payload = {"username": username, "password": password}
-        resp = self.session.post(f"{self.base_url}/api/auth/login", json=payload)
-        resp.raise_for_status()
-
-        if "graywolf_session" not in self.session.cookies.get_dict():
-            raise RuntimeError(
-                "Login request succeeded (HTTP OK) but no graywolf_session "
-                "cookie was set - check the login payload field names against "
-                "the Pi-hosted Swagger UI."
+            if dist <= CLUSTER_RADIUS_METERS:
+                cluster["members"].append(record)
+                placed = True
+                break
+        if not placed:
+            clusters.append(
+                {
+                    "category_wire": record["category_wire"],
+                    "lat": record["lat"],
+                    "lon": record["lon"],
+                    "status_mapped": record["status_mapped"],
+                    "members": [record],
+                }
             )
+    for cluster in clusters:
+        cluster["report_count"] = len(cluster["members"])
+    return clusters
 
-        self._logged_in = True
-        print(f"[graywolf_client] Logged in OK as {username}")
+# --- GeoJSON construction ---------------------------------------------------
+# Also kept here for kcgr_merge_and_publish.py to import.
+def build_geojson(clusters: list) -> dict:
+    features = []
+    for cluster in clusters:
+        category_wire = cluster["category_wire"]
+        most_recent = cluster["members"][0]
+        contributors = [
+            {
+                "callsign": m["callsign"],
+                "received_time": m.get("received_time"),
+                "status_mapped": m["status_mapped"],
+                "location": m.get("location", ""),
+            }
+            for m in cluster["members"]
+        ]
+        category_labels = SPECIFIER_LABELS.get(category_wire, {})
+        specifier_raw = most_recent.get("specifier")
+        specifier_mapped = category_labels.get(specifier_raw, specifier_raw or "")
+        object_name_mapped = CATEGORY_MAP.get(category_wire, "KCGR-UNKNOWN-unknown")
+        name_text = f"{object_name_mapped} — {most_recent.get('location', '')}"
+        description_text = (
+            f"{cluster['status_mapped']} | {specifier_mapped} | "
+            f"Reported: {most_recent.get('timestamp_field', '?')} | "
+            f"By: {most_recent.get('callsign', '?')}"
+        )
+        feature = {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [cluster["lon"], cluster["lat"]],
+            },
+            "properties": {
+                "ObjectName": object_name_mapped,
+                "Status": cluster["status_mapped"],
+                "Specifier": specifier_mapped,
+                "DateTime": most_recent.get("timestamp_field", ""),
+                "ReportedBy": most_recent.get("callsign", ""),
+                "ReportCount": cluster["report_count"],
+                "Location": most_recent.get("location", ""),
+                "Comment": most_recent.get("raw_comment", ""),
+                "name": name_text,
+                "description": description_text,
+                "Contributors": contributors,
+            },
+        }
+        features.append(feature)
+    return {
+        "type": "FeatureCollection",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "features": features,
+    }
 
-    def get_packets(
-        self,
-        since: str | None = None,
-        direction: str = "RX",
-        packet_type: str | None = None,
-        limit: int | None = None,
-    ) -> list[dict]:
-        """
-        Fetches packets from GET /api/packets.
+def write_geojson_file(geojson: dict, path: Path = GEOJSON_PATH) -> None:
+    """Kept for kcgr_merge_and_publish.py's use, and for local manual
+    testing - NOT called by run() below anymore as of 8/9/2026."""
+    with open(path, "w") as f:
+        json.dump(geojson, f, indent=2)
+    print(f"[geojson_writer] Wrote {len(geojson['features'])} feature(s) to {path}")
 
-        Args:
-            since: ISO-8601 timestamp string - only packets after this time.
-            direction: "RX" (received) or "TX" (transmitted). Defaults to RX,
-                since the KCGR pipeline only cares about incoming reports.
-            packet_type: optional filter, e.g. "object" for object beacons.
-            limit: optional max number of results.
+# --- Backup + push (this script's actual job now) ---------------------------
+def backup_records_file() -> None:
+    BACKUP_PATH.parent.mkdir(parents=True, exist_ok=True)
+    records = load_records()
+    with open(BACKUP_PATH, "w") as f:
+        json.dump(records, f, indent=2)
+    print(f"[geojson_writer] Backed up records store to {BACKUP_PATH}")
 
-        Returns:
-            List of packet dicts as returned by the API.
-        """
-        if not self._logged_in:
-            self.login()
+def git_commit_and_push(message: str) -> None:
+    try:
+        subprocess.run(
+            ["git", "add", str(BACKUP_PATH)],
+            cwd=REPO_DIR, check=True,
+        )
+        result = subprocess.run(
+            ["git", "commit", "-m", message],
+            cwd=REPO_DIR, capture_output=True, text=True,
+        )
+        if "nothing to commit" in result.stdout:
+            print("[geojson_writer] No changes to commit.")
+            return
+        subprocess.run(
+            ["git", "push", "origin", "main"],
+            cwd=REPO_DIR, check=True,
+        )
+        print("[geojson_writer] Pushed backup to GitHub - this triggers "
+              "the merge-and-publish workflow automatically.")
+    except subprocess.CalledProcessError as e:
+        print(f"[geojson_writer] Git operation failed: {e}")
+        raise
 
-        params = {"direction": direction}
-        if since:
-            params["since"] = since
-        if packet_type:
-            params["type"] = packet_type
-        if limit:
-            params["limit"] = limit
-
-        resp = self.session.get(f"{self.base_url}/api/packets", params=params)
-
-        # If the session expired, try one re-login + retry before giving up.
-        if resp.status_code == 401:
-            print("[graywolf_client] Session expired, re-logging in...")
-            self._logged_in = False
-            self.login()
-            resp = self.session.get(f"{self.base_url}/api/packets", params=params)
-
-        resp.raise_for_status()
-        return resp.json()
-
-
-# --- Manual test entry point --------------------------------------------
+# --- Full pipeline step ------------------------------------------------------
+def run() -> None:
+    """As of 8/9/2026: backs up + pushes records.json only. Does NOT
+    build or push the public kcgr_resource_feed.geojson anymore - that
+    now happens in kcgr_merge_and_publish.py, triggered automatically
+    by the push this function makes. See module docstring."""
+    backup_records_file()
+    git_commit_and_push("Update KCGR records backup")
 
 if __name__ == "__main__":
-    client = GraywolfClient()
-    client.login()
-
-    # Quick smoke test: pull the last few RX packets and print a summary.
-    packets = client.get_packets(limit=10)
-    print(f"\nFetched {len(packets)} packet(s):\n")
-    for p in packets:
-        ts = p.get("timestamp", "?")
-        src = p.get("source", "?")
-        ptype = p.get("type", "?")
-        display = p.get("display", "")
-        print(f"  [{ts}] {src} ({ptype}): {display}")
+    run()
