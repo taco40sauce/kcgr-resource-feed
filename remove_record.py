@@ -18,15 +18,22 @@ USAGE:
     identity string to remove:
     python3 remove_record.py --list
 
-As of 7/13/2026: removing a record now also regenerates the public
-GeoJSON file and pushes it to GitHub immediately - so a deletion here
-actually disappears from the live map, not just the internal store.
+CHANGED 8/9/2026: as of 7/13/2026 this regenerated and pushed the
+public GeoJSON directly and immediately. As of 8/9/2026, publishing the
+public map moved to a separate merge step that runs on GitHub Actions
+(see kcgr_merge_and_publish.py) - so removal now pushes the updated
+BACKUP, which automatically TRIGGERS that merge step, rather than
+rebuilding the map in this same process. In practice this is still
+fast (one Actions run, typically under a minute) but it's no longer
+instant/synchronous the way it was before - worth knowing if you're
+watching the map right after a removal and it doesn't update the
+instant this command finishes.
 """
 
 import sys
 
 from state_store import list_records, remove_record
-from geojson_writer import run as regenerate_and_push_map
+from geojson_writer import run as backup_and_push
 
 
 def main():
@@ -53,9 +60,13 @@ def main():
 
     if removed:
         print(f"Removed: {identity}")
-        print("Regenerating public map and pushing to GitHub...")
-        regenerate_and_push_map()
-        print("Done - the public map now reflects this removal.")
+        print("Pushing updated backup to GitHub...")
+        backup_and_push()
+        print(
+            "Done - the merge-and-publish workflow will pick this up "
+            "automatically (usually within a minute) and update the "
+            "live public map."
+        )
     else:
         print(f"No record found matching identity: {identity}")
         print("Run with --list to see all current identities.")
