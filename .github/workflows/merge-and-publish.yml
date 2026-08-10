@@ -1,1 +1,45 @@
+name: KCGR Merge and Publish
 
+# Fires automatically whenever EITHER channel's data changes - the
+# APRS pipeline's backup push (from the Pi, via geojson_writer.py) or
+# the Winlink poller's scheduled push. This keeps propagation fast
+# (an Actions run, not a fixed polling delay) without a second writer
+# racing on the same file - this workflow only runs when its own
+# inputs change, nothing else ever writes kcgr_resource_feed.geojson.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backups/records_backup.json"
+      - "winlink/records.json"
+  workflow_dispatch: {}   # manual trigger, for testing
+
+permissions:
+  contents: write
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Merge and publish public map
+        run: python3 kcgr_merge_and_publish.py
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "kcgr-merge-publish"
+          git config user.email "actions@github.com"
+          git add kcgr_resource_feed.geojson
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Merge step: update public map"
+            git push origin main
+          fi
