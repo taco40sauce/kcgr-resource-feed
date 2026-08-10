@@ -1,5 +1,36 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-07-20T12:10:10.876498+00:00",
-  "features": []
+  "generated_at": "2026-08-10T01:18:00.724162+00:00",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.5912,
+          34.2472
+        ]
+      },
+      "properties": {
+        "ObjectName": "KCGR-FUEL-fuel",
+        "Status": "OP-open",
+        "Specifier": "GD-gas+diesel",
+        "DateTime": "2026-08-09 18:55",
+        "ReportedBy": "AA4TE",
+        "ReportCount": 1,
+        "Location": "Dekalb Camden",
+        "Comment": "test gas station - GATE",
+        "name": "KCGR-FUEL-fuel \u2014 Dekalb Camden",
+        "description": "OP-open | GD-gas+diesel | Reported: 2026-08-09 18:55 | By: AA4TE",
+        "Contributors": [
+          {
+            "callsign": "AA4TE",
+            "received_time": "2026-08-09T23:18:02.523927+00:00",
+            "status_mapped": "OP-open",
+            "location": "Dekalb Camden"
+          }
+        ]
+      }
+    }
+  ]
 }
