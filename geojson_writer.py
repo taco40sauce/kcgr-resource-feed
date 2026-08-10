@@ -1,108 +1,210 @@
 """
-kcgr_merge_and_publish.py
+geojson_writer.py
 
-Runs on GitHub Actions (NOT the Pi). Reads BOTH committed record
-stores - backups/records_backup.json (APRS, backed up by
-geojson_writer.py) and winlink/records.json (Winlink, written by
-kcgr_winlink_poller.py) - merges them, and builds/pushes the one public
-kcgr_resource_feed.geojson that uMap actually reads.
+Takes everything currently in the pipeline's record store and turns it
+into the one GeoJSON file uMap's Remote Data layer reads. This is the
+piece that actually makes reports show up on the public map.
 
-WHY THIS RUNS HERE, NOT ON THE PI:
-Keeping the final map-build step off the Pi means the public map can
-still update even if the Pi/shack loses power - the same reasoning
-that already drove the Winlink poller off the Pi. Before this script
-existed, geojson_writer.py did this job directly on the Pi; see that
-file's docstring for what changed and why (8/9/2026).
+Three jobs, done in order:
+  1. CLUSTER corroborating reports (same category, physically close
+     together) into a single map pin, per CORE's "Corroboration &
+     Duplicate-Report Handling" design - so 3 operators reporting the
+     same shelter show as ONE pin with a count, not 3 overlapping pins.
+  2. TRANSLATE wire-format codes (e.g. "OP", "KCGR-FUEL") into the exact
+     property strings uMap's conditional style rules require (e.g.
+     "OP-open", "KCGR-FUEL-fuel"). Property names ("Status", "ObjectName")
+     must match exactly what the style rules check against.
+  3. WRITE the GeoJSON file, back up records.json into the repo (so it
+     survives an SD card failure, per CORE's backup design), and PUSH
+     both to GitHub in one commit.
 
-WHY IT READS THE *BACKUP*, NOT data/records.json DIRECTLY:
-data/records.json (the APRS pipeline's live store) is .gitignore-
-excluded - it only ever exists on the Pi's local disk and is never
-pushed. backups/records_backup.json is the only APRS data that
-actually reaches the repo, so it's the only copy a GitHub Actions
-runner can read at all. This means APRS data here is always at most
-one backup cycle old - a small, known, honest staleness, not a
-silent gap.
-
-NO IDENTITY COLLISION BETWEEN CHANNELS BY DESIGN:
-APRS records use "callsign:category_wire" as their identity.
-Winlink records use "callsign:category_wire:report_num" (an extra
-segment, since one Winlink message can carry up to 3 reports). These
-shapes can never collide, so the two stores are simply concatenated
-before clustering - no dedup logic needed between channels, only
-within (already handled by each channel's own upsert-by-identity).
-
-Reuses cluster_records() and build_geojson() from geojson_writer.py
-directly (imported, not reimplemented) - clustering logic exists in
-exactly one place, so APRS and Winlink reports are always treated
-identically once they reach this step.
+Run this file directly to do a one-time manual write+push, useful for
+testing before it's wired into a continuously-running service:
+    python3 geojson_writer.py
 """
 
 import json
+import math
 import subprocess
 from pathlib import Path
+from datetime import datetime, timezone
 
-from geojson_writer import cluster_records, build_geojson, write_geojson_file
+from state_store import load_records
+from parser import STATUS_MAP, CATEGORY_MAP, SPECIFIER_LABELS
 
-REPO_DIR = Path(__file__).resolve().parent
-APRS_BACKUP_PATH = REPO_DIR / "backups" / "records_backup.json"
-WINLINK_RECORDS_PATH = REPO_DIR / "winlink" / "records.json"
+# --- Config --------------------------------------------------------------
+
+REPO_DIR = Path.home() / "kcgr-pipeline"
 GEOJSON_PATH = REPO_DIR / "kcgr_resource_feed.geojson"
+BACKUP_PATH = REPO_DIR / "backups" / "records_backup.json"
+
+CLUSTER_RADIUS_METERS = 100
 
 
-def _load_records_dict(path: Path) -> dict:
-    """Both source files are {identity: record} dicts, same shape
-    state_store.py's load_records() produces. Missing file (e.g. no
-    Winlink reports have ever come in yet) is not an error - just
-    treated as empty, same graceful-default pattern used elsewhere."""
-    if not path.exists():
-        print(f"[merge] {path} doesn't exist yet - treating as empty.")
-        return {}
-    try:
-        with open(path, "r") as f:
-            return json.load(f)
-    except json.JSONDecodeError as e:
-        print(f"[merge] WARNING: {path} is corrupt ({e}) - treating as "
-              f"empty rather than crashing. Worth a manual look.")
-        return {}
+# --- Distance helper -------------------------------------------------------
+
+def _haversine_meters(lat1, lon1, lat2, lon2) -> float:
+    """Great-circle distance between two lat/lon points, in meters."""
+    R = 6371000
+    phi1, phi2 = math.radians(lat1), math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlambda = math.radians(lon2 - lon1)
+    a = (
+        math.sin(dphi / 2) ** 2
+        + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
+    )
+    return 2 * R * math.asin(math.sqrt(a))
 
 
-def merge_all_records() -> list:
-    aprs_records = _load_records_dict(APRS_BACKUP_PATH)
-    winlink_records = _load_records_dict(WINLINK_RECORDS_PATH)
+# --- Clustering (Corroboration & Duplicate-Report Handling) ---------------
 
-    print(f"[merge] {len(aprs_records)} APRS record(s), "
-          f"{len(winlink_records)} Winlink record(s).")
+def cluster_records(records: list) -> list:
+    clusters = []
+    sorted_records = sorted(
+        records, key=lambda r: r.get("received_time", ""), reverse=True
+    )
 
-    # Identity namespaces can't collide (see module docstring) - a
-    # plain concatenation is correct, not a simplification that
-    # happens to work.
-    all_records = list(aprs_records.values()) + list(winlink_records.values())
-    return all_records
+    for record in sorted_records:
+        placed = False
+        for cluster in clusters:
+            if cluster["category_wire"] != record["category_wire"]:
+                continue
+            if record.get("lat") is None or record.get("lon") is None:
+                continue
+            dist = _haversine_meters(
+                cluster["lat"], cluster["lon"], record["lat"], record["lon"]
+            )
+            if dist <= CLUSTER_RADIUS_METERS:
+                cluster["members"].append(record)
+                placed = True
+                break
+
+        if not placed:
+            clusters.append(
+                {
+                    "category_wire": record["category_wire"],
+                    "lat": record["lat"],
+                    "lon": record["lon"],
+                    "status_mapped": record["status_mapped"],
+                    "members": [record],
+                }
+            )
+
+    for cluster in clusters:
+        cluster["report_count"] = len(cluster["members"])
+
+    return clusters
+
+
+# --- GeoJSON construction ---------------------------------------------------
+
+def build_geojson(clusters: list) -> dict:
+    features = []
+
+    for cluster in clusters:
+        category_wire = cluster["category_wire"]
+        most_recent = cluster["members"][0]
+
+        contributors = [
+            {
+                "callsign": m["callsign"],
+                "received_time": m.get("received_time"),
+                "status_mapped": m["status_mapped"],
+                "location": m.get("location", ""),
+            }
+            for m in cluster["members"]
+        ]
+
+        category_labels = SPECIFIER_LABELS.get(category_wire, {})
+        specifier_raw = most_recent.get("specifier")
+        specifier_mapped = category_labels.get(specifier_raw, specifier_raw or "")
+
+        object_name_mapped = CATEGORY_MAP.get(category_wire, "KCGR-UNKNOWN-unknown")
+        name_text = f"{object_name_mapped} — {most_recent.get('location', '')}"
+        description_text = (
+            f"{cluster['status_mapped']} | {specifier_mapped} | "
+            f"Reported: {most_recent.get('timestamp_field', '?')} | "
+            f"By: {most_recent.get('callsign', '?')}"
+        )
+
+        feature = {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [cluster["lon"], cluster["lat"]],
+            },
+            "properties": {
+                "ObjectName": object_name_mapped,
+                "Status": cluster["status_mapped"],
+                "Specifier": specifier_mapped,
+                "DateTime": most_recent.get("timestamp_field", ""),
+                "ReportedBy": most_recent.get("callsign", ""),
+                "ReportCount": cluster["report_count"],
+                "Location": most_recent.get("location", ""),
+                "Comment": most_recent.get("raw_comment", ""),
+                "name": name_text,
+                "description": description_text,
+                "Contributors": contributors,
+            },
+        }
+        features.append(feature)
+
+    return {
+        "type": "FeatureCollection",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "features": features,
+    }
+
+
+# --- Write + backup + push --------------------------------------------------
+
+def write_geojson_file(geojson: dict) -> None:
+    with open(GEOJSON_PATH, "w") as f:
+        json.dump(geojson, f, indent=2)
+    print(f"[geojson_writer] Wrote {len(geojson['features'])} feature(s) to {GEOJSON_PATH}")
+
+
+def backup_records_file() -> None:
+    BACKUP_PATH.parent.mkdir(parents=True, exist_ok=True)
+    records = load_records()
+    with open(BACKUP_PATH, "w") as f:
+        json.dump(records, f, indent=2)
+    print(f"[geojson_writer] Backed up records store to {BACKUP_PATH}")
 
 
 def git_commit_and_push(message: str) -> None:
     try:
-        subprocess.run(["git", "add", str(GEOJSON_PATH)], cwd=REPO_DIR, check=True)
+        subprocess.run(
+            ["git", "add", str(GEOJSON_PATH), str(BACKUP_PATH)],
+            cwd=REPO_DIR, check=True,
+        )
         result = subprocess.run(
             ["git", "commit", "-m", message],
             cwd=REPO_DIR, capture_output=True, text=True,
         )
         if "nothing to commit" in result.stdout:
-            print("[merge] No changes to the public map this run.")
+            print("[geojson_writer] No changes to commit.")
             return
-        subprocess.run(["git", "push", "origin", "main"], cwd=REPO_DIR, check=True)
-        print("[merge] Pushed updated public map to GitHub.")
+        subprocess.run(
+            ["git", "push", "origin", "main"],
+            cwd=REPO_DIR, check=True,
+        )
+        print("[geojson_writer] Pushed to GitHub.")
     except subprocess.CalledProcessError as e:
-        print(f"[merge] Git operation failed: {e}")
+        print(f"[geojson_writer] Git operation failed: {e}")
         raise
 
 
+# --- Full pipeline step ------------------------------------------------------
+
 def run() -> None:
-    all_records = merge_all_records()
-    clusters = cluster_records(all_records)
+    records = list(load_records().values())
+    clusters = cluster_records(records)
     geojson = build_geojson(clusters)
-    write_geojson_file(geojson, GEOJSON_PATH)
-    git_commit_and_push("Merge step: update public map (APRS + Winlink)")
+
+    write_geojson_file(geojson)
+    backup_records_file()
+    git_commit_and_push("Update KCGR resource feed")
 
 
 if __name__ == "__main__":
