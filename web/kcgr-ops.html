@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KCGR Operator Reference -- Kershaw County Ground Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Source+Sans+3:wght@400;600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Source+Sans+3:wght@400;600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet"></noscript>
+<style>
+  :root {
+    --white:          #ffffff;
+    --off-white:      #f7f8fa;
+    --rule:           rgba(255,255,255,0.10);
+    --text-primary:   #f4f6fb;
+    --text-secondary: #dce2f0;
+    --text-muted:     #8fa0c0;
+    --cyan:           #00bcd4;
+    --cyan-dark:      #0097a7;
+    --cyan-light:     #e0f7fa;
+    --amber:          #f59e0b;
+    --green:          #16a34a;
+    --red:            #dc2626;
+    --navy:           #1a2744;
+    --navy-mid:       #243254;
+    --navy-light:     #2e3f6a;
+    --navy-card:      #1f2e50;
+    --border-r:       6px;
+    --shadow-sm:      0 1px 3px rgba(0,0,0,0.30);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 18px; }
+  body { font-family: 'Source Sans 3', system-ui, sans-serif; background: var(--navy); color: var(--text-primary); line-height: 1.6; }
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { color: var(--white); text-decoration: underline; }
+  .site-header { background: var(--navy-mid); border-bottom: 3px solid var(--cyan); }
+  .header-inner { max-width: 1100px; margin: 0 auto; padding: 18px 20px 14px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .header-title-row { display: flex; align-items: center; gap: 14px; }
+  .site-title { font-family: 'Oxanium', monospace; font-size: 1.55rem; font-weight: 700; color: var(--white); letter-spacing: 0.02em; line-height: 1.15; }
+  .site-title span { color: var(--cyan); }
+  .site-subtitle { font-family: 'Source Code Pro', monospace; font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; }
+  .header-right { text-align: right; }
+  .header-right div { font-family: 'Source Code Pro', monospace; font-size: 0.78rem; letter-spacing: 0.06em; }
+  .page-banner { background: var(--navy-light); color: var(--cyan); text-align: center; padding: 8px 20px; font-family: 'Oxanium', monospace; font-size: 0.88rem; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; border-bottom: 1px solid var(--rule); }
+  .jump-nav { background: var(--navy-mid); border-bottom: 1px solid var(--rule); }
+  .jump-nav-inner { max-width: 1100px; margin: 0 auto; padding: 10px 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .jump-nav-label { font-family: 'Oxanium', monospace; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.10em; text-transform: uppercase; margin-right: 6px; white-space: nowrap; }
+  .jump-nav a { font-family: 'Source Code Pro', monospace; font-size: 0.80rem; color: var(--cyan); letter-spacing: 0.04em; padding: 4px 12px; border: 1px solid var(--rule); border-radius: 3px; white-space: nowrap; }
+  .jump-nav a:hover { color: var(--white); border-color: var(--cyan); text-decoration: none; }
+  .jump-nav a.start-link { border-color: var(--cyan); color: var(--white); background: rgba(0,188,212,0.12); }
+  .main-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px; display: flex; flex-direction: column; gap: 24px; }
+  .ops-section { border: 1px solid var(--rule); border-radius: var(--border-r); box-shadow: var(--shadow-sm); overflow: hidden; }
+  .ops-header { background: var(--navy-mid); color: var(--white); padding: 10px 16px; font-family: 'Oxanium', monospace; font-size: 0.88rem; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; border-bottom: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .ops-body { background: var(--navy-card); padding: 20px 22px; }
+  .ops-body p { font-size: 1rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 12px; }
+  .ops-body p:last-child { margin-bottom: 0; }
+  .ops-list { list-style: none; margin: 8px 0 14px 0; display: flex; flex-direction: column; gap: 6px; }
+  .ops-list li { font-size: 1rem; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+  .ops-list li::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); flex-shrink: 0; margin-top: 8px; }
+  .bw-notice { background: rgba(0,188,212,0.08); border-left: 3px solid var(--cyan); padding: 9px 14px; font-size: 0.88rem; color: var(--cyan); font-family: 'Source Code Pro', monospace; letter-spacing: 0.02em; margin-bottom: 20px; border-radius: 0 4px 4px 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .obj-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; margin-top: 14px; }
+  .obj-table th { background: var(--navy); color: var(--cyan); font-family: 'Oxanium', monospace; font-size: 0.80rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 14px; text-align: left; }
+  .obj-table td { padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.6; }
+  .obj-table tr:last-child td { border-bottom: none; }
+  .obj-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+  .obj-name { font-family: 'Source Code Pro', monospace; font-size: 0.92rem; font-weight: 600; color: var(--cyan); white-space: nowrap; }
+  .obj-meaning { color: var(--text-primary); font-weight: 600; }
+  .obj-specifiers span { display: inline-block; background: var(--navy); border: 1px solid var(--rule); border-radius: 3px; padding: 2px 7px; margin: 2px 2px 2px 0; font-family: 'Source Code Pro', monospace; font-size: 0.82rem; color: var(--cyan); }
+  .code-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  .code-table th { background: var(--navy); color: var(--cyan); font-family: 'Oxanium', monospace; font-size: 0.80rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 14px; text-align: left; }
+  .code-table td { padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.6; color: var(--text-secondary); }
+  .code-table tr:last-child td { border-bottom: none; }
+  .code-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+  .code { font-family: 'Source Code Pro', monospace; font-size: 1rem; font-weight: 600; color: var(--cyan); }
+  .format-block { background: var(--navy); border: 1px solid var(--rule); border-radius: var(--border-r); padding: 18px 22px; margin-bottom: 18px; }
+  .format-block .format-line { font-family: 'Source Code Pro', monospace; font-size: 1.20rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.08em; margin-bottom: 12px; }
+  .format-block .format-note { font-family: 'Source Code Pro', monospace; font-size: 0.88rem; color: var(--text-secondary); line-height: 2.0; }
+  .example-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .example-item { background: var(--navy); border: 1px solid var(--rule); border-radius: 4px; padding: 12px 16px; }
+  .example-raw { font-family: 'Source Code Pro', monospace; font-size: 0.90rem; font-weight: 600; color: var(--cyan); margin-bottom: 7px; }
+  .example-plain { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; }
+  .example-truncated { border-left: 3px solid var(--amber); }
+  .example-truncated .example-raw { color: var(--amber); }
+  .platform-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .platform-item { border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+  .platform-label { background: var(--navy); color: var(--cyan); font-family: 'Oxanium', monospace; font-size: 0.80rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; border-bottom: 1px solid var(--rule); }
+  .platform-body { background: var(--navy-card); padding: 12px 14px; font-size: 0.92rem; color: var(--text-secondary); line-height: 1.7; }
+  .platform-body code { font-family: 'Source Code Pro', monospace; font-size: 0.85rem; background: var(--navy); border: 1px solid var(--rule); border-radius: 3px; padding: 2px 6px; color: var(--cyan); }
+  .platform-limit { font-family: 'Source Code Pro', monospace; font-size: 0.80rem; color: var(--text-muted); margin-top: 10px; border-top: 1px solid var(--rule); padding-top: 8px; }
+  .glossary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .glossary-item { background: var(--navy); border: 1px solid var(--rule); border-radius: 4px; padding: 12px 16px; }
+  .glossary-term { font-family: 'Source Code Pro', monospace; font-size: 0.92rem; font-weight: 600; color: var(--cyan); margin-bottom: 5px; }
+  .glossary-def { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
+  .rationale-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .rationale-col { font-family: 'Source Code Pro', monospace; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.9; }
+  .rationale-col .r-head { font-family: 'Oxanium', monospace; font-size: 0.80rem; font-weight: 600; color: var(--cyan-dark); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid var(--rule); }
+  .site-footer { background: var(--navy-mid); border-top: 3px solid var(--cyan); margin-top: 20px; }
+  .footer-inner { max-width: 1100px; margin: 0 auto; padding: 16px 20px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; }
+  .footer-link { display: flex; flex-direction: column; gap: 4px; }
+  .footer-link a { font-family: 'Oxanium', monospace; font-size: 0.85rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.06em; text-transform: uppercase; }
+  .footer-link a:hover { color: var(--white); }
+  .footer-link-note { font-size: 0.80rem; color: var(--text-muted); line-height: 1.5; }
+  .footer-link.right { text-align: right; }
+  .footer-center { text-align: center; }
+  .footer-kcgr { font-family: 'Oxanium', monospace; font-size: 0.92rem; font-weight: 700; color: var(--white); letter-spacing: 0.06em; }
+  .footer-kcgr span { color: var(--cyan); }
+  .footer-version { font-family: 'Source Code Pro', monospace; font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; letter-spacing: 0.06em; }
+  .footer-callsign { font-family: 'Source Code Pro', monospace; font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; letter-spacing: 0.04em; }
+  .footer-nav { max-width: 1100px; margin: 0 auto; padding: 0.7rem 1.5rem; text-align: center; font-family: 'Source Code Pro', monospace; font-size: 0.80rem; letter-spacing: 0.06em; border-top: 1px solid var(--rule); }
+  .footer-nav a { color: var(--cyan-dark); text-decoration: none; padding: 0 0.4rem; }
+  .footer-nav a:hover { color: var(--cyan); }
+
+  /* ============================================================
+     QSL STAMP -- signature element
+     A confirmation-stamp badge borrowed from the QSL card, the
+     artifact hams use to confirm a contact was made. Used here to
+     mark the grid square in the header and to number each step in
+     the onboarding walkthrough -- "this step, confirmed."
+     ============================================================ */
+  .qsl-stamp {
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+    width: 52px; height: 52px; flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px dashed var(--cyan);
+    background: rgba(0,188,212,0.06);
+    font-family: 'Source Code Pro', monospace;
+    color: var(--cyan);
+    line-height: 1.1;
+    text-align: center;
+  }
+  .qsl-stamp .stamp-num { font-family: 'Oxanium', monospace; font-size: 1.35rem; font-weight: 700; }
+  .qsl-stamp .stamp-label { font-size: 0.50rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-top: 1px; }
+  .header-stamp { width: 46px; height: 46px; }
+  .header-stamp .stamp-num { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em; }
+  .header-stamp .stamp-label { font-size: 0.42rem; }
+
+  /* ============================================================
+     FAQ -- native details/summary, zero JavaScript
+     ============================================================ */
+  .faq-item { background: var(--navy); border: 1px solid var(--rule); border-radius: 4px; margin-bottom: 10px; overflow: hidden; }
+  .faq-item:last-child { margin-bottom: 0; }
+  .faq-item summary { cursor: pointer; padding: 13px 16px; font-family: 'Oxanium', monospace; font-weight: 600; font-size: 0.95rem; color: var(--white); list-style: none; position: relative; padding-right: 40px; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: '+'; position: absolute; right: 16px; top: 11px; color: var(--cyan); font-family: 'Source Code Pro', monospace; font-size: 1.15rem; }
+  .faq-item[open] summary::after { content: '\2212'; }
+  .faq-item summary:hover { color: var(--cyan); }
+  .faq-answer { padding: 0 16px 14px 16px; border-top: 1px solid var(--rule); margin-top: 2px; padding-top: 10px; color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; }
+  .faq-answer code { font-family: 'Source Code Pro', monospace; background: var(--navy-mid); border: 1px solid var(--rule); border-radius: 3px; padding: 1px 6px; color: var(--cyan); }
+  .faq-answer em { color: var(--text-primary); font-style: normal; font-weight: 600; }
+
+  @media (max-width: 768px) {
+    .two-col, .example-grid, .platform-grid, .rationale-cols, .glossary-grid, .path-grid { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr; text-align: center; }
+    .footer-link.right { text-align: center; }
+    .step-block { flex-direction: column; }
+    .header-inner { flex-direction: column; align-items: flex-start; }
+    .header-right { text-align: left; }
+  }
+  @media print {
+    body { background: white; color: black; }
+    .site-header, .page-banner, .site-footer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .ops-section { break-inside: avoid; }
+    .bw-notice { display: none; }
+  }
+</style>
+</head>
+<body>
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-title-row">
+      <div class="qsl-stamp header-stamp">
+        <div class="stamp-num">EM94</div>
+        <div class="stamp-label">Camden SC</div>
+      </div>
+      <div>
+        <div class="site-title">Kershaw County <span>Ground Report</span><br>Resource Status</div>
+        <div class="site-subtitle">Operator Reference -- Camden, South Carolina -- EM94</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div style="color:var(--text-muted);">A KC4RC / Kershaw County ARES Project</div>
+      <div style="color:var(--cyan); margin-top:3px;">AA4TE -- Hub Operator</div>
+    </div>
+  </div>
+</header>
+<div class="page-banner">&#9656; Operator Field Reference &nbsp;&middot;&nbsp; KCGR-RS v1.6 &nbsp;&middot;&nbsp; Text-only -- loads on degraded connections</div>
+<nav class="jump-nav">
+  <div class="jump-nav-inner">
+    <span class="jump-nav-label">Jump to:</span>
+    <a href="kcgr-start.html" class="start-link">&#129172; Quick Start</a>
+    <a href="#">&#129175; KCGR Operator Reference</a>
+    <a href="#about">About</a>
+    <a href="#objects">Ten Objects</a>
+    <a href="#format">Comment Format</a>
+    <a href="#status">Status Codes</a>
+    <a href="#examples">Examples</a>
+    <a href="#platforms">Platforms</a>
+    <a href="#faq">FAQ</a>
+    <a href="#glossary">Glossary</a>
+    <a href="#rationale">Rationale</a>
+    <a href="kcgr.html">&#129172; KCGR HUB</a>
+
+  </div>
+</nav>
+<main class="main-wrap">
+<div class="bw-notice">&#9658; This page contains text only. No maps, no embeds, no external data. Designed to load during an active event on the slowest connection available.</div>
+
+<!-- QUICK START BANNER -->
+<div class="ops-section" style="border-color:var(--cyan);">
+  <div class="ops-body" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 22px;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <span class="qsl-stamp" style="width:44px;height:44px;"><span class="stamp-num" style="font-size:0.62rem;">DE<br>AA4TE</span></span>
+      <div>
+        <div style="font-family:'Oxanium',monospace;font-weight:700;color:var(--white);font-size:1rem;">New to KCGR-RS?</div>
+        <div style="color:var(--text-secondary);font-size:0.92rem;">The Quick Start page walks you through filing your first report in five steps.</div>
+      </div>
+    </div>
+    <a href="kcgr-start.html" style="font-family:'Oxanium',monospace;font-weight:600;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;background:var(--cyan);color:var(--navy);padding:9px 18px;border-radius:4px;white-space:nowrap;">Quick Start &#8594;</a>
+  </div>
+</div>
+
+<!-- SECTION 1 -->
+<div class="ops-section" id="about">
+  <div class="ops-header">About This Page</div>
+  <div class="ops-body">
+    <div class="two-col">
+      <div>
+        <p>This page is the field reference for the Kershaw County Ground Report -- Resource Status hub. <br>It defines:</p>
+        <ul class="ops-list">
+          <li>Standard object names for all ten resource categories</li>
+          <li>Comment field format for APRS transmissions</li>
+          <li>Two-letter status and specifier codes</li>
+          <li>How the format applies across all intake modes</li>
+        </ul>
+        <p>Intake modes covered:</p>
+        <ul class="ops-list">
+          <li>APRS object beacons</li>
+          <li>Winlink form submissions</li>
+          <li>Meshtastic messages</li>
+        </ul>
+      </div>
+      <div>
+<p>All operators contributing to KCGR are expected to use these standards. <b>Consistent formatting</b> allows hub operators to cross-reference reports across radio modes and post accurate, timestamped information to the resource map without ambiguity.</p>
+<p>This reference is also available as a PDF suitable for printing and storing in your go-box. Distribute the PDF to your club and mutual aid partners well before hurricane season -- lead time is one of the advantages we have over earthquake response. <a href="docs/kcgr-quickref-1.pdf">Download the quick reference (PDF)</a>.</p>
+<p>Setting up Winlink for KCGR-RS? <a href="docs/kcgr-winlink-forms.zip">Download the Winlink forms (ZIP)</a> -- the entry form, display form, message template, and legacy stylesheet, ready to drop into Pat's <code>Standard_Forms</code> folder or Winlink Express's <code>Global Folders\Templates</code> directory. See the README for exact install paths.</p>
+<p>See also the <a href="kcgr.html">live resource hub</a> or the <a href="#faq">FAQ</a> below.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: Ten Objects -->
+<div class="ops-section" id="objects">
+  <div class="ops-header">The Ten Standard APRS Objects</div>
+  <div class="ops-body">
+    <div class="two-col" style="margin-bottom:14px;">
+      <div>
+        <p>APRS object names are fixed at 9 characters, padded with spaces if shorter. All KCGR objects use the <code style="font-family:'Source Code Pro',monospace;background:var(--navy);border:1px solid var(--rule);border-radius:3px;padding:1px 6px;color:var(--cyan);">KCGR-</code> prefix.</p>
+        <p>Object names are self-describing by design. Any operator seeing one for the first time on their display understands it without a reference card -- unlike numbered code systems that require a lookup table.</p>
+      </div>
+      <div>
+        <p>Objects are listed in life-safety priority order:</p>
+        <ul class="ops-list">
+          <li>Shelter and medical first -- immediate survival</li>
+          <li>Roads third -- determines if shelter and medical are reachable</li>
+          <li>Water and food -- short survival window</li>
+          <li>Fuel, power, cell, ATM in descending urgency</li>
+          <li>Health and welfare relay last -- important but not immediate survival</li>
+        </ul>
+        <p>File the most critical observations first if time or conditions are limited.</p>
+      </div>
+    </div>
+    <table class="obj-table">
+      <thead><tr><th>Object Name</th><th>Meaning</th><th>Specifier Codes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="obj-name">KCGR-SHLT</span></td><td><span class="obj-meaning">Emergency shelter</span></td><td class="obj-specifiers"><span>CA</span> capacity available <span>NP</span> no pets <span>PP</span> pets ok <span>MO</span> medical only</td></tr>
+        <tr><td><span class="obj-name">KCGR-MED</span></td><td><span class="obj-meaning">Medical facility</span></td><td class="obj-specifiers"><span>ER</span> emergency room <span>UC</span> urgent care <span>PH</span> pharmacy <span>OP</span> open <span>CL</span> closed</td></tr>
+        <tr><td><span class="obj-name">KCGR-ROAD</span></td><td><span class="obj-meaning">Road / bridge status</span></td><td class="obj-specifiers"><span>OP</span> passable <span>CL</span> closed <span>CA</span> caution <span>BR</span> bridge <span>FL</span> flooding <span>TR</span> trees/debris</td></tr>
+        <tr><td><span class="obj-name">KCGR-H2O</span></td><td><span class="obj-meaning">Potable water</span></td><td class="obj-specifiers"><span>DP</span> distribution point <span>BO</span> boil order <span>UK</span> unknown quality</td></tr>
+        <tr><td><span class="obj-name">KCGR-FOOD</span></td><td><span class="obj-meaning">Food / restaurant / grocery</span></td><td class="obj-specifiers"><span>HF</span> hot food <span>GR</span> grocery <span>BT</span> both</td></tr>
+        <tr><td><span class="obj-name">KCGR-FUEL</span></td><td><span class="obj-meaning">Fuel availability</span></td><td class="obj-specifiers"><span>GS</span> gasoline <span>DS</span> diesel <span>PP</span> propane <span>GD</span> gasoline + diesel <span>AL</span> all three</td></tr>
+        <tr><td><span class="obj-name">KCGR-PWR</span></td><td><span class="obj-meaning">Power / charging / generator</span></td><td class="obj-specifiers"><span>GN</span> generator <span>CH</span> device charging <span>UT</span> utility restored</td></tr>
+        <tr><td><span class="obj-name">KCGR-CELL</span></td><td><span class="obj-meaning">Cell signal location</span></td><td class="obj-specifiers"><span>AT</span> AT&amp;T <span>VZ</span> Verizon <span>TM</span> T-Mobile <span>AL</span> all carriers</td></tr>
+        <tr><td><span class="obj-name">KCGR-ATM</span></td><td><span class="obj-meaning">ATM / financial access</span></td><td class="obj-specifiers"><span>OP</span> operational <span>CL</span> closed <span>LM</span> cash limited</td></tr>
+        <tr><td><span class="obj-name">KCGR-HW</span></td><td><span class="obj-meaning">Health &amp; welfare relay</span></td><td class="obj-specifiers"><span>OP</span> relay available <span>HR</span> hours follow <span>NM</span> no message limit</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:14px;font-size:0.85rem;color:var(--text-muted);">If your observation does not fit cleanly into one of the ten object types, file it in the closest category and clarify in the comment field. When in doubt, KCGR-SHLT or KCGR-FOOD cover the widest range of general welfare reports.</p>
+  </div>
+</div>
+
+
+
+<!-- SECTION 3: Status Codes -->
+<div class="ops-section" id="status">
+  <div class="ops-header">Status Codes -- ST Field</div>
+  <div class="ops-body">
+    <p style="margin-bottom:14px;">THIS CODE FOLLOWS the OBJECT NAME.<br>On the public resource map, each status renders as a marker colour.<br>See the <a href="#faq">FAQ</a> for the reasoning behind the colour choices.</p>
+    <table class="code-table">
+      <thead><tr><th style="width:50px;">Colour</th><th style="width:80px;">Code</th><th style="width:170px;">Meaning</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:#16a34a;border:1px solid rgba(255,255,255,0.2);"></span></td><td><span class="code">OP</span></td><td style="color:var(--text-primary);font-weight:600;">Open / operational</td><td>Resource is available and functioning at time of observation. Green -- go.</td></tr>
+        <tr><td><span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:#dc2626;border:1px solid rgba(255,255,255,0.2);"></span></td><td><span class="code">CL</span></td><td style="color:var(--text-primary);font-weight:600;">Closed</td><td>Resource is not available. Red -- stop, do not proceed. File a follow-up if status changes.</td></tr>
+        <tr><td><span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:#eab308;border:1px solid rgba(255,255,255,0.2);"></span></td><td><span class="code">LM</span></td><td style="color:var(--text-primary);font-weight:600;">Limited</td><td>Available but restricted -- hours, supply, or capacity. Yellow -- proceed, expect a constraint. Clarify in comment field.</td></tr>
+        <tr><td><span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:#6b7280;border:1px solid rgba(255,255,255,0.2);"></span></td><td><span class="code">UK</span></td><td style="color:var(--text-primary);font-weight:600;">Unknown</td><td>Not verified by direct observation. Grey -- deliberately neutral, no judgment implied. Use sparingly -- report what you know.</td></tr>
+        <tr><td><span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:#f59e0b;border:1px solid rgba(255,255,255,0.2);"></span></td><td><span class="code">CA</span></td><td style="color:var(--text-primary);font-weight:600;">Caution</td><td>Accessible but hazardous or unreliable. Amber -- proceed with caution, mostly used for roads. Clarify in comment field.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- SECTION 4: Comment Format -->
+<div class="ops-section" id="format">
+  <div class="ops-header">Comment Field Format -- 43 Characters</div>
+  <div class="ops-body">
+    <div class="format-block">
+      <div class="format-line">ST &nbsp;&nbsp; SPEC &nbsp;&nbsp; LOCATION &nbsp;&nbsp; DDHHMM</div>
+      <div class="format-note">
+        ST &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2-character status code -- always first<br>
+        SPEC &nbsp;&nbsp;&nbsp;&nbsp; 2-character specifier -- object-specific category detail<br>
+        LOCATION &nbsp; abbreviated place name or road designation<br>
+        DDHHMM &nbsp;&nbsp; local time: day / hour / minute -- always last
+      </div>
+    </div>
+    <div class="two-col">
+      <div>
+        <p>Fields are ordered most-critical to least-critical. A message that gets cut short loses its timestamp before it loses its location or status. Status and location survive even the worst signal conditions.</p>
+        <ul class="ops-list">
+          <li>Use a single space between fields</li>
+          <li>Run words together when character count demands it -- drop the space, not the data</li>
+          <li>DDHHMM is always last so any cutoff loses time before meaning</li>
+          <li>Local time -- no UTC conversion required from field operators</li>
+        </ul>
+      </div>
+      <div>
+        <p>If a message is received without a timestamp, the hub operator notes it as time-unconfirmed and watches for a follow-up. All of the following are acceptable:</p>
+        <ul class="ops-list">
+          <li>Full DDHHMM -- day, hour, and minute</li>
+          <li>DDHH -- day and hour only</li>
+          <li>DD -- day only</li>
+          <li>No time field at all</li>
+        </ul>
+        <p>A message missing its status code hinders the automatic reporting structure. Always lead with ST (changes marker color) and SPEC after the OBJECT NAME.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SECTION 5: Worked Examples -->
+<div class="ops-section" id="examples">
+  <div class="ops-header">Worked Examples</div>
+  <div class="ops-body">
+    <p style="margin-bottom:14px;">Each card shows the raw comment string as it would appear on an APRS display, followed by its plain English meaning.</p>
+    <div class="example-grid">
+      <div class="example-item">
+        <div class="example-raw">OP PP LUGOFF MIDDLE SCH 262145</div>
+        <div class="example-plain">Shelter open, pets allowed -- Lugoff Middle School -- observed June 26 at 9:45 PM local</div>
+      </div>
+      <div class="example-item">
+        <div class="example-raw">CL TR US601 N OF WATEREE 262200</div>
+        <div class="example-plain">Road closed, trees down -- US 601 north of Wateree River -- observed June 26 at 10:00 PM local. Chain saw needed.</div>
+      </div>
+      <div class="example-item">
+        <div class="example-raw">OP GS CAMDEN SUNOCO DEKALB 262130</div>
+        <div class="example-plain">Fuel available, gasoline -- Sunoco on DeKalb St Camden -- observed June 26 at 9:30 PM local</div>
+      </div>
+      <div class="example-item">
+        <div class="example-raw">LM ER KMC DIVERT TRAUMA 262115</div>
+        <div class="example-plain">Medical limited -- KMC emergency room diverting trauma cases -- observed June 26 at 9:15 PM local</div>
+      </div>
+      <div class="example-item">
+        <div class="example-raw">OP DP CAMDEN CITY HALL 262000</div>
+        <div class="example-plain">Potable water distribution point -- Camden City Hall -- observed June 26 at 8:00 PM local</div>
+      </div>
+      <div class="example-item">
+        <div class="example-raw">OP CH CAMDEN LIBRARY 262030</div>
+        <div class="example-plain">Device charging available -- Camden Library -- observed June 26 at 8:30 PM local</div>
+      </div>
+    </div>
+    <p style="margin:14px 0 10px 0;">Amber cards show incomplete messages -- cut short before the timestamp, but location and status are intact and still actionable.</p>
+    <div class="example-grid">
+      <div class="example-item example-truncated">
+        <div class="example-raw">CL FL SC34 AT LYNCH CREEK 26</div>
+        <div class="example-plain">Incomplete -- road closed, flooding on SC 34 at Lynch Creek -- day 26, time not received. Location and status intact. Still actionable.</div>
+      </div>
+      <div class="example-item example-truncated">
+        <div class="example-raw">OP AL CAMDEN WALMART</div>
+        <div class="example-plain">Incomplete -- cell signal all carriers at Camden Walmart -- no timestamp received. Location and status intact. Still actionable.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6: Platform Notes -->
+<div class="ops-section" id="platforms">
+  <div class="ops-header">Platform Notes -- APRS / Winlink / Meshtastic</div>
+  <div class="ops-body">
+    <p style="margin-bottom:16px;">The KCGR object prefix and ST/SPEC codes work on all three platforms. Use the compressed format on APRS where character count is strict. Expand to plain English on Winlink and Meshtastic where space allows.</p>
+    <div class="platform-grid">
+      <div class="platform-item">
+        <div class="platform-label">APRS Object Beacon</div>
+        <div class="platform-body">
+          Use the exact object name and 43-character comment format defined in this reference. No expansion is possible -- compression is mandatory.
+          <ul class="ops-list" style="margin-top:8px;">
+            <li>Prefix all objects with <code>KCGR-</code></li>
+            <li>Repeat beacon every 10-30 minutes during active reporting</li>
+            <li>Send a kill message when the condition is resolved</li>
+          </ul>
+          <div class="platform-limit">43-character comment field -- strict limit</div>
+        </div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-label">Winlink -- KCGR-RS Form</div>
+        <div class="platform-body">
+          File a <strong>KCGR Resource Status</strong> form in Winlink Express or Pat.<br>
+          TO: <code>KCGR-OPS</code> &nbsp; Subject: auto-filled as <code>KCGR-RS - [callsign] - [date]</code><br><br>
+          <strong style="color:var(--amber);">&#9888; The form's own "Send To" field is a reminder only -- it cannot set your compose window's address for you.</strong> Type or select <code>KCGR-OPS</code> in your own compose window's To: field before or right after filling out the form. A message sent without doing this will bounce.<br><br>
+          The form uses the same ten categories and ST/SPEC codes. Full plain English notes are encouraged -- no compression needed. Works via HF or VHF when internet is down.<br><br>
+          Unlike the Palmetto RR which requests inbound resources, KCGR-RS reports outbound observed conditions. File both during active events when possible.
+          <div class="platform-limit">No practical character limit</div>
+        </div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-label">Meshtastic</div>
+        <div class="platform-body">
+          Use the KCGR prefix and ST/SPEC codes for consistency, then expand to plain English for the remainder of the message.<br><br>
+          Example:<br>
+          <code>KCGR-ROAD CL TR US601 north of Fairfield Rd. Large pine blocking both lanes. Chain saw needed. Observed 262145</code><br><br>
+          Operators in mutual aid areas outside Kershaw County should use their local prefix when that system is active: <code>MGS-</code> for Midlands, <code>SCGR-</code> for statewide.
+          <div class="platform-limit">255-char limit -- ~200 recommended for reliable relay</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6.5: FAQ -->
+<div class="ops-section" id="faq">
+  <div class="ops-header">Frequently Asked Questions</div>
+  <div class="ops-body">
+
+
+    <details class="faq-item" open>
+      <summary>Does KCGR-RS modify or replace ICS-213?</summary>
+      <div class="faq-answer">
+        No. ICS-213 (General Message) is free-text and not structured for resource status reporting -- it stays exactly as-is for its intended use. KCGR-RS fills a different, previously unoccupied lane: outbound, hyperlocal community resource status. Existing forms like the Palmetto Resource Request move resources <em>inbound</em> to a county; KCGR-RS reports observed conditions <em>outward</em> to the public. The two are complementary, not competing -- operators should file both during active events.
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Who's behind these reports, and what stops bad information from getting on the map?</summary>
+      <div class="faq-answer">
+        Every report comes from someone with job- or volunteer-specific training relevant to what they're reporting: government agencies (SCDOT, utility outage systems), local Emergency Management and EOC staff, county law enforcement, the National Weather Service through its Skywarn spotter program, and licensed amateur radio operators, who are FCC-examined and individually traceable by callsign. Each of those carries its own established form of accountability -- a badge, a license, a duty station -- that a report has already passed through before it ever reaches this map.
+        <br><br>
+        This is the same trust model USGS uses for its Did You Feel It? earthquake reporting system: USGS formally partnered with Winlink and ARES in 2020 specifically because licensed-operator data holds up. If a federal earthquake damage map trusts this network, a county-level resource hub built on the same operators and the same infrastructure is starting from validated ground.
+        <br><br>
+        The hub operator additionally holds NWS Skywarn spotter and net control credentials, adding a second layer of vetted-observer standing beyond the amateur radio license itself. Every posted report has also passed through the hub operator before it reaches the map -- there is no visual "trust tier" shown to the public, because if it's posted, it's vetted. What differs is how much corroboration a report needs <em>before</em> that happens:
+        <br><br>
+        <strong style="color:var(--white);">Auto-vetted, posted on receipt:</strong> Winlink and APRS reports from a licensed amateur callsign; NWS Columbia Skywarn Slack; direct government data feeds such as SCDOT and poweroutage.us.
+        <br><br>
+        <strong style="color:var(--amber);">Requires second-witness confirmation first:</strong> Meshtastic, GMRS, and other non-amateur-radio channels; unsolicited Tier 3 web/phone submissions. These channels don't carry amateur radio's identity/licensing guarantee, so an independent second report substitutes for it.
+        <br><br>
+        When in doubt, the hub operator holds the report and seeks a second source rather than post on a single unverified account. A late-but-correct map beats a fast-but-wrong one.
+        <br><br>
+        This map reflects the best information available at the time each report was filed -- not a live feed, and not a guarantee. Always check the timestamp before treating a report as current; conditions on the ground can change faster than a report gets updated.
+        <br><br>
+        This map is not a substitute for 911 or official emergency alerts. If you're in immediate danger, always call 911 first.
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Why do markers use red, yellow, and green -- plus amber and grey?</summary>
+      <div class="faq-answer">
+        Colour on the map encodes <em>status</em> -- can I use this right now -- not resource category. That's the red/yellow/green convention every driver already knows from traffic signals and fuel gauges, so there's zero learning curve under stress: green means open, red means closed, yellow means limited, amber means proceed with caution, and grey means unverified. Resource category (shelter, fuel, water, and so on) is instead shown by icon, keeping the two dimensions independent rather than fighting over the same visual channel.
+        <br><br>
+        Green and red are also kept at different brightness levels rather than pure hue alone, since roughly 1 in 12 men have red-green colour blindness. The object icon on each marker gives a second, colour-independent way to read what's being shown.
+      </div>
+    </details>
+
+
+    <details class="faq-item">
+      <summary>What forms should operators file during an active event?</summary>
+      <div class="faq-answer">
+        File a KCGR-RS Resource Status form for observed community conditions (shelter, fuel, water, roads, etc.) <strong style="color:var(--white);">and</strong> a Field Situation Report to SC ARES/SCEMD for infrastructure status (power, water, cell, internet). The two forms don't duplicate each other by design -- KCGR-RS deliberately does not include FSR's infrastructure fields. Every KCGR submission includes a footer reminder to also file an FSR.<br>
+        To file a 43-character message via APRS, use the information above or quickly find step-by-step instructions at the <a href="kcgr-start.html"><em>KCGR Quick Start</em></a> page.
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Why are codes used instead of plain English in APRS comments?</summary>
+      <div class="faq-answer">
+        APRS object beacons have a hard 43-character comment field limit. There's no room for plain English and still fit status, specifier, location, and timestamp. The codes are deliberately self-describing (<code>KCGR-FUEL</code>, <code>OP</code>, <code>GS</code>) rather than numbered -- an operator seeing one for the first time can understand it without a lookup table, unlike systems such as NTS ARL radiograms with 90+ numbered codes to memorize. On Winlink and Meshtastic, where space allows, operators are encouraged to expand into full plain English alongside the codes.
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Who sees the codes vs. who sees the map?</summary>
+      <div class="faq-answer">
+        Operators work in codes on the radio side -- that's what fits the character limits and keeps transmissions fast under pressure. The public never sees raw codes. The hub operator translates every report into plain English before it's posted to the public resource map, so a viewer just sees "Camden Armory -- Shelter open, pets permitted" rather than any code string.
+        <br><br>
+        A public-facing resource map, embedded weather information, and power outage (US) maps can be found at: <a href="https://qsl.net/kc4rc/kcgr.html" target="_blank"><em>KCGR-Resource Status Hub</em></a>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>What is Grist, and why not just use Google Sheets or Microsoft Excel?</summary>
+      <div class="faq-answer">
+        Grist is an open-source spreadsheet/database hybrid used to hold KCGR resource reports and feed them to the live map. It was chosen over Google Sheets or Microsoft Excel for one main reason: both are free and familiar, but both come from companies whose business model depends on data harvesting. KCGR data -- shelter locations, fuel status, road conditions during a disaster -- shouldn't sit inside that model, especially for a project built around helping people during vulnerable moments: displaced from home, without power, seeking shelter.
+        <br><br>
+        Grist has no advertising model, and its free hosted tier remains free unless an organization exceeds $1M in total annual funding -- a threshold KCGR will never approach. Beginning August 31, 2026, getgrist.com expands from 3 team members to 10 on their free tier. CryptPad and Zoho Sheet were evaluated as privacy-respecting backup options, in case Grist's free tier ever stopped fitting.
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is this project open source and available to any Amateur Radio organization, EmComm, EOC, or ARES?</summary>
+      <div class="faq-answer">
+        <em>>YES</em>, check out the README.md and Full-KCGR-Manual.md as well as winlink forms, python scripts at https://github.com/taco40sauce/kcgr-resource-feed. Contact AA4TE using qrz.com. 
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Why does this project exist?</summary>
+      <div class="faq-answer">
+       During Hurricane Helene, ham-collected situational reports mostly went to agencies and disappeared from public view. This project's goal: have a pipeline in place before the next major hurricane, so ground reports are visible to formal agencies and the public at the same time — no gatekeeper, no single point of failure. 
+      </div>
+    </details>
+
+  </div>
+</div>
+
+<!-- SECTION 7: Glossary -->
+<div class="ops-section" id="glossary">
+  <div class="ops-header">Glossary -- Technical Terms</div>
+  <div class="ops-body">
+    <p style="margin-bottom:14px;">Plain English definitions for terms used in this reference that may not be familiar to all operators.</p>
+    <div class="glossary-grid">
+      <div class="glossary-item">
+        <div class="glossary-term">Object beacon</div>
+        <div class="glossary-def">A named marker transmitted over APRS that appears as a labeled point on APRS maps and displays. Unlike a position report, an object can represent any location -- not just the transmitting station.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Comment field</div>
+        <div class="glossary-def">The free-text area attached to an APRS transmission, limited to 43 characters for object beacons. This is where the ST/SPEC/LOCATION/DDHHMM data goes.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Specifier</div>
+        <div class="glossary-def">A two-letter code in the SPEC field that describes the specific type within a category. For example, GS (gasoline), DS (diesel), and PP (propane) are all specifiers for KCGR-FUEL.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Incomplete message</div>
+        <div class="glossary-def">A message cut short before all fields were received, most commonly losing the timestamp. The KCGR format is designed so the most important fields survive even when the end of a message is lost.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Mesh network</div>
+        <div class="glossary-def">Meshtastic's system where each radio automatically relays messages from other radios, extending range without a central repeater. The more radios in the area, the better the coverage.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Gateway</div>
+        <div class="glossary-def">A Winlink station that connects radio traffic to the internet, allowing messages filed via HF or VHF radio to reach email addresses and Winlink inboxes worldwide.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Propagation</div>
+        <div class="glossary-def">How far a radio signal travels. On Meshtastic, good propagation means a message reaches more relay nodes. On HF Winlink, propagation conditions affect which gateway stations are reachable.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Kill message</div>
+        <div class="glossary-def">An APRS transmission that removes a previously beaconed object from displays, indicating the condition no longer exists. Always send a kill message when a road reopens, a shelter closes, or fuel runs out.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 8: Rationale -->
+<div class="ops-section" id="rationale">
+  <div class="ops-header">Format Rationale -- For Future Administrators</div>
+  <div class="ops-body">
+    <div class="rationale-cols">
+      <div class="rationale-col">
+        <div class="r-head">Design Constraints</div>
+        The KCGR comment field format<br>
+        was designed under three constraints:<br>
+        <br>
+        1. APRS object comment field<br>
+        &nbsp;&nbsp; limit of 43 characters<br>
+        2. No numbered codes requiring<br>
+        &nbsp;&nbsp; a lookup table under stress<br>
+        3. Graceful handling of messages<br>
+        &nbsp;&nbsp; cut short by poor conditions<br>
+        <br>
+        All design decisions flow from<br>
+        constraint 1. The NTS ARL numbered<br>
+        radiogram system (90+ codes) was<br>
+        considered and rejected. ARL codes<br>
+        require memorization or lookup.<br>
+        KCGR-ROAD and KCGR-FUEL are<br>
+        self-describing to any operator<br>
+        seeing them for the first time.<br>
+        <br>
+        Field order (ST SPEC LOCATION<br>
+        DDHHMM) places most-critical data<br>
+        first. DDHHMM is always last so<br>
+        a cut message loses time before<br>
+        it loses location or status.<br>
+        Status and location survive even<br>
+        the worst signal conditions.<br>
+        ObjectName/ST/SPEC/Location/Date<br>
+        was chosen due to available 47 APRS<br>
+        message limitations.
+      </div>
+      <div class="rationale-col">
+        <div class="r-head">Object List Decisions</div>
+        Ten object names were fixed<br>
+        deliberately. A general or<br>
+        miscellaneous object was proposed<br>
+        and rejected -- operators filing<br>
+        to the nearest category produces<br>
+        more consistent, mappable data<br>
+        than an undefined catchall.<br>
+        <br>
+        If an observation truly fits no<br>
+        category, KCGR-SHLT or KCGR-FOOD<br>
+        are the broadest containers.<br>
+        <br>
+        A light/dark display toggle was<br>
+        proposed for this page and deferred.<br>
+        Adding theme switching requires<br>
+        JavaScript and additional CSS,<br>
+        increasing page weight. This page<br>
+        is explicitly designed to load<br>
+        under degraded conditions. Dark<br>
+        theme was chosen permanently for<br>
+        readability in field conditions<br>
+        and nighttime use. The FAQ<br>
+        accordion above uses native<br>
+        HTML details/summary elements<br>
+        for the same reason -- zero<br>
+        JavaScript, zero added weight.<br>
+        <br>
+        KCGR-ROAD TR (trees/debris) was<br>
+        added specifically because chain<br>
+        saw operators self-deploying to<br>
+        clear roads is documented community<br>
+        behavior during Helene recovery.
+      </div>
+      <div class="rationale-col">
+        <div class="r-head">Geographic Expansion</div>
+        Prefix ladder for expansion:<br>
+        <br>
+        KCGR- &nbsp; Kershaw County (5 chars)<br>
+        MGS- &nbsp;&nbsp; Midlands (4 chars)<br>
+        SCGR- &nbsp; South Carolina (5 chars)<br>
+        <br>
+        MGS- gains one character in the<br>
+        object name field. SCGR- matches<br>
+        KCGR- exactly, so object names<br>
+        port to the state level without<br>
+        restructuring.<br>
+        <br>
+        The prefix is the only redundant<br>
+        element at Midlands and state level.<br>
+        Field order and specifier codes<br>
+        are load-bearing. Proposed changes<br>
+        should shorten or replace the<br>
+        prefix before modifying field<br>
+        order or eliminating codes.<br>
+        <br>
+        Developed June 2026 by AA4TE,<br>
+        Camden SC, EM94. KC4RC / Kershaw<br>
+        County ARES. Not a final standard<br>
+        -- for review by Kershaw County<br>
+        ARES EC, Midlands Section 3,<br>
+        and SC ARES.
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-link">
+      <a href="kcgr.html">&#8592; Back to KCGR Hub</a>
+      <div class="footer-link-note">Live resource map, weather,<br>and power outage panel.</div>
+    </div>
+    <div class="footer-center">
+      <div class="footer-kcgr">Kershaw County <span>Ground Report</span><br>Resource Status</div>
+      <div class="footer-version">KCGR-RS v1.6 &nbsp;&middot;&nbsp; <a href="https://qsl.net/kc4rc/">KC4RC.com</a> / Kershaw County ARES</div>
+      <div class="footer-callsign">Hub Operator: AA4TE &nbsp;&middot;&nbsp; Camden SC &nbsp;&middot;&nbsp; EM94</div>
+    </div>
+    <div class="footer-link right">
+      <div class="footer-link-note" style="color:var(--text-muted);"><a href="docs/kcgr-quickref-1.pdf">Print-ready quick reference (PDF)</a><br>Store in go-box.</div>
+    </div>
+  </div>
+  <div class="footer-nav">
+    <a href="https://aprs.fi/#!call=a%2FAA4TE" target="_blank" rel="noopener">APRS.fi</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://winlink.org" target="_blank" rel="noopener">Winlink</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://poweroutage.us" target="_blank" rel="noopener">PowerOutage.us</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://www.511sc.org" target="_blank" rel="noopener">SC 511</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://www.weather.gov/cae/" target="_blank" rel="noopener">NWS Columbia</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://www.scemd.org" target="_blank" rel="noopener">SCEMD</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://www.kershaw.sc.gov" target="_blank" rel="noopener">Kershaw County</a>
+  </div>
+</footer>
+</body>
+</html>

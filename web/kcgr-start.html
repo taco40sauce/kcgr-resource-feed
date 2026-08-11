@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KCGR Quick Start -- File Your First Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Source+Sans+3:wght@400;600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white:          #ffffff;
+    --rule:           rgba(255,255,255,0.10);
+    --text-primary:   #f4f6fb;
+    --text-secondary: #dce2f0;
+    --text-muted:     #8fa0c0;
+    --cyan:           #00bcd4;
+    --cyan-dark:      #0097a7;
+    --amber:          #f59e0b;
+    --navy:           #1a2744;
+    --navy-mid:       #243254;
+    --navy-light:     #2e3f6a;
+    --navy-card:      #1f2e50;
+    --border-r:       6px;
+    --shadow-sm:      0 1px 3px rgba(0,0,0,0.30);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 18px; }
+  body { font-family: 'Source Sans 3', system-ui, sans-serif; background: var(--navy); color: var(--text-primary); line-height: 1.6; }
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { color: var(--white); text-decoration: underline; }
+
+  .site-header { background: var(--navy-mid); border-bottom: 3px solid var(--cyan); }
+  .header-inner { max-width: 760px; margin: 0 auto; padding: 18px 20px 14px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .site-title { font-family: 'Oxanium', monospace; font-size: 1.4rem; font-weight: 700; color: var(--white); letter-spacing: 0.02em; line-height: 1.15; }
+  .site-title span { color: var(--cyan); }
+  .site-subtitle { font-family: 'Source Code Pro', monospace; font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; }
+
+  .page-banner { background: var(--navy-light); color: var(--cyan); text-align: center; padding: 8px 20px; font-family: 'Oxanium', monospace; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid var(--rule); }
+
+  .main-wrap { max-width: 760px; margin: 0 auto; padding: 24px 20px 40px; }
+
+  .qsl-stamp {
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+    width: 52px; height: 52px; flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px dashed var(--cyan);
+    background: rgba(0,188,212,0.06);
+    font-family: 'Source Code Pro', monospace;
+    color: var(--cyan);
+    line-height: 1.1;
+    text-align: center;
+  }
+  .qsl-stamp .stamp-num { font-family: 'Oxanium', monospace; font-size: 1.35rem; font-weight: 700; }
+  .qsl-stamp .stamp-label { font-size: 0.50rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-top: 1px; }
+  .header-stamp { width: 44px; height: 44px; }
+  .header-stamp .stamp-num { font-size: 0.68rem; font-weight: 700; }
+  .header-stamp .stamp-label { font-size: 0.40rem; }
+
+ .obj-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; margin-top: 14px; }
+  .obj-table th { background: var(--navy); color: var(--cyan); font-family: 'Oxanium', monospace; font-size: 0.80rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 14px; text-align: left; }
+  .obj-table td { padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.6; }
+  .obj-table tr:last-child td { border-bottom: none; }
+  .obj-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+  .obj-name { font-family: 'Source Code Pro', monospace; font-size: 0.92rem; font-weight: 600; color: var(--cyan); white-space: nowrap; }
+  .obj-meaning { color: var(--text-primary); font-weight: 600; }
+  .obj-specifiers span { display: inline-block; background: var(--navy); border: 1px solid var(--rule); border-radius: 3px; padding: 2px 7px; margin: 2px 2px 2px 0; font-family: 'Source Code Pro', monospace; font-size: 0.82rem; color: var(--cyan); }
+
+
+  .intro { color: var(--text-secondary); font-size: 1rem; margin: 18px 0 22px; }
+
+  .step-block { background: var(--navy-card); border: 1px solid var(--rule); border-left: 4px solid var(--cyan); border-radius: 0 var(--border-r) var(--border-r) 0; padding: 16px 20px; margin-bottom: 14px; display: flex; gap: 16px; align-items: flex-start; box-shadow: var(--shadow-sm); }
+  .step-content { flex: 1; min-width: 0; }
+  .step-content h3 { font-family: 'Oxanium', monospace; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 8px; letter-spacing: 0.02em; }
+  .step-content p { color: var(--text-secondary); font-size: 0.98rem; line-height: 1.7; margin-bottom: 8px; }
+  .step-content p:last-child { margin-bottom: 0; }
+  .step-content code { font-family: 'Source Code Pro', monospace; background: var(--navy); border: 1px solid var(--rule); border-radius: 3px; padding: 1px 6px; color: var(--cyan); }
+
+  .note-block { background: rgba(0,188,212,0.06); border-left: 3px solid var(--cyan); padding: 10px 16px; border-radius: 0 4px 4px 0; font-size: 0.90rem; color: var(--text-secondary); margin: 10px 0 0; }
+  .note-block strong { color: var(--cyan); }
+  .warn-block { background: rgba(245,158,11,0.08); border-left: 3px solid var(--amber); padding: 10px 16px; border-radius: 0 4px 4px 0; font-size: 0.90rem; color: var(--text-secondary); margin: 10px 0 0; }
+  .warn-block strong { color: var(--amber); }
+
+  .path-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0 4px; }
+  .path-item { background: var(--navy); border: 1px solid var(--rule); border-radius: 4px; padding: 10px 14px; }
+  .path-item .path-name { font-family: 'Oxanium', monospace; font-size: 0.80rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 4px; }
+  .path-item .path-desc { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.5; }
+
+  .decision-helper { background: var(--navy); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 18px; margin: 10px 0 16px; }
+  .dh-q { margin: 6px 0; }
+  .dh-q summary { cursor: pointer; font-weight: 600; color: var(--text-primary); font-size: 0.92rem; padding: 4px 0; }
+  .dh-q summary::marker { color: var(--cyan); }
+  .dh-branch { margin: 6px 0 6px 18px; padding-left: 10px; border-left: 2px solid var(--rule); }
+  .dh-branch p { font-size: 0.88rem; color: var(--text-secondary); margin: 6px 0; }
+
+  /* Condensed reference strips -- just enough to complete the walkthrough
+     without sending someone to the full reference mid-task */
+  .mini-ref { background: var(--navy); border: 1px solid var(--rule); border-radius: 4px; padding: 12px 16px; margin-top: 10px; }
+  .mini-ref-row { display: flex; gap: 10px; padding: 4px 0; font-size: 0.88rem; color: var(--text-secondary); align-items: baseline; }
+  .mini-ref-code { font-family: 'Source Code Pro', monospace; font-weight: 600; color: var(--cyan); width: 78px; flex-shrink: 0; }
+
+  .cta-block { background: var(--navy-card); border: 1px solid var(--cyan); border-radius: var(--border-r); padding: 18px 22px; margin-top: 22px; text-align: center; }
+  .cta-block a.btn, .cta-block button.btn { display: inline-block; margin-top: 10px; font-family: 'Oxanium', monospace; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; background: var(--cyan); color: var(--navy); padding: 10px 22px; border-radius: 4px; border: none; cursor: pointer; }
+  .cta-block a.btn:hover, .cta-block button.btn:hover { color: var(--navy); opacity: 0.9; text-decoration: none; }
+  .print-btn { background: transparent !important; color: var(--cyan) !important; border: 1px solid var(--cyan) !important; }
+  @media print { .no-print { display: none !important; } }
+
+  .site-footer { background: var(--navy-mid); border-top: 3px solid var(--cyan); margin-top: 20px; }
+  .footer-inner { max-width: 760px; margin: 0 auto; padding: 16px 20px; text-align: center; font-family: 'Source Code Pro', monospace; font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.04em; }
+  .footer-inner a { color: var(--cyan-dark); }
+
+  @media (max-width: 640px) {
+    .step-block { flex-direction: column; }
+    .path-grid { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: white; color: black; }
+    .site-header, .page-banner, .site-footer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="qsl-stamp header-stamp">
+      <div class="stamp-num">EM94</div>
+      <div class="stamp-label">Camden SC</div>
+    </div>
+    <div>
+      <div class="site-title">Kershaw County <span>Ground Report</span><br>Resource Status</div>
+      <div class="site-subtitle">Quick Start -- File Your First Report</div>
+    </div>
+  </div>
+</header>
+<div class="page-banner">&#9656; KCGR-RS v1.6 &nbsp;&middot;&nbsp; Six steps &nbsp;&middot;&nbsp; No prior experience required</div>
+
+<main class="main-wrap">
+  <p class="intro">New to KCGR-RS? This page gets you from "never filed a report" to your first submission. Need the full platform detail? See the <a href="kcgr-ops.html">Full Reference</a>.</p>
+
+  <div class="step-block">
+    <div class="qsl-stamp"><div class="stamp-num">1</div><div class="stamp-label">Pick Mode</div></div>
+    <div class="step-content">
+      <h3>Step 1 &mdash; Confirm how you'll file</h3>
+      <p>Your radio setup determines your intake path. Pick whichever you have available:</p>
+
+      <div class="decision-helper">
+        <p style="color:var(--text-secondary);font-size:0.92rem;margin-bottom:6px;">Not sure yet? Answer a couple of quick questions:</p>
+        <details class="dh-q" open>
+          <summary>Do you have a ham radio ready to transmit right now?</summary>
+          <div class="dh-branch">
+            <p>No radio, but I have internet or a phone &rarr; <strong style="color:var(--cyan);">Use Web / Phone</strong></p>
+            <details class="dh-q">
+              <summary>Yes &mdash; can you reach a Winlink RMS gateway (HF or VHF packet)?</summary>
+              <div class="dh-branch">
+                <p>Yes &rarr; <strong style="color:var(--cyan);">Use Winlink</strong> (Step 5, then the "Read First" note on the Send To: field)</p>
+                <details class="dh-q">
+                  <summary>No Winlink gateway &mdash; is your radio APRS-capable (Graywolf, a TNC, or similar)?</summary>
+                  <div class="dh-branch">
+                    <p>Yes &rarr; <strong style="color:var(--cyan);">Use APRS Object Beacon</strong> (Step 5, then 5B if you're on Graywolf)</p>
+                    <details class="dh-q">
+                      <summary>No APRS &mdash; do you have a Meshtastic mesh node nearby?</summary>
+                      <div class="dh-branch">
+                        <p>Yes &rarr; <strong style="color:var(--cyan);">Use Meshtastic</strong></p>
+                        <p>No, and no internet either &rarr; hold your report and try again once you reach one of the above, or relay it verbally to an operator who can file it for you.</p>
+                      </div>
+                    </details>
+                  </div>
+                </details>
+              </div>
+            </details>
+          </div>
+        </details>
+      </div>
+
+      <div class="path-grid">
+        <div class="path-item">
+          <div class="path-name">Winlink (HF/VHF)</div>
+          <div class="path-desc">Best for full detail, no character limit. Works when internet is down.</div>
+        </div>
+        <div class="path-item">
+          <div class="path-name">APRS Object Beacon</div>
+          <div class="path-desc">Fast, compressed, 43-character comment field. Requires an APRS-capable radio.</div>
+        </div>
+        <div class="path-item">
+          <div class="path-name">Meshtastic</div>
+          <div class="path-desc">Mesh-relayed text, 255-character limit. Good where a mesh node network exists.</div>
+        </div>
+        <div class="path-item">
+          <div class="path-name">Web / Phone</div>
+          <div class="path-desc">No radio needed. Secondary channel only -- requires internet, reviewed before posting.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="qsl-stamp"><div class="stamp-num">2</div><div class="stamp-label">ID Object</div></div>
+    <div class="step-content">
+      <h3>Step 2 &mdash; Identify what you're observing</h3>
+      <p>Match your observation to the closest of the ten standard <code>OBJECT NAME</code> categories and <code>SPEC</code>- Specifier Codes. <code>ST</code> Status Codes are placed between <code>OBJECT NAME</code> & <code>SPEC</code>&ndash;&ndash;See Step 3. &ndash;&ndash;  Step 4 shows the layout.</p>
+
+    <table class="obj-table">
+      <thead><tr><th>Object Name</th><th>Meaning</th><th>Specifier Codes(SPEC)</th></tr></thead>
+      <tbody>
+        <tr><td><span class="obj-name">KCGR-SHLT</span></td><td><span class="obj-meaning">Emergency shelter</span></td><td class="obj-specifiers"><span>CA</span> capacity available <span>NP</span> no pets <span>PP</span> pets ok <span>MO</span> medical only</td></tr>
+        <tr><td><span class="obj-name">KCGR-MED</span></td><td><span class="obj-meaning">Medical facility</span></td><td class="obj-specifiers"><span>ER</span> emergency room <span>UC</span> urgent care <span>PH</span> pharmacy <span>OP</span> open <span>CL</span> closed</td></tr>
+        <tr><td><span class="obj-name">KCGR-ROAD</span></td><td><span class="obj-meaning">Road / bridge status</span></td><td class="obj-specifiers"><span>OP</span> passable <span>CL</span> closed <span>CA</span> caution <span>BR</span> bridge <span>FL</span> flooding <span>TR</span> trees/debris</td></tr>
+        <tr><td><span class="obj-name">KCGR-H2O</span></td><td><span class="obj-meaning">Potable water</span></td><td class="obj-specifiers"><span>DP</span> distribution point <span>BO</span> boil order <span>UK</span> unknown quality</td></tr>
+        <tr><td><span class="obj-name">KCGR-FOOD</span></td><td><span class="obj-meaning">Food / restaurant / grocery</span></td><td class="obj-specifiers"><span>HF</span> hot food <span>GR</span> grocery <span>BT</span> both</td></tr>
+        <tr><td><span class="obj-name">KCGR-FUEL</span></td><td><span class="obj-meaning">Fuel availability</span></td><td class="obj-specifiers"><span>GS</span> gasoline <span>DS</span> diesel <span>PP</span> propane <span>GD</span> gas+diesel <span>AL</span> all three</td></tr>
+        <tr><td><span class="obj-name">KCGR-PWR</span></td><td><span class="obj-meaning">Power / charging / generator</span></td><td class="obj-specifiers"><span>GN</span> generator <span>CH</span> device charging <span>UT</span> utility restored</td></tr>
+        <tr><td><span class="obj-name">KCGR-CELL</span></td><td><span class="obj-meaning">Cell signal location</span></td><td class="obj-specifiers"><span>AT</span> AT&amp;T <span>VZ</span> Verizon <span>TM</span> T-Mobile <span>AL</span> all carriers</td></tr>
+        <tr><td><span class="obj-name">KCGR-ATM</span></td><td><span class="obj-meaning">ATM / financial access</span></td><td class="obj-specifiers"><span>OP</span> operational <span>CL</span> closed <span>LM</span> cash limited</td></tr>
+        <tr><td><span class="obj-name">KCGR-HW</span></td><td><span class="obj-meaning">Health &amp; welfare relay</span></td><td class="obj-specifiers"><span>OP</span> relay available <span>HR</span> hours follow <span>NM</span> no message limit</td></tr>
+      </tbody>
+    </table>
+
+      <div class="note-block"><strong>Not sure which fits?</strong> File to the nearest category and clarify in the comment or notes field. <code>KCGR-SHLT</code> and <code>KCGR-FOOD</code> are the broadest containers.</div>
+      <div class="note-block"><strong>Why can't I find a code for power outages?</strong> The power companies supply quick and accurate updates. An embedded interactive map from <code>poweroutages.us</code> is included on the kcgr page in the lower right.</div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="qsl-stamp"><div class="stamp-num">3</div><div class="stamp-label">Marker Color</div></div>
+    <div class="step-content">
+      <h3>Step 3 &mdash; Choose the marker color</h3>
+        <p><code>ST</code> - STATUS CHOICES work like a traffic light -- <strong style="color:#22c55e;">green</strong> means open, <strong style="color:#f59e0b;">yellow</strong> means limited, <strong style="color:#ef4444;">red</strong> means closed -- plus two more for the cases in between: amber for caution, gray for unknown.</p>
+        <p><code>ST</code> - STATUS CHOICES are listed in the report <strong>between</strong> the OBJECT NAME and SPECIFIER CODES</p>
+      <div class="mini-ref">
+        <div class="mini-ref-row"><span class="mini-ref-code">OP</span> Open / operational</div>
+        <div class="mini-ref-row"><span class="mini-ref-code">CL</span> Closed</div>
+        <div class="mini-ref-row"><span class="mini-ref-code">LM</span> Limited (hours, supply, capacity)</div>
+        <div class="mini-ref-row"><span class="mini-ref-code">UK</span> Unknown / not verified</div>
+        <div class="mini-ref-row"><span class="mini-ref-code">CA</span> Caution -- accessible but hazardous</div>
+      </div>
+           <br>
+
+    </div>
+  </div>
+
+
+  <div class="step-block">
+    <div class="qsl-stamp"><div class="stamp-num">4</div><div class="stamp-label">Build It</div></div>
+    <div class="step-content">
+      <h3>Step 4 &mdash; Build your report</h3>
+
+      <p>Every KCGR report follows the same structure, regardless of platform:</p>
+      <p style="font-family:'Source Code Pro',monospace;color:var(--cyan);font-size:1.05rem;letter-spacing:0.06em;background:var(--navy);border:1px solid var(--rule);border-radius:4px;padding:10px 14px;">ST &nbsp; SPEC &nbsp; LOCATION &nbsp; DDHHMM<br>
+
+      <p style="margin-top:10px;"><strong style="color:var(--amber);">⚠Example</strong>: <code>OP GS CAMDEN SUNOCO DEKALB 262130</code> &mdash; fuel open, gasoline, Sunoco on DeKalb St, observed  on the 26th at 9:30 PM (21:30) local.</p>
+      <p style="margin-top:10px;">Filing via Winlink instead? Its structured form asks for exact coordinates rather than a text location -- <a href="#gps">find your GPS coordinates here</a> if you need them.</p>
+
+
+
+
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="qsl-stamp"><div class="stamp-num">5</div><div class="stamp-label">Send It</div></div>
+    <div class="step-content">
+      <h3>Step 5 &mdash; Send it on your platform</h3>
+
+<div class="path-grid">
+        <div class="path-item">
+          <div class="path-name">Winlink</div>
+          <div class="path-desc">File a <strong>KCGR Resource Status</strong> form. <br>TO: <code>KCGR-OPS</code> &nbsp; Subject: auto-filled by the form as <code>KCGR-RS - [your callsign] - [date]</code><br><strong style="color:var(--amber);">⚠ The form's own "Send To" field is a reminder only -- it cannot set your compose window's address for you.</strong> <a href="#sendto">Why, and what to do instead</a>.</div>
+        </div>
+        <div class="path-item">
+          <div class="path-name">APRS</div>
+          <div class="path-desc">Beacon a named object with the <code>KCGR-</code> prefix and your 43-character comment string  (STEP 2 & 3)&middot; Repeat every 10-15 minutes for up to about an hour, or until confirmed on aprs.fi -- then stop (see Step 5B).<br>Some computer-based apps (Graywolf, DigiPi, APRStac,...) have separate message features in lieu of the beacon </div>
+        </div>
+        <div class="path-item">
+          <div class="path-name">Meshtastic</div>
+          <div class="path-desc">Send the KCGR prefix and codes, then expand to plain English for the rest of the message</div>
+        </div>
+        <div class="path-item">
+          <div class="path-name">Web / Phone</div>
+          <div class="path-desc">Contact AA4TE @ KC4RC directly. Your submission is reviewed before it's posted to the map.
+        </div>
+        </div>
+    </div>
+     
+    </div>
+  </div>
+  <!--  ========SPECIAL INSTRUCTIONS FOR GRAYWOLF APRS================ -->  
+  <div class="step-block">
+    <div class="qsl-stamp"><div class="stamp-num">5B</div><div class="stamp-label">Greywolf/PI</div></div>
+    <div class="step-content">
+      <h3>Step 5B &mdash; Send APRS using GRAYWOLF</h3>
+
+      <p><strong style="color:var(--white);">GRAYWOLF GUI: </strong>Settings>Beacons, then press <code>+ Add Beacon</code>button. </p>
+
+      <p><strong style="color:var(--white);"><code>New Beacon </code>settings:</strong>
+        <ul>        
+            <li> ✅Enabled</li>
+            <li> Type: <code>🔘 Object </code>Your <strong>nine character prefix</strong> (ie.KCGR-SHLT)  will be entered in the <code>Object name</code>field.</li> 
+            <li> Send to: <code>🔘 RF + APRS-IS</code></li> 
+            <li> Check: <code>Channel</code>for correct frequency</li> 
+            <li> ❗Blank: <code>Transmitting Station via </code>will <strong>not</strong> accept text in this mode. (Your call will automatically be chosen.)</li>
+            <li> Symbol: Tap<code>Choose...</code> Possibilites include red-X, Bullseye(2 choices), yellow ambulance, gas pump(see Alternate tab)... then tap<code>Use Symbol</code> </li> 
+            <li><code>Comment</code>field: Here is where your <strong>43 character message</strong> will be entered in the <code>Comment</code>field. If the default "Graywolf/{{version}}" message is there, <strong>replace it</strong>.</li> 
+            <li> Position source (column two): <code>🔘 Use fixed coordinates</code>Fill <code>Latitude</code>and<code>Longitude</code> fields to 4+ decimal places. Not sure how to find these? <a href="#gps">Jump to GPS coordinate help</a>.</li> 
+                        <li><code>Interval</code>field default of 600 means every 10 minutes (10x60). For a KCGR report -- not a repeater beacon -- keep it short only briefly: repeat every 10&ndash;15 minutes for <strong>up to about an hour</strong>, or until you've confirmed it posted on aprs.fi, whichever comes first. Frequent resends waste airtime on 144.390, especially when the channel matters most.
+After confirming on aprs.fi: ❗delete or disable the object. ❗Please do not leave it running indefinitely.</li> 
+             </ul>
+            </p>
+            <p><strong style="color:var(--white);"><code>Sending the information </code>in the <code>Comment</code> field (column one bottom):</strong>
+                    <ul>        
+            <li>Clear/Erase field</li>
+            <li>Use format: <code>ST SPEC LOCATION DDHHMM</code></li>
+                <ul>
+                     <li>a) <code>ST</code> - OPen(OP), CLosed(CL), LiMited(LM), UnKnown(UK), CAution(CA)</li>
+                     <li>b) <code>SPEC</code> 2-letter SPECIFIER CODES from step #2 above</li>
+                     <li>c) <code>LOCATION</code> City (address if you have enough of the limit: 43 characters left)</li>
+                     <li>c) <code>+NOTES+</code> insert extra information before DDHHMM if character limit warrants</li>
+                </ul>
+             <li>c) <code>DDHHMM</code> DD (day of the month), HHMM ()24-hour local time) <br>
+            No need to fill in month, we have 30 days to figure it our on our own 😅<br>
+            If you have only two characters left, just the DD at the end allows processor to post and understand all necessary information has been sent. 
+            </li>  
+            </ul>
+            </p>
+
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="qsl-stamp"><div class="stamp-num">6</div><div class="stamp-label">Follow Up</div></div>
+    <div class="step-content">
+      <h3>Step 6 &mdash; Update or close it out</h3>
+      <div class="note-block"><strong>First, confirm it actually reached the map</strong> -- aprs.fi only confirms your beacon transmitted, not that it made it onto the public map. Check the <a href="kcgr.html">live KCGR map</a> within about an hour of sending. No channel in this system gives positive delivery confirmation, so this quick check is the one thing that catches a report that quietly didn't make it.</div>
+      <p style="margin-top:10px;">Conditions change -- file a follow-up report if status shifts. When the condition is resolved (road reopens, fuel runs out, shelter closes), send an APRS kill message or a follow-up note on other platforms.</p>
+      <div class="warn-block"><strong>Remember:</strong> KCGR-RS reports observed conditions only, not a real-time feed. If you also observed infrastructure status (power, water, cell, internet), file a Field Situation Report to SC ARES/SCEMD as well.</div>
+    </div>
+  </div>
+
+  <!--  ========WHY WINLINK'S "SEND TO" FIELD CAN'T SET YOUR ADDRESS============ -->  
+  <div class="step-block" id="sendto">
+    <div class="qsl-stamp"><div class="stamp-num">TO:</div><div class="stamp-label">Read First</div></div>
+    <div class="step-content">
+      <h3>Why You Must Set the To: Address Yourself</h3>
+      <p>The KCGR Resource Status entry form displays "Send To: KCGR-OPS" as a reminder -- but Winlink's Standard Forms can only fill in a message's <strong>Subject</strong> and <strong>body</strong>. There is no mechanism for any form to set the compose window's <strong>To:</strong> address for you, on any client.</p>
+      <div class="warn-block"><strong>Before or right after filling out the form:</strong> type or select <code>KCGR-OPS</code> in your compose window's own To: field yourself. A message sent without doing this will bounce.</div>
+      <p style="margin-top:10px;"><strong style="color:var(--white);">In Pat:</strong> start a new message and set the To: field first, <em>then</em> open the form. <strong style="color:var(--white);">In Winlink Express:</strong> same idea -- confirm the To: field at the top of the compose window before sending, regardless of what the form itself displays.</p>
+    </div>
+  </div>
+
+  <!--  ========DIRECTIONS FOR FINDING LAT/LON VALUES============ -->  
+
+  <div class="step-block" id="gps">
+    <div class="qsl-stamp"><div class="stamp-num">GPS</div><div class="stamp-label">Tap Here</div></div>
+    <div class="step-content">
+      <h3>Use web and phone apps to find GPS Coordinates</h3>
+      <p> Follow the directions below to find latitude/longitutde headings in degree/decimal format on various web pages and apps</p>
+     <table class="obj-table">
+      <thead><tr><th>Phone or Web App</th><th>Tap Here</th><th>Extra Steps, if needed</th></tr></thead>
+      <tbody>
+  <!--  ========PHONE: GOOGLE MAPS============ -->  
+        <tr><td><span class="obj-name">Phone:<br>Google Maps</span></td><td><span class="obj-meaning">Long-press (touch and hold) on location</span></td><td class="obj-specifiers">Find coordinates in the card at the bottom of the screen</td></tr>
+
+  <!--  ========WEB APP: MAPS.GOOGLE.COM============ -->  
+        <tr><td><span class="obj-name">Web:<br><a href="https://maps.google.com" target="_blank" rel="noopener">maps.google.com</a></span></td><td><span class="obj-meaning">Right&ndash;Click on location</span></td><td class="obj-specifiers">Find lat/lon coordinates on top line of pop-up window </td></tr>
+ <!--  ========WEB APP: OPENSTREETMAP.ORG============ -->  
+        <tr><td><span class="obj-name">Web:<br><a href="https://www.openstreetmap.org" target="_blank" rel="noopener">openstreetmap.org</a></span></td><td><span class="obj-meaning">Right&ndash;Click on location</span></td><td class="obj-specifiers">Tap <span>Show address</span>in pop-up window<br>GPS Coordinates should show up in navigation bar to the left</td></tr>
+
+  <!--  ========WEB APP: APRS.FI============ -->  
+        <tr><td><span class="obj-name">Web:<br><a href="https://aprs.fi" target="_blank" rel="noopener">aprs.fi</a></span></td><td><span class="obj-meaning">Place cursor on location</span></td><td class="obj-specifiers">Lat/Lon is seen in upper right corner</td></tr>
+
+
+      </tbody>
+    </table>     
+    <div class="note-block"><strong>aprs.fi one-time setup, if needed:</strong> if coordinates show as degrees/minutes/seconds instead of decimal, tap <span>"Preferences"</span> under "Other views:" &rarr; <span>"Units and time"</span> tab &rarr; <span>"Coordinate format"</span> pull-down &rarr; choose <span>Decimal degrees</span> &rarr; tap <span>SAVE</span>. You'll only need to do this once.</div>
+        </div>
+      </div>
+
+  <!--  ========"You're done"  BUTTONS TO NAVIGATE BACK/FORTH============ -->  
+  <div class="cta-block">
+    <div style="font-family:'Oxanium',monospace;font-weight:700;color:var(--white);">That's it -- you've filed a KCGR-RS report.</div>
+    <div style="color:var(--text-secondary);font-size:0.92rem;margin-top:6px;">Need full specifier codes, worked examples, platform detail, or answers to common questions?</div>
+    <a class="btn" href="kcgr.html">&#129172; KCGR HUB </a>&nbsp;&nbsp;<a class="btn" href="kcgr-ops.html">Operator Reference &#129174;</a>
+    <div class="no-print" style="margin-top:10px;"><button class="btn print-btn" onclick="window.print()">&#128424; Print This Page</button></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="kcgr.html">KCGR Hub</a> &nbsp;&middot;&nbsp;
+    <a href="kcgr-ops.html">Full Operator Reference</a> &nbsp;&middot;&nbsp;
+    KCGR-RS v1.6 &nbsp;&middot;&nbsp; AA4TE -- Camden SC -- EM94
+  </div>
+</footer>
+</body>
+</html>
