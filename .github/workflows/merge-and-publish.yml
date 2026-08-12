@@ -17,6 +17,27 @@ on:
 permissions:
   contents: write
 
+# Fixes a real bug found 8/12/2026: multiple pushes close together (e.g.
+# a removal and a poller pickup within minutes of each other) each
+# trigger their own separate run. Without this, an OLDER run - checked
+# out against an earlier repo state - could finish AFTER a newer run
+# and commit its stale results right on top of the correct, fresher
+# ones, with no error anywhere to show it happened. This actually
+# occurred: a correct HW report was briefly published, then silently
+# overwritten by an older run re-publishing the previous data.
+#
+# `group` scopes this to the merge workflow specifically (a push
+# elsewhere in the repo won't cancel an in-progress merge run).
+# `cancel-in-progress: true` means if a newer run starts while an older
+# one is still going, the older one is cancelled outright rather than
+# left to finish and race for last-write. Safe to cancel here since
+# nothing gets pushed until the final "commit and push" step actually
+# completes - an in-progress cancellation never leaves a half-written
+# commit behind.
+concurrency:
+  group: kcgr-merge-and-publish
+  cancel-in-progress: true
+
 jobs:
   merge:
     runs-on: ubuntu-latest
