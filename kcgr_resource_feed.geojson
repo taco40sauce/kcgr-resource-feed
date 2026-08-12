@@ -1,36 +1,5 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-08-12T14:45:57.823952+00:00",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -80.078,
-          34.39087
-        ]
-      },
-      "properties": {
-        "ObjectName": "KCGR-HW-health/welfare",
-        "Status": "OP-open",
-        "Specifier": "LM",
-        "DateTime": "2026-08-12 08:10",
-        "ReportedBy": "AA4TE",
-        "ReportCount": 1,
-        "Location": "Bus US 15",
-        "Comment": "Pediatrician in Hartsville - TEST",
-        "name": "KCGR-HW-health/welfare \u2014 Bus US 15",
-        "description": "OP-open | LM | Reported: 2026-08-12 08:10 | By: AA4TE",
-        "Contributors": [
-          {
-            "callsign": "AA4TE",
-            "received_time": "2026-08-12T14:05:10.182731+00:00",
-            "status_mapped": "OP-open",
-            "location": "Bus US 15"
-          }
-        ]
-      }
-    }
-  ]
+  "generated_at": "2026-08-12T22:27:04.294215+00:00",
+  "features": []
 }
