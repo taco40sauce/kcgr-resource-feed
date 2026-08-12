@@ -1,1 +1,19 @@
-{}
+{
+  "AA4TE:KCGR-HW:1": {
+    "identity": "AA4TE:KCGR-HW:1",
+    "callsign": "AA4TE",
+    "category_wire": "KCGR-HW",
+    "category_mapped": "KCGR-HW-health/welfare",
+    "lat": 34.39087,
+    "lon": -80.078,
+    "received_time": "2026-08-12T14:05:10.182731+00:00",
+    "raw_comment": "Pediatrician in Hartsville - TEST",
+    "status_wire": "OP",
+    "status_mapped": "OP-open",
+    "specifier": "LM",
+    "location": "Bus US 15",
+    "timestamp_field": "2026-08-12 08:10",
+    "parsed_cleanly": true,
+    "source_channel": "winlink"
+  }
+}
