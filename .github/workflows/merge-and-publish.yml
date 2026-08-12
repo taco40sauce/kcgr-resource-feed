@@ -1,17 +1,31 @@
 name: KCGR Merge and Publish
 
-# Fires automatically whenever EITHER channel's data changes - the
-# APRS pipeline's backup push (from the Pi, via geojson_writer.py) or
-# the Winlink poller's scheduled push. This keeps propagation fast
-# (an Actions run, not a fixed polling delay) without a second writer
-# racing on the same file - this workflow only runs when its own
-# inputs change, nothing else ever writes kcgr_resource_feed.geojson.
+# Fires automatically whenever EITHER channel's data changes.
+#
+# APRS side: the Pi pushes backups/records_backup.json using its own
+# SSH deploy key (not GITHUB_TOKEN), so GitHub's normal `push` trigger
+# fires correctly for that channel - no change needed here.
+#
+# Winlink side: kcgr_winlink_poller.py and kcgr_winlink_remove.py both
+# push using the default GITHUB_TOKEN. GitHub deliberately does not
+# let a GITHUB_TOKEN-authored push trigger another `on: push` workflow
+# (anti-recursion safeguard) - confirmed 8/12/2026 as a real, live gap:
+# every Winlink-side update or removal silently failed to auto-trigger
+# this workflow, even though the `push`/`paths` trigger below looked
+# correct on paper. Four manual merge runs earlier today were masking
+# this. Fixed by adding a `workflow_run` trigger below, which is NOT
+# subject to the same restriction - it fires off the *completion* of
+# the upstream workflow itself, regardless of what token that workflow
+# used to push.
 on:
   push:
     branches: [main]
     paths:
       - "backups/records_backup.json"
       - "winlink/records.json"
+  workflow_run:
+    workflows: ["KCGR Winlink Poller", "KCGR Winlink Report Removal"]
+    types: [completed]
   workflow_dispatch: {}   # manual trigger, for testing
 
 permissions:
@@ -40,6 +54,14 @@ concurrency:
 
 jobs:
   merge:
+    # Guard for the new workflow_run trigger: only proceed if the
+    # upstream Winlink workflow actually completed successfully. A
+    # failed poller/removal run has nothing new worth merging, and
+    # this skips a wasted run rather than silently no-op'ing inside
+    # the Python script. Ordinary push and workflow_dispatch triggers
+    # aren't workflow_run events at all, so they're unaffected by this
+    # condition and always proceed as before.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
