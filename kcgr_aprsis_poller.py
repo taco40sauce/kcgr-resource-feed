@@ -81,14 +81,22 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import aprslib
-from aprslib.exceptions import ConnectionDrop, ConnectionError as AprsConnectionError, GenericError, LoginError
 
 from parser import is_kcgr_object, build_record
 
 # --- Config ------------------------------------------------------------
 
 APRSIS_HOST = "rotate.aprs.net"
-APRSIS_PORT = 10152
+APRSIS_PORT = 14580
+# MUST be 14580, not aprslib's own default of 10152: per aprs-is.net's
+# own documentation, 10152 is the UNFILTERED full global feed - the
+# filter set below is silently ignored there (the server's own login
+# response literally says "# No user-specified filters on this port").
+# 14580 is the user-defined filter port, where the r/lat/lon/km filter
+# below actually takes effect. Confirmed live 8/13/2026: a real run on
+# 10152 received an out-of-region packet (a station in South America)
+# despite the Kershaw-County-only filter being set, which is exactly
+# what "filter silently ignored" looks like in practice.
 APRSIS_PASSCODE = "-1"  # receive-only, unverified - no credential needed.
 # MUST be the string "-1", not the integer -1: aprslib's own login-success
 # check does `self.passwd != "-1"` (a string comparison), so an integer
@@ -198,19 +206,37 @@ def listen_for_kcgr_objects(listen_seconds: int, callsign: str) -> list:
     ais = aprslib.IS(callsign, passwd=APRSIS_PASSCODE, host=APRSIS_HOST, port=APRSIS_PORT)
     ais.set_filter(f"r/{CENTER_LAT}/{CENTER_LON}/{RADIUS_KM}")
 
-    timer = threading.Timer(listen_seconds, ais.close)
+    # window_elapsed distinguishes an EXPECTED end-of-listen-window
+    # shutdown from a REAL connection failure. Closing a socket out from
+    # under a blocking read (from this Timer, on a separate thread) is
+    # inherently a race: depending on exactly where the main thread is
+    # when the close happens, aprslib/the OS can raise different
+    # exception types - ConnectionDrop most of the time, but a real run
+    # (8/13/2026) instead hit a ValueError from select() on a torn-down
+    # file descriptor, which a narrower except clause didn't catch and
+    # crashed the whole run. Rather than enumerate every exception type
+    # this race could possibly produce, the flag below just checks WHEN
+    # the exception happened: after the window elapsed, any exception is
+    # the expected shutdown; before it, any exception is a real problem.
+    window_elapsed = threading.Event()
+
+    def _end_listen_window():
+        window_elapsed.set()
+        ais.close()
+
+    timer = threading.Timer(listen_seconds, _end_listen_window)
     timer.start()
     try:
         ais.connect(blocking=True)
         ais.consumer(_on_packet, raw=True, blocking=True, immortal=False)
-    except ConnectionDrop:
-        # Expected: this fires when the Timer above closes the socket
-        # after the listen window elapses. Not an error.
-        pass
-    except (AprsConnectionError, LoginError, GenericError) as e:
-        print(f"[aprsis_poller] APRS-IS connection problem: {e}. "
-              f"Returning whatever was collected before the failure "
-              f"({len(collected)} record(s)) rather than discarding it.")
+    except Exception as e:
+        if window_elapsed.is_set():
+            print(f"[aprsis_poller] Listen window ended ({type(e).__name__}) - normal.")
+        else:
+            print(f"[aprsis_poller] APRS-IS connection problem before the "
+                  f"listen window elapsed: {type(e).__name__}: {e}. "
+                  f"Returning whatever was collected before the failure "
+                  f"({len(collected)} record(s)) rather than discarding it.")
     finally:
         timer.cancel()
 
