@@ -144,8 +144,9 @@
   </div>
 
   <div class="footnote">
-    Read-only view of <code>winlink/records.json</code> and <code>backups/records_backup.json</code> (live, on the
-    public map) and <code>backups/records_backup_aprsis.json</code> (comparison feed, below, not on the public map)
+     Read-only view of <code>winlink/records.json</code> and <code>backups/records_backup.json</code> (live, on the
+    public map) and <code>backups/records_backup_aprsis.json</code> (also live on the public map as of the
+    8/13/2026 merge cutover, shown in its own section below rather than folded into this table)
     from the <a href="https://github.com/taco40sauce/kcgr-resource-feed" target="_blank" rel="noopener">kcgr-resource-feed</a>
     repo. Removal/editing isn't done here -- this page only displays what's currently live on the public map.
     Auto-refreshes every 5 minutes. GitHub's raw file cache can lag a real update by a few minutes -- if a report
@@ -156,13 +157,15 @@
   <div class="test-feed-section">
     <div class="test-feed-heading">
       <span class="test-feed-title">APRS-IS Poller</span>
-      <span class="test-feed-tag">Comparison feed -- not on public map</span>
+      <span class="test-feed-tag">Live on public map (via merge)</span>
       <span class="test-feed-count" id="aprsisCount"></span>
     </div>
     <div class="test-feed-note">
-      Output of the new APRS-IS-based poller, shown here only so its progress can be watched. This reads
-      <code>backups/records_backup_aprsis.json</code> -- a separate file the live map does not use. Nothing
-      below affects the public map until a deliberate cutover decision is made.
+      Output of the APRS-IS-based poller, shown here separately so it can be watched on its own. This reads
+      <code>backups/records_backup_aprsis.json</code> -- as of the 8/13/2026 cutover, this file is one of the
+      three sources <code>kcgr_merge_and_publish.py</code> merges, so what's shown below is already reaching
+      the public map. (The main table above doesn't pull from this file directly, so it won't show these
+      records itself -- that's a separate, smaller gap, not this section's labeling.)
     </div>
     <div class="test-feed-wrap">
       <div id="aprsisTableContainer" class="loading-state">Loading comparison feed&hellip;</div>
@@ -229,7 +232,7 @@
     if (!iso) return "--";
     try {
       const d = new Date(iso);
-return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "UTC" }) + "Z";
+return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "UTC" }) + "Z";<span class="test-feed-tag">
     } catch (e) { return iso; }
   }
 
