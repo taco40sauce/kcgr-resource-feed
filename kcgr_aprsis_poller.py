@@ -89,7 +89,12 @@ from parser import is_kcgr_object, build_record
 
 APRSIS_HOST = "rotate.aprs.net"
 APRSIS_PORT = 10152
-APRSIS_PASSCODE = -1  # receive-only, unverified - no credential needed
+APRSIS_PASSCODE = "-1"  # receive-only, unverified - no credential needed.
+# MUST be the string "-1", not the integer -1: aprslib's own login-success
+# check does `self.passwd != "-1"` (a string comparison), so an integer
+# -1 never equals it and every login attempt fails with "Password is
+# incorrect" - confirmed against the real aprslib source (0.7.2) after a
+# real failed run showed exactly that message, 8/13/2026.
 
 # Kershaw County, SC (Camden, the county seat) - adjust if real-world
 # coverage testing shows a different center/radius makes more sense.
