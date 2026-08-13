@@ -33,7 +33,6 @@ not run directly):
     python3 kcgr_winlink_remove.py --list
     python3 kcgr_winlink_remove.py <identity>
 """
-
 import json
 import sys
 from pathlib import Path
@@ -70,6 +69,7 @@ def list_records() -> None:
 
 
 def remove_one(identity: str) -> bool:
+    identity = identity.strip()  # guard against a copy-pasted leading/trailing space
     records = load_records()
     if identity not in records:
         return False
@@ -88,7 +88,7 @@ def main():
         list_records()
         return
 
-    identity = sys.argv[1]
+    identity = sys.argv[1].strip()
     if remove_one(identity):
         print(f"[winlink_remove] Removed: {identity}")
     else:
