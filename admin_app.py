@@ -2,25 +2,18 @@ import os
 import subprocess
 from pathlib import Path
 from functools import wraps
-
 from dotenv import load_dotenv
 from flask import Flask, request, redirect, url_for, session, render_template_string
-
 load_dotenv(Path.home() / ".kcgr_secrets" / "credentials.env")
-
 app = Flask(__name__)
 app.secret_key = os.environ.get("ADMIN_APP_SECRET_KEY", os.urandom(24))
-
 ADMIN_PASSWORD = os.environ.get("KCGR_ADMIN_PASSWORD")
 SERVICE_NAME = "kcgr-pipeline"
-
 if not ADMIN_PASSWORD:
     raise RuntimeError(
         "KCGR_ADMIN_PASSWORD is not set. Add it to ~/.kcgr_secrets/credentials.env "
         "before running this app."
     )
-
-
 def login_required(view_func):
     @wraps(view_func)
     def wrapped(*args, **kwargs):
@@ -28,8 +21,6 @@ def login_required(view_func):
             return redirect(url_for("login"))
         return view_func(*args, **kwargs)
     return wrapped
-
-
 LOGIN_PAGE = """
 <!doctype html>
 <title>KCGR Admin — Login</title>
@@ -44,12 +35,12 @@ LOGIN_PAGE = """
   </form>
 </body>
 """
-
 ADMIN_PAGE = """
 <!doctype html>
 <title>KCGR Admin</title>
 <body style="font-family: sans-serif; max-width: 500px; margin: 60px auto;">
   <h2>KCGR Pipeline Admin</h2>
+  {% if error %}<p style="color: red;">{{ error }}</p>{% endif %}
   <p><strong>Pipeline status:</strong>
     <span style="color: {{ 'green' if status == 'active' else 'gray' }};">{{ status }}</span>
   </p>
@@ -74,8 +65,6 @@ ADMIN_PAGE = """
      <a href="{{ url_for('logout') }}">Log out</a></p>
 </body>
 """
-
-
 def get_service_status():
     try:
         result = subprocess.run(
@@ -85,8 +74,6 @@ def get_service_status():
         return result.stdout.strip() or "unknown"
     except Exception:
         return "unknown"
-
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
@@ -96,36 +83,29 @@ def login():
             return redirect(url_for("index"))
         error = "Incorrect password"
     return render_template_string(LOGIN_PAGE, error=error)
-
-
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
-
-
 @app.route("/")
 @login_required
 def index():
     status = get_service_status()
     poll_interval = os.environ.get("POLL_INTERVAL_SECONDS", "900")
-    return render_template_string(ADMIN_PAGE, status=status, poll_interval=poll_interval)
-
-
+    error = session.pop("toggle_error", None)
+    return render_template_string(ADMIN_PAGE, status=status, poll_interval=poll_interval, error=error)
 @app.route("/refresh")
 @login_required
 def refresh():
     return redirect(url_for("index"))
-
-
 @app.route("/toggle", methods=["POST"])
 @login_required
 def toggle():
     action = request.form.get("action")
     if action in ("start", "stop"):
-        subprocess.run(["sudo", "systemctl", action, SERVICE_NAME], timeout=10)
+        result = subprocess.run(["sudo", "systemctl", action, SERVICE_NAME], timeout=10)
+        if result.returncode != 0:
+            session["toggle_error"] = f"Command failed (exit {result.returncode}) — check sudoers config on the Pi."
     return redirect(url_for("index"))
-
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5050)
