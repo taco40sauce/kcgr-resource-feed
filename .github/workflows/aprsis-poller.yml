@@ -1,0 +1,64 @@
+name: KCGR APRS-IS Poller (comparison feed)
+
+# Connects to APRS-IS directly (not Graywolf's local API - unreachable
+# from a GitHub-hosted runner) and listens for KCGR-* object beacons.
+# See kcgr_aprsis_poller.py's docstring for full design rationale.
+#
+# DELIBERATELY WRITES A SEPARATE FILE (operator decision, 8/13/2026):
+# This workflow only ever touches backups/records_backup_aprsis.json -
+# never backups/records_backup.json, which stays exclusively owned by
+# the Pi's existing pipeline. That means this workflow is NOT yet
+# added to merge-and-publish.yml's `workflow_run` trigger list below
+# it, and its output does NOT yet reach the public map. This lets the
+# new APRS-IS path run in parallel with the Pi's live pipeline for a
+# real side-by-side comparison, with zero risk to what's already
+# working. Adding this workflow's name to merge-and-publish.yml's
+# `workflow_run: workflows: [...]` list - and switching the merge step
+# to read backups/records_backup_aprsis.json instead of (or merged
+# with) the Pi's file - is a deliberate, separate cutover step for
+# later, once the operator has reviewed real output from this feed.
+# Do not wire it in without that decision being made on purpose.
+#
+# No repository secret is required - APRS-IS receive-only login
+# (passcode -1) needs no real credential. APRSIS_CALLSIGN is not a
+# secret; it defaults to the club's own callsign inside the script.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '*/15 * * * *'   # every 15 minutes, UTC - same cadence as
+                              # the Winlink poller, comfortably longer
+                              # than the ~75s listen window below
+
+permissions:
+  contents: write
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run APRS-IS poller
+        run: python3 kcgr_aprsis_poller.py
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "kcgr-aprsis-poller"
+          git config user.email "actions@github.com"
+          git add backups/records_backup_aprsis.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "APRS-IS poller: update comparison records"
+            git push origin main
+          fi
