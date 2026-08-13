@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KCGR Automated Feed -- Kershaw County Ground Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Source+Sans+3:wght@400;600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Source+Sans+3:wght@400;600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet"></noscript>
+<style>
+  :root {
+    --white:          #ffffff;
+    --rule:           rgba(255,255,255,0.10);
+    --text-primary:   #f4f6fb;
+    --text-secondary: #dce2f0;
+    --text-muted:     #8fa0c0;
+    --cyan:           #00bcd4;
+    --cyan-dark:      #0097a7;
+    --amber:          #f59e0b;
+    --green:          #16a34a;
+    --red:            #dc2626;
+    --navy:           #1a2744;
+    --navy-mid:       #243254;
+    --navy-light:     #2e3f6a;
+    --navy-card:      #1f2e50;
+    --border-r:       6px;
+    --shadow-sm:      0 1px 3px rgba(0,0,0,0.30);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 18px; }
+  body { font-family: 'Source Sans 3', system-ui, sans-serif; background: var(--navy); color: var(--text-primary); line-height: 1.6; }
+  a { color: var(--cyan); }
+  .site-header { background: var(--navy-mid); border-bottom: 3px solid var(--cyan); }
+  .header-inner { max-width: 1300px; margin: 0 auto; padding: 18px 20px 14px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .site-title { font-family: 'Oxanium', monospace; font-size: 1.55rem; font-weight: 700; color: var(--white); letter-spacing: 0.02em; }
+  .site-title span { color: var(--cyan); }
+  .site-subtitle { font-family: 'Source Code Pro', monospace; font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; }
+  .header-right { text-align: right; font-family: 'Source Code Pro', monospace; font-size: 0.80rem; }
+  .refresh-line { color: var(--text-muted); }
+  .refresh-line strong { color: var(--cyan); }
+  #refreshBtn { margin-top: 6px; background: transparent; border: 1px solid var(--cyan); color: var(--cyan); font-family: 'Source Code Pro', monospace; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border-radius: 4px; cursor: pointer; }
+  #refreshBtn:hover { background: rgba(0,188,212,0.12); }
+  #refreshBtn:disabled { opacity: 0.5; cursor: default; }
+
+  .main-wrap { max-width: 1300px; margin: 0 auto; padding: 22px 20px 40px; }
+
+  .summary-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+  .summary-card { flex: 1; min-width: 160px; background: var(--navy-card); border: 1px solid var(--rule); border-radius: var(--border-r); padding: 14px 18px; }
+  .summary-card .num { font-family: 'Oxanium', monospace; font-size: 1.8rem; font-weight: 700; color: var(--cyan); line-height: 1; }
+  .summary-card .lbl { font-family: 'Source Code Pro', monospace; font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 6px; }
+  .summary-card.warn .num { color: var(--amber); }
+
+  .fetch-error { background: rgba(220,38,38,0.10); border-left: 3px solid var(--red); color: var(--text-secondary); padding: 12px 16px; border-radius: 0 4px 4px 0; margin-bottom: 16px; font-size: 0.92rem; }
+
+  .feed-table-wrap { border: 1px solid var(--rule); border-radius: var(--border-r); overflow: hidden; box-shadow: var(--shadow-sm); }
+  table.feed-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; background: var(--navy-card); }
+  .feed-table th { background: var(--navy-mid); color: var(--cyan); font-family: 'Oxanium', monospace; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; padding: 10px 14px; text-align: left; white-space: nowrap; }
+  .feed-table td { padding: 11px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--text-secondary); }
+  .feed-table tr:last-child td { border-bottom: none; }
+  .feed-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+  .src-badge { display: inline-block; font-family: 'Source Code Pro', monospace; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 3px; text-transform: uppercase; white-space: nowrap; }
+  .src-winlink { background: rgba(0,188,212,0.15); color: var(--cyan); border: 1px solid var(--cyan-dark); }
+  .src-aprs { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid var(--amber); }
+
+  .status-pill { display: inline-block; font-family: 'Source Code Pro', monospace; font-size: 0.78rem; font-weight: 600; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
+  .status-OP { background: rgba(22,163,74,0.15); color: var(--green); }
+  .status-CL { background: rgba(220,38,38,0.15); color: var(--red); }
+  .status-LM { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .status-CA { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .status-UK { background: rgba(255,255,255,0.08); color: var(--text-muted); }
+
+  .cat-code { font-family: 'Source Code Pro', monospace; font-weight: 600; color: var(--text-primary); }
+  .location-cell { max-width: 240px; }
+  .notes-cell { max-width: 320px; color: var(--text-muted); font-size: 0.88rem; }
+  .identity-cell { font-family: 'Source Code Pro', monospace; font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; }
+  .flag-dirty { color: var(--amber); font-size: 0.80rem; margin-left: 6px; }
+  .time-cell { font-family: 'Source Code Pro', monospace; font-size: 0.82rem; color: var(--text-muted); white-space: nowrap; }
+
+  .empty-state { padding: 40px 20px; text-align: center; color: var(--text-muted); font-family: 'Source Code Pro', monospace; font-size: 0.92rem; }
+  .loading-state { padding: 40px 20px; text-align: center; color: var(--cyan); font-family: 'Source Code Pro', monospace; font-size: 0.92rem; }
+
+  .footnote { margin-top: 16px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
+  .footnote code { font-family: 'Source Code Pro', monospace; background: var(--navy-card); border: 1px solid var(--rule); border-radius: 3px; padding: 1px 5px; }
+
+  .test-feed-section { margin-top: 32px; }
+  .test-feed-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .test-feed-title { font-family: 'Oxanium', monospace; font-size: 0.95rem; font-weight: 600; color: var(--amber); letter-spacing: 0.04em; }
+  .test-feed-tag { font-family: 'Source Code Pro', monospace; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--amber); border: 1px solid var(--amber); border-radius: 3px; padding: 2px 8px; }
+  .test-feed-count { font-family: 'Source Code Pro', monospace; font-size: 0.80rem; color: var(--text-muted); }
+  .test-feed-wrap { border: 1px dashed var(--amber); border-radius: var(--border-r); overflow: hidden; opacity: 0.95; }
+  .test-feed-note { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.7; }
+  .src-aprsis { background: rgba(245,158,11,0.10); color: var(--amber); border: 1px dashed var(--amber); }
+
+  .site-footer { background: var(--navy-mid); border-top: 3px solid var(--cyan); margin-top: 20px; }
+  .footer-inner { max-width: 1300px; margin: 0 auto; padding: 16px 20px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; }
+  .footer-link { display: flex; flex-direction: column; gap: 4px; }
+  .footer-link a { font-family: 'Oxanium', monospace; font-size: 0.85rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.06em; text-transform: uppercase; }
+  .footer-link a:hover { color: var(--white); }
+  .footer-link-note { font-size: 0.80rem; color: var(--text-muted); line-height: 1.5; }
+  .footer-link.right { text-align: right; }
+  .footer-center { text-align: center; }
+  .footer-kcgr { font-family: 'Oxanium', monospace; font-size: 0.92rem; font-weight: 700; color: var(--white); letter-spacing: 0.06em; }
+  .footer-kcgr span { color: var(--cyan); }
+  .footer-version { font-family: 'Source Code Pro', monospace; font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; letter-spacing: 0.06em; }
+  .footer-callsign { font-family: 'Source Code Pro', monospace; font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; letter-spacing: 0.04em; }
+  .footer-nav { max-width: 1300px; margin: 0 auto; padding: 0.7rem 1.5rem; text-align: center; font-family: 'Source Code Pro', monospace; font-size: 0.80rem; letter-spacing: 0.06em; border-top: 1px solid var(--rule); }
+  .footer-nav a { color: var(--cyan-dark); text-decoration: none; padding: 0 0.4rem; }
+  .footer-nav a:hover { color: var(--cyan); }
+
+  @media (max-width: 768px) {
+    .footer-inner { grid-template-columns: 1fr; text-align: center; }
+    .footer-link.right { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="header-inner">
+    <div>
+      <div class="site-title">KCGR <span>Automated Feed</span></div>
+      <div class="site-subtitle">Winlink + APRS -- read-only, unattended reports</div>
+    </div>
+    <div class="header-right">
+      <div class="refresh-line">Last refreshed: <strong id="lastRefreshed">--</strong></div>
+      <button id="refreshBtn" onclick="loadFeed(true)">Refresh now</button>
+    </div>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <div class="summary-row" id="summaryRow">
+    <div class="summary-card"><div class="num" id="countTotal">--</div><div class="lbl">Active reports</div></div>
+    <div class="summary-card"><div class="num" id="countWinlink">--</div><div class="lbl">Winlink</div></div>
+    <div class="summary-card"><div class="num" id="countAprs">--</div><div class="lbl">APRS</div></div>
+    <div class="summary-card warn"><div class="num" id="countUnparsed">--</div><div class="lbl">Needs review</div></div>
+  </div>
+
+  <div id="errorBox"></div>
+
+  <div class="feed-table-wrap">
+    <div id="tableContainer" class="loading-state">Loading current reports&hellip;</div>
+  </div>
+
+  <div class="footnote">
+    Read-only view of <code>winlink/records.json</code> and <code>backups/records_backup.json</code> (live, on the
+    public map) and <code>backups/records_backup_aprsis.json</code> (comparison feed, below, not on the public map)
+    from the <a href="https://github.com/taco40sauce/kcgr-resource-feed" target="_blank" rel="noopener">kcgr-resource-feed</a>
+    repo. Removal/editing isn't done here -- this page only displays what's currently live on the public map.
+    Auto-refreshes every 5 minutes. GitHub's raw file cache can lag a real update by a few minutes -- if a report
+    was just filed or removed and doesn't show up yet, give it a moment and refresh again before assuming
+    something went wrong.
+  </div>
+
+  <div class="test-feed-section">
+    <div class="test-feed-heading">
+      <span class="test-feed-title">APRS-IS Poller</span>
+      <span class="test-feed-tag">Comparison feed -- not on public map</span>
+      <span class="test-feed-count" id="aprsisCount"></span>
+    </div>
+    <div class="test-feed-note">
+      Output of the new APRS-IS-based poller, shown here only so its progress can be watched. This reads
+      <code>backups/records_backup_aprsis.json</code> -- a separate file the live map does not use. Nothing
+      below affects the public map until a deliberate cutover decision is made.
+    </div>
+    <div class="test-feed-wrap">
+      <div id="aprsisTableContainer" class="loading-state">Loading comparison feed&hellip;</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-link">
+      <a href="kcgr.html">&#8592;KCGR Hub</a>
+      <div class="footer-link-note">Live resource map, weather,<br>and power outage panel.</div>
+
+      <a href="kcgr-start.html">&#8592;KCGR Quickstart</a>
+      <div class="footer-link-note">Easy to find lists of Object Names,<br>Status Choices, and Specifier Codes.<br>Useful for all reportering stations .</div>
+    </div>
+    <div class="footer-center">
+      <div class="footer-kcgr">Kershaw County <span>Ground Report</span><br>Resource Status</div>
+      <div class="footer-version">KCGR-RS v1.7 &nbsp;&middot;&nbsp; <a href="https://qsl.net/kc4rc/">KC4RC.com</a> / Kershaw County ARES</div>
+      <div class="footer-callsign">Hub Operator: AA4TE &nbsp;&middot;&nbsp; Camden SC &nbsp;&middot;&nbsp; EM94</div>
+    </div>
+    <div class="footer-link right">
+      <div class="footer-link-note" style="color:var(--text-muted);"><a href="docs/kcgr-quickref-1.pdf">Print-ready quick reference (PDF)</a><br>Store in go-box.</div>
+	     <div class="footer-link-note" style="color:var(--text-muted);"><a href="kcgr-ops.html">Operator Reference</a><br>Field reference for the Kershaw County<br>Ground Report -- Resource Status Hub.</div>
+    </div>
+  </div>
+  <div class="footer-nav">
+    <a href="https://aprs.fi/#!call=a%2FAA4TE" target="_blank" rel="noopener">APRS.fi</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://winlink.org" target="_blank" rel="noopener">Winlink</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://poweroutage.us" target="_blank" rel="noopener">PowerOutage.us</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://www.511sc.org" target="_blank" rel="noopener">SC 511</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://www.weather.gov/cae/" target="_blank" rel="noopener">NWS Columbia</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://www.scemd.org" target="_blank" rel="noopener">SCEMD</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://www.kershaw.sc.gov" target="_blank" rel="noopener">Kershaw County</a>
+  </div>
+</footer>
+
+<script>
+  const WINLINK_URL = "https://raw.githubusercontent.com/taco40sauce/kcgr-resource-feed/main/winlink/records.json";
+  const APRS_URL = "https://raw.githubusercontent.com/taco40sauce/kcgr-resource-feed/main/backups/records_backup.json";
+  const APRSIS_TEST_URL = "https://raw.githubusercontent.com/taco40sauce/kcgr-resource-feed/main/backups/records_backup_aprsis.json";
+  const REFRESH_MS = 5 * 60 * 1000;
+
+  const STATUS_LABELS = { OP: "OP - open", CL: "CL - closed", LM: "LM - limited", CA: "CA - caution", UK: "UK - unknown" };
+
+  let refreshTimer = null;
+
+  async function fetchJson(url) {
+    const bust = url + "?t=" + Date.now();
+    const res = await fetch(bust, { cache: "no-store" });
+    if (!res.ok) throw new Error(`${url} responded ${res.status}`);
+    return res.json();
+  }
+
+  function fmtTime(iso) {
+    if (!iso) return "--";
+    try {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "UTC" }) + "Z";
+    } catch (e) { return iso; }
+  }
+
+  function escapeHtml(s) {
+    if (s === null || s === undefined) return "";
+    return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  }
+
+  function rowHtml(record, sourceLabel, badgeClass) {
+    const statusCode = record.status_wire || "UK";
+    const statusLabel = STATUS_LABELS[statusCode] || (statusCode + " - unknown");
+    const dirty = record.parsed_cleanly === false
+      ? `<span class="flag-dirty" title="Did not parse cleanly -- shown as raw text">&#9888; unparsed</span>`
+      : "";
+    return `
+      <tr>
+        <td><span class="src-badge ${badgeClass}">${sourceLabel}</span></td>
+        <td class="cat-code">${escapeHtml(record.category_mapped || record.category_wire || "--")}</td>
+        <td><span class="status-pill status-${statusCode}">${escapeHtml(statusLabel)}</span></td>
+        <td class="location-cell">${escapeHtml(record.location || "--")}${dirty}</td>
+        <td>${escapeHtml(record.callsign || "--")}</td>
+        <td class="notes-cell">${escapeHtml(record.raw_comment || "")}</td>
+        <td class="time-cell">${fmtTime(record.received_time)}</td>
+        <td class="identity-cell">${escapeHtml(record.identity || "")}</td>
+      </tr>`;
+  }
+
+  function render(winlinkRecords, aprsRecords) {
+    const winlinkRows = Object.values(winlinkRecords || {});
+    const aprsRows = Object.values(aprsRecords || {});
+    const all = [
+      ...winlinkRows.map(r => ({ r, sourceLabel: "Winlink", badgeClass: "src-winlink" })),
+      ...aprsRows.map(r => ({ r, sourceLabel: "APRS", badgeClass: "src-aprs" })),
+    ];
+
+    document.getElementById("countTotal").textContent = all.length;
+    document.getElementById("countWinlink").textContent = winlinkRows.length;
+    document.getElementById("countAprs").textContent = aprsRows.length;
+    document.getElementById("countUnparsed").textContent = all.filter(x => x.r.parsed_cleanly === false).length;
+
+    const container = document.getElementById("tableContainer");
+
+    if (all.length === 0) {
+      container.innerHTML = `<div class="empty-state">No active automated reports right now.<br>New Winlink or APRS reports will appear here automatically.</div>`;
+      return;
+    }
+
+    all.sort((a, b) => new Date(b.r.received_time || 0) - new Date(a.r.received_time || 0));
+
+    const rows = all.map(x => rowHtml(x.r, x.sourceLabel, x.badgeClass)).join("");
+    container.innerHTML = `
+      <table class="feed-table">
+        <thead>
+          <tr>
+            <th>Source</th><th>Category</th><th>Status</th><th>Location</th>
+            <th>Callsign</th><th>Notes</th><th>Received (UTC)</th><th>Identity</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  function renderAprsisTest(aprsisRecords) {
+    const rows = Object.values(aprsisRecords || {});
+    document.getElementById("aprsisCount").textContent =
+      rows.length === 0 ? "0 heard yet" : `${rows.length} heard`;
+
+    const container = document.getElementById("aprsisTableContainer");
+
+    if (rows.length === 0) {
+      container.innerHTML = `<div class="empty-state">No APRS-IS reports heard yet.<br>This fills in once the aprsis-poller workflow has run and heard a KCGR-* beacon.</div>`;
+      return;
+    }
+
+    rows.sort((a, b) => new Date(b.received_time || 0) - new Date(a.received_time || 0));
+    const rowsHtml = rows.map(r => rowHtml(r, "APRS-IS", "src-aprsis")).join("");
+    container.innerHTML = `
+      <table class="feed-table">
+        <thead>
+          <tr>
+            <th>Source</th><th>Category</th><th>Status</th><th>Location</th>
+            <th>Callsign</th><th>Notes</th><th>Received (UTC)</th><th>Identity</th>
+          </tr>
+        </thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>`;
+  }
+
+  async function loadFeed(manual) {
+    const btn = document.getElementById("refreshBtn");
+    const errorBox = document.getElementById("errorBox");
+    if (manual) { btn.disabled = true; btn.textContent = "Refreshing..."; }
+    errorBox.innerHTML = "";
+
+    try {
+      const [winlinkData, aprsData] = await Promise.all([
+        fetchJson(WINLINK_URL).catch(err => { throw new Error("Winlink feed: " + err.message); }),
+        fetchJson(APRS_URL).catch(err => { throw new Error("APRS feed: " + err.message); }),
+      ]);
+      render(winlinkData, aprsData);
+      document.getElementById("lastRefreshed").textContent = new Date().toLocaleTimeString();
+    } catch (err) {
+      errorBox.innerHTML = `<div class="fetch-error">Couldn't load current data -- ${escapeHtml(err.message)}. The table below shows the last successful load, if any.</div>`;
+    } finally {
+      if (manual) { btn.disabled = false; btn.textContent = "Refresh now"; }
+    }
+
+    // Fetched and rendered independently of the two feeds above: this file
+    // may not exist yet (before the aprsis-poller workflow's first run), or
+    // may fail on its own, and neither case should touch the live table or
+    // its error state above.
+    try {
+      const aprsisData = await fetchJson(APRSIS_TEST_URL);
+      renderAprsisTest(aprsisData);
+    } catch (err) {
+      document.getElementById("aprsisTableContainer").innerHTML =
+        `<div class="empty-state">Comparison feed not available yet (${escapeHtml(err.message)}).<br>This is expected until the aprsis-poller workflow's first run.</div>`;
+      document.getElementById("aprsisCount").textContent = "";
+    }
+  }
+
+  function startAutoRefresh() {
+    if (refreshTimer) clearInterval(refreshTimer);
+    refreshTimer = setInterval(() => loadFeed(false), REFRESH_MS);
+  }
+
+  loadFeed(false);
+  startAutoRefresh();
+</script>
+
+</body>
+</html>
