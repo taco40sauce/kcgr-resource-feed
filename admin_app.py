@@ -179,7 +179,7 @@ CONFIRM_PAGE = """
   <p><strong>Source:</strong> {{ source_label }}<br>
      <strong>Identity:</strong> <code>{{ identity }}</code></p>
   <form method="post" action="{{ url_for('records_remove') }}">
-    <input type="hidden" name="source" value="{{ source }}">
+    <input type="hidden" name="source" value="{{ source_key }}">
     <input type="hidden" name="identity" value="{{ identity }}">
     <button type="submit" style="font-size: 1.1em; padding: 10px 24px; background: #dc2626; color: white; border: none; border-radius: 6px;">
       Yes, remove it
@@ -276,7 +276,7 @@ def records_confirm():
     cfg = SOURCES.get(source)
     if not cfg or not cfg["removal_workflow"]:
         return redirect(url_for("records"))
-    return render_template_string(CONFIRM_PAGE, source=source, identity=identity, source_label=cfg["label"])
+    return render_template_string(CONFIRM_PAGE, source_key=source, identity=identity, source_label=cfg["label"])
 
 
 @app.route("/records/remove", methods=["POST"])
