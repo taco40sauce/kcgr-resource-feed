@@ -1,1 +1,18 @@
-{}
+{
+  "TEST-1:KCGR-TEST": {
+    "identity": "TEST-1:KCGR-TEST",
+    "callsign": "TEST-1",
+    "category_wire": "KCGR-TEST",
+    "category_mapped": "KCGR-TEST-test",
+    "lat": 34.2497,
+    "lon": -80.6073,
+    "received_time": "2026-08-14T12:00:00.000000+00:00",
+    "raw_comment": "OP TT Merge script test record",
+    "status_wire": "OP",
+    "status_mapped": "OP-open",
+    "specifier": "TT",
+    "location": "Merge script test",
+    "timestamp_field": "140000",
+    "parsed_cleanly": true
+  }
+}
