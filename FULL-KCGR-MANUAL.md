@@ -79,7 +79,13 @@ the same problems we already worked through.
 
 Before starting any technical setup, confirm you have:
 
-**People & authority**
+**People & authority**This is the KCGR project (Kershaw County Ground Report — ham radio emergency resource map). Read KCGR_CORE.md in full before doing anything else — it's the single current reference, replaces all prior versions, and is fully up to date as of tonight (8/13/2026 into 8/14). Repo: github.com/taco40sauce/kcgr-resource-feed.
+
+Two things worth knowing before you start:
+
+    §8 is the prioritized open-items list — start there for what's next. Items 1–3 (verifying the new APRS-IS-to-map cutover fires with zero manual intervention, proving reception via a genuinely independent iGate, and letting the poller run unattended for a while) are the live thread from tonight and can't be forced — they depend on real traffic and time passing, not more building.
+    §7 has a process lesson you should actually follow, not just read: I don't have standing authorization to edit or build anything without an explicit go-ahead. A question like "Can I...?" or "Shall we...?" is not that — even when it sounds like agreement. When in doubt, give the diagnosis or the plan (and the exact old/new lines for anything small enough to self-serve) and wait to be told to proceed.
+
 - [ ] At least one licensed amateur radio operator willing to serve as
       **Hub Operator** — the person whose credentials, accounts, and
       judgment the system runs on day one 🔧
@@ -300,9 +306,8 @@ rather than leaving it vague:
   the cost of a little delay and one more task for whoever runs the hub.
 
 Either can work. What matters most is deciding this on purpose, together
-with your team, rather than leaving it to chance — and this is exactly
-the kind of thing worth expanding on once Part IV (Running It) is built
-out.
+with your team, rather than leaving it to chance — see Part IV, section
+4.3, for how this plays out during an actual activation.
 
 **[¹⁰] Does your radio already have a sound card built in? Start there.**
 The single most useful question to answer first is: **does your radio
@@ -734,15 +739,249 @@ than you'd expect.
 
 ---
 
-*Part IV (Running It) picks up next — training operators, activating
-before an event, running during one, and winding down afterward.*
+# PART IV — Running It
+
+Parts I through III got the system built and made it your own. This
+part is different — it's less about code and configuration, more about
+the people who actually run this when something's happening. Everything
+below assumes Parts II and III are already done: your pipeline exists,
+your categories are picked, your database and map are live.
+
+---
+
+## 4.1 Training Operators
+
+**Two roles, and why they're trained differently.**
+
+Two distinct jobs sit inside "operating KCGR," even though the same
+person sometimes does both:
+
+- **Data-entry operators** — anyone entering a report by hand into your
+  database, whether it arrived over a channel your automation doesn't
+  cover (Facebook, Meshtastic, DMR, a phone call), or as a backup when
+  the automated pipeline itself is down.
+- **Validators** — whoever's reviewing what's already out there:
+  checking incoming reports for anything that looks wrong, and watching
+  for reports that should have made it onto the map but didn't.[¹]
+
+**One rule every operator needs before their first shift:** report only
+businesses, organizations, and charitable/public services — never a
+private residence, regardless of category (full rationale in Part III).
+
+**Steps:**
+1. Walk every new operator through your field-format grammar and your
+   own category list (Part III), using your own real worked examples —
+   not the abstract rule alone.
+2. Have data-entry trainees enter one real (test) report into the live
+   database, start to finish, before an actual event.
+3. Show validator trainees the **public map itself**, not just the
+   database, and how to cross-check one against the other — the map is
+   what the public sees, so that's what a validator should be judging.
+4. Give every **data-entry operator** their own account on your
+   database — not a shared login (Part I, note 6). Field operators
+   reporting over APRS or Winlink never touch the database directly, so
+   they don't need an account at all — only people doing manual entry
+   or validation do.[⁵] 🔧
+5. Add every new operator to your private network (Tailscale or
+   equivalent) following your one-time device setup (see your Operator
+   Manual) 🔧.
+---
+### REMOVAL-PANAL ACCESS TOKEN ON GITHUB for admin page report  
+  Removal-panel access token — expires 8/14/2027. The admin page's 
+report-removal tool depends on a GitHub access token that expires on this date. 
+If it lapses, the toggle and status sections of this page keep 
+working normally — *** only the removal tool breaks *** , and it fails with an 
+*** authentication error *** rather than anything visible elsewhere on the page. 
+If a removal attempt fails after this date, or if you're checking in proactively 
+around this date: generate a new fine-grained token at 
+github.com/settings/personal-access-tokens/new (repository access: kcgr-resource-feed only; 
+permissions: Contents read-only, Actions read/write), 
+then update GITHUB_PAT in ~/.kcgr_secrets/credentials.env on the Pi and r
+estart the admin app. Contact the Hub Operator if you're not sure how to do this.
+
+---
+
+## 4.2 Pre-Event Activation Checklist
+
+**What "activation" means here.** Right now, activation is a technical
+step — turning your automated pipeline on. That's expected to change as
+more of this system moves off local hardware.[²]
+
+**Steps:**
+1. Turn the automated pipeline on (see your Quick Command Reference
+   appendix) and confirm it shows as running.
+2. Do one test entry directly in your database, and confirm the
+   matching pin appears correctly on the public map before relying on
+   it for real reports.
+3. Notify your data-entry operators and validators that KCGR is active
+   — this is the step that actually puts people watching, regardless of
+   what the pipeline itself is doing.
+4. If your EOC, CERT, or a net (Skywarn or otherwise) is activating
+   around the same event, coordinate timing so KCGR can record live
+   field reports as they come in — active and ready before other
+   channels start generating them, not scrambling to catch up
+   afterward 🔧.
+5. Start a fresh paper handoff log for this activation (see Appendix D).
+6. If your county EM office has agreed to help promote the map
+   publicly, let them know it's live 🔧.
+
+---
+
+## 4.3 During-Event Operations & Monitoring
+
+**Every operator confirms their own report reached the map — within one
+hour, every channel, no exceptions.**[³]
+
+**Watch for reports that never make it in.** Only your own automated
+channels (APRS, and Winlink once built) get checked by the pipeline
+itself. Anything relayed over DMR, Meshtastic, Facebook, Skywarn, or any
+other channel depends entirely on a person remembering to also put it in
+your database. This is a validator's main job during an active
+event — not just watching what's already on the map, but watching for
+the gap.
+
+**Handling a report that's clearly wrong.**[⁴]
+1. Pull it using your removal tool.
+2. Keep going — don't stop to fully investigate mid-event.
+3. Note it (paper handoff log is fine) for a full review after the
+   event.
+
+**Shift changes.** Fill out the shift-end questions (Appendix D) before
+you hand off, and hand the paper log to the next operator directly, not
+left for them to find.
+
+**If your own local internet goes down:** ask a station outside the
+affected area to check the public map and relay status back to you over
+voice or Winlink. The map itself doesn't depend on your local
+connection — only your ability to check it does.
+
+**Significant reports also go to your EOC directly**, using an ICS-213
+General Message, per your relationship-building approach in Part I,
+note 9 🔧.
+
+---
+
+## 4.4 Post-Event Wind-Down
+
+**What wind-down means here.** Today, wind-down includes turning the
+pipeline off — the same Pi-hosted toggle covered in note 2. The plan is
+for that step to disappear entirely once the pipeline moves off the Pi
+onto always-on infrastructure; at that point there's nothing to switch
+off, and wind-down becomes purely about people and data, not
+infrastructure. Update step 1 below once that migration is real.
+
+**Steps:**
+1. If your pipeline is still Pi-hosted with an on/off toggle, turn it
+   off once you're confident the event is truly over — not
+   automatically, not on a timer (Part I, note 8: a person makes this
+   call by hand). Once it's running on always-on infrastructure
+   instead, skip this step — there's nothing to turn off.
+2. Fill out the post-event questions (Appendix D) while the event is
+   still fresh — days later is fine, weeks later loses detail.
+3. Clear out reports that are now confirmed resolved; leave anything
+   uncertain marked unconfirmed rather than deleting it (Part I, note
+   4).
+4. Confirm your pipeline's automatic backup of the record store ran
+   correctly before you consider the event fully closed.
+5. If KCGR was formally activated alongside your EOC or CERT, let them
+   know you're standing down too — don't let the relationship go quiet
+   just because the event's over 🔧.
+6. Fold anything worth remembering into your changelog / lessons-learned
+   record (Part V) — especially anything that surprised you.
+
+---
+
+## Notes for Part IV
+
+**[¹] Why data-entry and validation are trained separately.**
+These are genuinely different skills, even when the same person ends up
+doing both. Entering a report quickly and accurately is a narrow,
+focused task. Validating is broad and comparative — noticing that
+something's missing, stale, or doesn't match what the map shows. A
+trainee taught only the first will enter reports well but may never
+think to check whether *other* reports are missing. Teaching them
+separately, even briefly, makes sure both muscles actually get built.
+
+**[²] Why activation is currently a toggle, but described as changing.**
+Today, your automated pipeline defaults to off (Part II, note 2) and
+someone has to deliberately turn it on. That was a deliberate choice
+when everything ran on a single Pi at home — no reason to poll for
+reports around the clock if there's no active need. Once more of this
+system moves to always-available infrastructure (not tied to your home
+power or internet), that reasoning goes away: there's no real cost to
+leaving it running continuously, and doing so means anyone reporting in
+already "activates" the system just by sending a report — the same way
+a Skywarn net-control operator activates a net simply by starting it,
+not by requesting permission first. When that shift happens, this
+checklist's step 1 becomes unnecessary, and "activation" becomes purely
+about notifying people, not touching any switch. Update this section
+when that migration is complete — don't leave stale toggle instructions
+here once they no longer apply.
+
+**[³] Why every operator checks their own report, on every channel,
+within an hour.**
+No channel in this system gives you positive delivery confirmation.
+There's no equivalent of an email bounce or a web request's success/
+failure code — an APRS beacon can get stepped on by another station
+transmitting at the same time; a Winlink message can fail mid-relay;
+even inside the automated pipeline itself, pieces have been tested
+individually and still failed silently together, with real reports
+never reaching the map and no error anywhere to show it. So this isn't
+a patch for any one channel's weakness — it's the one general safety
+net that covers all of them equally, because none of them can be fully
+trusted to fail loudly.
+
+It's also genuinely efficient, not just redundant. A hub operator or
+validator is doing broad, shallow monitoring — scanning everything at
+once. A field operator checking their own one or two reports is doing
+narrow, deep monitoring on exactly the item they have the most context
+to judge — they know what they meant to send, and can catch a wrong
+location or wrong code that a broad scan would miss entirely. One hour
+was chosen as tight enough to catch a genuinely dropped report
+same-shift, before an operator moves on and forgets to circle back.
+
+**[⁴] Why "pull it, keep moving, review later" — and why the deeper
+policy isn't written here.**
+In an active emergency, something will go wrong — that's part of what
+running the hub means. The system's existing design already trusts a
+person to make imperfect, in-the-moment calls rather than waiting for
+certainty (staleness timing, corroboration, vetting all work this way).
+A clearly wrong report gets the same treatment: act now, review later.
+What this section deliberately does *not* do is define a formal policy
+for handling false or malicious reports — that question involves
+judgment calls (intent, accountability, follow-up with the reporting
+operator) that belong with a broader committee, not a unilateral answer
+baked into a manual. Treat that policy as open until your club settles
+it on purpose.
+
+**[⁵] Why database accounts are scoped to roles, not everyone.**
+As of 8/2026, Grist's free tier caps a team at three members; Grist has
+announced this rising to ten by the end of August 2026, but that's
+still a real ceiling, not unlimited seats. Handing every trained
+operator a login — including field operators who only ever report over
+APRS or Winlink and never open the database at all — would burn through
+those seats fast for no operational reason. Scoping accounts to the
+people who actually need direct access (data-entry operators,
+validators) keeps you within the free tier longer, and is really just
+Part I's smallest-necessary-access principle applied to seat count
+instead of permission level. If your roster ever outgrows even the
+higher seat cap, that's a real decision point for the club: pay for
+additional seats, or move to self-hosting (already confirmed technically
+workable — no hard cap there — though not obviously worth the added
+maintenance burden unless the free tier truly stops fitting) 🔧.
+
+---
+
+*Part V (Keeping It Alive) picks up next — troubleshooting/recovery,
+succession planning, third-party permissions log, and an append-only
+changelog of lessons learned.*
 
 ---
 
 # APPENDIX A — Quick Command Reference (Start to Finish)
 
-*(Note: this will move to the very end of the manual once Parts IV and V
-are written. It's placed here for now so it isn't lost in the meantime.)*
+*(Note: this will move to the very end of the manual once Part V is
+written. It's placed here for now so it isn't lost in the meantime.)*
 
 This appendix assumes your Raspberry Pi, radio, and Graywolf software are
 already set up and running — see your separate station guide for the
@@ -820,6 +1059,31 @@ the next automatic cycle.
 
 ### 6. Remove a report that shouldn't be on the map
 
+**For reports on your two automated channels currently in active use
+(APRS-IS and Winlink), use the browser-based removal panel instead of
+the terminal:**
+
+1. From any device on your Tailscale network, log into the admin page:
+   ```
+   http://100.68.180.65:5050
+   ```
+   🔧 *(use your own Tailscale address)*
+2. Click **View/remove active records**, or go directly to:
+   ```
+   http://100.68.180.65:5050/records
+   ```
+3. Find the report in the list — labeled by source, category, status,
+   location, and callsign — click **Remove**, then confirm on the next
+   screen.
+
+This updates the underlying data and republishes the public map
+automatically — no need to touch uMap's own delete tools at all, since
+deleting there doesn't actually stick.
+
+**For a report that came in through this Pi's own local pipeline**
+(the `data/records.json` channel — not your primary intake path, and
+not yet covered by the browser panel above), use the terminal instead:
+
 **First, find its exact identity:**
 ```
 cat ~/kcgr-pipeline/data/records.json
@@ -835,8 +1099,9 @@ python3 remove_record.py "AA4TE-10:KCGR-FUEL"
 🔧 *(use the real identity string from the file above — copy it exactly,
 including the colon)*
 
-This updates the public map automatically — no need to touch uMap's own
-delete tools at all, since deleting there doesn't actually stick.
+This also updates the public map automatically — same underlying
+principle as the panel above, just a different tool for a different
+data source.
 
 ---
 
