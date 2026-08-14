@@ -1,0 +1,67 @@
+name: KCGR APRS-IS Report Removal
+# Removal tool for the APRS-IS poller's own record store
+# (backups/records_backup_aprsis.json) - the APRS-IS-side counterpart
+# to winlink-removal.yml. See kcgr_aprsis_remove.py's docstring for
+# full design rationale.
+#
+# IMPORTANT: this workflow's `name:` field (exactly "KCGR APRS-IS
+# Report Removal") must be added to merge-and-publish.yml's
+# `workflow_run: workflows: [...]` list for a removal to actually
+# republish the map afterward - same reasoning, and the same silent-
+# failure risk if it's ever mismatched, as aprsis-poller.yml's own
+# entry in that same list (see CORE §2.4/§2.3). This script's own push
+# uses the default GITHUB_TOKEN, which - per the GITHUB_TOKEN
+# auto-trigger bug already found and fixed once on the Winlink side -
+# cannot trigger another `on: push` workflow on its own. Without this
+# workflow_run entry, a removal would edit the file correctly but the
+# public map would never actually update to reflect it.
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'List current reports, or remove one?'
+        required: true
+        type: choice
+        options:
+          - list
+          - remove
+        default: list
+      identity:
+        description: 'Exact identity to remove (only needed for "remove" -- run with action=list first to find it, and copy it exactly, including any trailing spaces)'
+        required: false
+        type: string
+permissions:
+  contents: write
+jobs:
+  aprsis-removal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: List current APRS-IS reports
+        if: ${{ github.event.inputs.action == 'list' }}
+        run: python3 kcgr_aprsis_remove.py --list
+      - name: Remove an APRS-IS report
+        if: ${{ github.event.inputs.action == 'remove' }}
+        run: |
+          if [ -z "${{ github.event.inputs.identity }}" ]; then
+            echo "::error::action=remove requires the identity input to be filled in. Run this workflow again with action=list first to find the exact identity string."
+            exit 1
+          fi
+          python3 kcgr_aprsis_remove.py "${{ github.event.inputs.identity }}"
+      - name: Commit and push the removal
+        if: ${{ github.event.inputs.action == 'remove' }}
+        run: |
+          git config user.name "kcgr-aprsis-remove"
+          git config user.email "actions@github.com"
+          git add backups/records_backup_aprsis.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "APRS-IS removal: ${{ github.event.inputs.identity }}"
+            git push origin main
+          fi
