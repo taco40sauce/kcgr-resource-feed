@@ -15,22 +15,6 @@
     "timestamp_field": "140000",
     "parsed_cleanly": true
   },
-  "AA4TE-10:KCGR-HW  ": {
-    "identity": "AA4TE-10:KCGR-HW  ",
-    "callsign": "AA4TE-10",
-    "category_wire": "KCGR-HW  ",
-    "category_mapped": "KCGR-UNKNOWN-unknown",
-    "lat": 34.500166666666665,
-    "lon": -80.18883333333333,
-    "received_time": "2026-08-14T12:45:33.280199+00:00",
-    "raw_comment": "No need to panic, just the first state forest TEST",
-    "status_wire": "UK",
-    "status_mapped": "UK-unknown",
-    "specifier": null,
-    "location": "No need to panic, just the first state forest TEST",
-    "timestamp_field": null,
-    "parsed_cleanly": false
-  },
   "AA4TE-10:KCGR-HW": {
     "identity": "AA4TE-10:KCGR-HW",
     "callsign": "AA4TE-10",
