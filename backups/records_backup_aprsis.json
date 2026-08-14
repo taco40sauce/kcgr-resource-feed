@@ -1,18 +1,1 @@
-{
-  "AA4TE-10:KCGR-HW": {
-    "identity": "AA4TE-10:KCGR-HW",
-    "callsign": "AA4TE-10",
-    "category_wire": "KCGR-HW",
-    "category_mapped": "KCGR-HW-health/welfare",
-    "lat": 34.500166666666665,
-    "lon": -80.18883333333333,
-    "received_time": "2026-08-14T13:01:44.691250+00:00",
-    "raw_comment": "No need to panic, just the first state forest TEST",
-    "status_wire": "UK",
-    "status_mapped": "UK-unknown",
-    "specifier": null,
-    "location": "No need to panic, just the first state forest TEST",
-    "timestamp_field": null,
-    "parsed_cleanly": false
-  }
-}
+{}
