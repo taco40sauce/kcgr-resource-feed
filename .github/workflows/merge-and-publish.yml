@@ -29,7 +29,7 @@ on:
       - "backups/records_backup_aprsis.json"
       - "winlink/records.json"
   workflow_run:
-    workflows: ["KCGR Winlink Poller", "KCGR Winlink Report Removal", "KCGR APRS-IS Poller"]
+  workflows: ["KCGR Winlink Poller", "KCGR Winlink Report Removal", "KCGR APRS-IS Poller", "KCGR APRS-IS Report Removal"]
     types: [completed]
   workflow_dispatch: {}   # manual trigger, for testing
 permissions:
