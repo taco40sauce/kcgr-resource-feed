@@ -1,18 +1,1 @@
-{
-  "AA4TE-10:KCGR-FOOD": {
-    "identity": "AA4TE-10:KCGR-FOOD",
-    "callsign": "AA4TE-10",
-    "category_wire": "KCGR-FOOD",
-    "category_mapped": "KCGR-FOOD-food",
-    "lat": 34.170833333333334,
-    "lon": -80.79183333333333,
-    "received_time": "2026-08-13T15:03:00.972476+00:00",
-    "raw_comment": "OP HF Elgin Mex Lunch Special 131036",
-    "status_wire": "OP",
-    "status_mapped": "OP-open",
-    "specifier": "HF",
-    "location": "Elgin Mex Lunch Special",
-    "timestamp_field": "131036",
-    "parsed_cleanly": true
-  }
-}
+{}
