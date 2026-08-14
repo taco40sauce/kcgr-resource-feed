@@ -56,7 +56,7 @@ jobs:
         # step, not checkout/install/commit - and shows up in well under
         # the job's own 6-minute limit rather than being lost in it.
         timeout-minutes: 3
-        run: python3 kcgr_aprsis_poller.py
+        run: python3 -u kcgr_aprsis_poller.py
       - name: Commit and push if anything changed
         run: |
           git config user.name "kcgr-aprsis-poller"
