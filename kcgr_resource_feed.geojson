@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-08-14T13:40:21.092761+00:00",
+  "generated_at": "2026-08-14T15:34:22.485507+00:00",
   "features": [
     {
       "type": "Feature",
@@ -28,36 +28,6 @@
             "received_time": "2026-08-14T13:01:44.691250+00:00",
             "status_mapped": "UK-unknown",
             "location": "No need to panic, just the first state forest TEST"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -80.6073,
-          34.2497
-        ]
-      },
-      "properties": {
-        "ObjectName": "KCGR-UNKNOWN-unknown",
-        "Status": "OP-open",
-        "Specifier": "TT",
-        "DateTime": "140000",
-        "ReportedBy": "TEST-1",
-        "ReportCount": 1,
-        "Location": "Auto-trigger test",
-        "Comment": "OP TT Auto-trigger test record",
-        "name": "KCGR-UNKNOWN-unknown \u2014 Auto-trigger test",
-        "description": "OP-open | TT | Reported: 140000 | By: TEST-1",
-        "Contributors": [
-          {
-            "callsign": "TEST-1",
-            "received_time": "2026-08-14T12:00:00.000000+00:00",
-            "status_mapped": "OP-open",
-            "location": "Auto-trigger test"
           }
         ]
       }
