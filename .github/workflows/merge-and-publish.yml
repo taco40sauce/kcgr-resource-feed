@@ -1,10 +1,14 @@
 name: KCGR Merge and Publish
 
-# Fires automatically whenever EITHER channel's data changes.
+# Fires automatically whenever any channel's data changes.
 #
-# APRS side: the Pi pushes backups/records_backup.json using its own
+# APRS side (Pi-hosted): the Pi pushes backups/records_backup.json using its own
 # SSH deploy key (not GITHUB_TOKEN), so GitHub's normal `push` trigger
 # fires correctly for that channel - no change needed here.
+#
+# APRS-IS side: kcgr_aprsis_poller.py pushes backups/records_backup_aprsis.json
+# using the default GITHUB_TOKEN, same as the Winlink poller below - so it
+# needs the same workflow_run trigger to fire reliably, not just push/paths.
 #
 # Winlink side: kcgr_winlink_poller.py and kcgr_winlink_remove.py both
 # push using the default GITHUB_TOKEN. GitHub deliberately does not
@@ -22,15 +26,14 @@ on:
     branches: [main]
     paths:
       - "backups/records_backup.json"
+      - "backups/records_backup_aprsis.json"
       - "winlink/records.json"
   workflow_run:
-    workflows: ["KCGR Winlink Poller", "KCGR Winlink Report Removal"]
+    workflows: ["KCGR Winlink Poller", "KCGR Winlink Report Removal", "KCGR APRS-IS Poller"]
     types: [completed]
   workflow_dispatch: {}   # manual trigger, for testing
-
 permissions:
   contents: write
-
 # Fixes a real bug found 8/12/2026: multiple pushes close together (e.g.
 # a removal and a poller pickup within minutes of each other) each
 # trigger their own separate run. Without this, an OLDER run - checked
@@ -51,11 +54,10 @@ permissions:
 concurrency:
   group: kcgr-merge-and-publish
   cancel-in-progress: true
-
 jobs:
   merge:
-    # Guard for the new workflow_run trigger: only proceed if the
-    # upstream Winlink workflow actually completed successfully. A
+    # Guard for the workflow_run trigger: only proceed if the
+    # upstream workflow actually completed successfully. A
     # failed poller/removal run has nothing new worth merging, and
     # this skips a wasted run rather than silently no-op'ing inside
     # the Python script. Ordinary push and workflow_dispatch triggers
@@ -66,15 +68,12 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
       - name: Merge and publish public map
         run: python3 kcgr_merge_and_publish.py
-
       - name: Commit and push if anything changed
         run: |
           git config user.name "kcgr-merge-publish"
