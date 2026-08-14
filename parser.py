@@ -158,7 +158,7 @@ def build_record(packet: dict) -> dict:
     via is_kcgr_object) into a fully structured KCGR record.
     """
     obj = packet["decoded"]["Object"]
-    category_wire = obj["Name"].upper()
+    category_wire = obj["Name"].strip().upper()
     # NOTE: packet["source"] is the ingest CHANNEL (e.g. "modem" or
     # "igate-is"), NOT the reporting station - a real bug caught by testing
     # against live data (7/13/2026). The actual originating callsign is at
