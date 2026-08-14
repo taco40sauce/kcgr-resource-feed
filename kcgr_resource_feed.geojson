@@ -1,36 +1,5 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-08-14T17:29:55.154579+00:00",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -80.5587,
-          34.2905
-        ]
-      },
-      "properties": {
-        "ObjectName": "KCGR-HW-health/welfare",
-        "Status": "LM-limited",
-        "Specifier": "NM-no message limit",
-        "DateTime": "2026-08-12 18:51",
-        "ReportedBy": "AA4TE",
-        "ReportCount": 1,
-        "Location": "Applied Tech Ed. Campus",
-        "Comment": "Test report 11. Found a few more bugs, or rather \"features\". 874 Vocational Ln, Camden, SC 29020",
-        "name": "KCGR-HW-health/welfare \u2014 Applied Tech Ed. Campus",
-        "description": "LM-limited | NM-no message limit | Reported: 2026-08-12 18:51 | By: AA4TE",
-        "Contributors": [
-          {
-            "callsign": "AA4TE",
-            "received_time": "2026-08-12T23:01:11.317370+00:00",
-            "status_mapped": "LM-limited",
-            "location": "Applied Tech Ed. Campus"
-          }
-        ]
-      }
-    }
-  ]
+  "generated_at": "2026-08-14T17:57:34.468516+00:00",
+  "features": []
 }
