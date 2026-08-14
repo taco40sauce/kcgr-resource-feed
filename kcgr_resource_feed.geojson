@@ -1,7 +1,37 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-08-14T09:44:38.626224+00:00",
+  "generated_at": "2026-08-14T10:36:49.421963+00:00",
   "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.6073,
+          34.2497
+        ]
+      },
+      "properties": {
+        "ObjectName": "KCGR-UNKNOWN-unknown",
+        "Status": "OP-open",
+        "Specifier": "TT",
+        "DateTime": "140000",
+        "ReportedBy": "TEST-1",
+        "ReportCount": 1,
+        "Location": "Merge script test",
+        "Comment": "OP TT Merge script test record",
+        "name": "KCGR-UNKNOWN-unknown \u2014 Merge script test",
+        "description": "OP-open | TT | Reported: 140000 | By: TEST-1",
+        "Contributors": [
+          {
+            "callsign": "TEST-1",
+            "received_time": "2026-08-14T12:00:00.000000+00:00",
+            "status_mapped": "OP-open",
+            "location": "Merge script test"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "geometry": {
