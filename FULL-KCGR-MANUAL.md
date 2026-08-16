@@ -18,7 +18,7 @@ have time to read anything else — this fuller version is what backs it up.
 right away, and numbered notes at the end explaining the "why" behind
 them. You don't need the notes to get moving. They're there for whenever
 you have a quiet moment, or want to understand something well enough to
-change it for your own town.*
+change it for your own location and situation.*
 
 ---
 
@@ -32,15 +32,12 @@ short passage isn't really for you. It's for the club member, spouse, or
 town official looking over your shoulder right now, thinking "we've
 never needed anything like this before."
 
-Here's something worth passing along honestly: most clubs that take
+Here's something worth considering: most clubs that take
 preparedness seriously didn't start out that way. Often, it took getting
 caught off guard once, and deciding out loud that they never wanted that
-feeling again. One of our own members happened, purely by coincidence
-while on vacation, to sit in on another town's ham radio club meeting.
-What they noticed was a whole club, fully engaged in planning, drills,
-and supplies — a real, visible change from what that same club used to
-be. When asked why, the answer was simple: they'd been caught unprepared
-once, and had decided never to let that happen again.
+feeling again. One of our own members, while on vacation, sat in on another town's ham  club meeting.
+What he noticed was a whole club, engaged in planning, drills,
+and supplies — a real, visible change, according to those members, from what that same club used to be. They explained why: they'd been caught unprepared once, and had decided never to let that happen again.
 
 You don't have to wait for your own hard lesson to take this seriously.
 That's really the quiet purpose of this whole manual — letting you
@@ -57,11 +54,11 @@ the same problems we already worked through.
 
 - **Build this for someone who's never been trained, not just for
   yourself.**[¹]
-- **Expect to change things later — that's not a failure, that's the plan.**[²]
+- **Expect to change things later — that's not a failure, that's planning.**[²]
 - **When two people report the same thing, that's a good sign, not a
   duplicate to clean up.**[³]
-- **An old report doesn't get deleted. It just gets labeled as
-  unconfirmed.**[⁴]
+- **An old report doesn't get deleted. It gets labeled as
+  unconfirmed and rechecked.**[⁴]
 - **A valid ham radio license is enough to trust someone's report
   automatically.**[⁵]
 - **Give every password and every key only the smallest amount of access
@@ -79,12 +76,7 @@ the same problems we already worked through.
 
 Before starting any technical setup, confirm you have:
 
-**People & authority**This is the KCGR project (Kershaw County Ground Report — ham radio emergency resource map). Read KCGR_CORE.md in full before doing anything else — it's the single current reference, replaces all prior versions, and is fully up to date as of tonight (8/13/2026 into 8/14). Repo: github.com/taco40sauce/kcgr-resource-feed.
-
-Two things worth knowing before you start:
-
-    §8 is the prioritized open-items list — start there for what's next. Items 1–3 (verifying the new APRS-IS-to-map cutover fires with zero manual intervention, proving reception via a genuinely independent iGate, and letting the poller run unattended for a while) are the live thread from tonight and can't be forced — they depend on real traffic and time passing, not more building.
-    §7 has a process lesson you should actually follow, not just read: I don't have standing authorization to edit or build anything without an explicit go-ahead. A question like "Can I...?" or "Shall we...?" is not that — even when it sounds like agreement. When in doubt, give the diagnosis or the plan (and the exact old/new lines for anything small enough to self-serve) and wait to be told to proceed.
+**KCGR project** (Kershaw County Ground Report — ham radio emergency resource map).You can find the open source github repository at github.com/taco40sauce/kcgr-resource-feed.
 
 - [ ] At least one licensed amateur radio operator willing to serve as
       **Hub Operator** — the person whose credentials, accounts, and
@@ -108,12 +100,12 @@ Two things worth knowing before you start:
       plan to transfer to one later
 - [ ] A free-tier database account (Grist or equivalent) for manual entry
 - [ ] A free-tier mapping account (uMap or equivalent) for public display
-- [ ] A Tailscale (or equivalent mesh VPN) account under the
+- [ ] A **Tailscale** (or equivalent mesh VPN) account under the
       organizational email, for remote operator access
 
 **Decisions to make before building (don't skip — see Part III for how)**
 - [ ] Your category list — what hazards actually matter in your area 🔧
-- [ ] Your field-format grammar and prefix (e.g. `KCGR-` → your own) 🔧
+- [ ] Your field-format grammar and prefix (e.g. `KCGR-` → your own) 🔧 
 - [ ] Your vetting policy — who is auto-trusted, who needs corroboration 🔧
 
 ---
@@ -126,7 +118,7 @@ people you tell, "send me what you're seeing." The system has to work for
 that person, not just for someone who's studied the format carefully.
 Every rule about how a report gets read should be checked against: "what
 happens if someone who's never seen this format sends something close,
-but not exact?" The answer should never be "it gets thrown away silently."
+but not exact?" The answer should never be "it gets set aside for later or silently ignored."
 
 One concrete example: the system doesn't care whether someone types their
 report in capital letters or lowercase — either works. That said, we'd
@@ -141,7 +133,7 @@ habit even though the software doesn't demand it.
 This whole system started as a rough sketch, and real use has already
 changed pieces of it more than once — that's normal, and it's actually a
 sign the design is working, not a sign something's wrong. Build the
-skeleton first, get it running, and expect the details (categories,
+skeleton plan first, get it running, and expect the details (categories,
 timing, wording) to shift once real people start using it. We found that
 a system running today, getting adjusted as we went, served us better
 than waiting for a perfect plan before starting — your own experience
@@ -155,7 +147,7 @@ information from the ground existed, but it mostly reached emergency
 agencies and never reached the public — the problem wasn't a lack of
 data, it was good information sitting unused. So this system is built to
 show a report even when it doesn't perfectly match the expected format —
-labeled honestly as "unconfirmed" or "unclear," rather than thrown away.
+labeled as "unconfirmed" or "unclear," rather than thrown away.
 A grey, imperfect pin on a map still tells someone "something's happening
 here" — which is more than they had before, and doesn't waste the effort
 someone put into sending it.
@@ -164,11 +156,11 @@ someone put into sending it.
 Picture this: two different operators, who don't know each other, both
 report the same bridge as washed out. Is that a duplicate to clean up, or
 is it actually the most reassuring thing that could happen — real
-confirmation from two independent sources? We treat it as the second one.
-Every report still gets saved on its own, under the name of the person who
-sent it — nothing gets merged or overwritten — but the map shows a count,
+confirmation from two independent sources? We treat it as real confirmation.
+Every report still gets saved on its own, under the name or email of the person who
+sent it — nothing gets merged or overwritten — but the map data entry shows a count,
 like "confirmed by 3 operators," so anyone looking at it can judge for
-themselves how solid a report is, rather than the system quietly deciding
+themselves how solid a report is, rather than the system automatically deciding
 that for them.
 
 (If you're curious where this idea comes from: established disaster-
@@ -185,7 +177,7 @@ road reopened, it might just mean the operator who reported it lost power
 or moved on to something else. So instead of deleting that report, or
 pretending it's still fresh, the map simply marks it "unconfirmed" after
 a certain amount of time. The original information stays visible the
-whole time — it's just honestly labeled as older. How long that takes
+whole time — it's just being labeled as older. How long that takes
 before something gets marked unconfirmed is different for every type of
 report, and should be based on how fast things actually tend to change in
 your area (see Part III for how to work that out for yourself).
@@ -196,13 +188,13 @@ without needing a second person to confirm it first — and that's a
 deliberate choice, not something we skipped by accident. A ham radio
 license means the government has already verified who that person really
 is and that they can be held accountable for what they transmit — the
-same reason the U.S. Geological Survey trusts ordinary citizens' "I felt
-an earthquake" reports without needing anyone to double-check them first.
-A callsign works the same way here: it's already a form of ID.
+same reason the U.S. Geological Survey trusts amateur radio operators 
+using Winlink' "Did You Feel it" reports without needing anyone to 
+double-check them first.A callsign works the same way here: it's already 
+a form of trusted ID. [see https://winlink.org/tags/dyfi]
 
 This doesn't extend automatically to *every* possible source of
-information, though, and that's worth being clear about, since it could
-mean two different things:
+information, though, since it could mean two different things:
 
 - If a report comes in through a completely different system — say, a
   future version of this pipeline that also accepts reports over a
@@ -210,9 +202,10 @@ mean two different things:
   that source doesn't carry the same built-in ID-checking a ham license
   does. That doesn't mean it gets held back and hidden, though — same as
   everywhere else in this system, it still goes on the map right away,
-  just honestly labeled "unconfirmed," until either a second, independent
+  just labeled "unconfirmed," until either a second, independent
   report backs it up, or a licensed operator is able to check it out and
-  vouch for it personally.
+  vouch for it personally. This is not intended to imply belief in the report.
+
 - On the other hand, if a *licensed ham* hears something secondhand —
   from a scanner, a neighbor, social media — and chooses to relay it as
   their own report, that's still coming in through the ham radio system,
@@ -223,14 +216,15 @@ mean two different things:
 
 In short: it's the *path the report came in on* that determines the
 trust level, not the *original source* of what an operator personally
-chose to pass along.
+chose to pass along. Unconfirmed reports can easily become confirmed
+with the report of a second witness.
 
 **[⁶] Only ever give a password or a key the smallest job it needs.**
 Think of it like giving out house keys: you wouldn't hand someone a
 master key just so they can water your plants — you'd give them a key
 that only opens the side door. This system follows that same idea
-everywhere. A login used to update the public map is only ever allowed to
-update that one thing, not access everything else in the account it lives
+everywhere. Logins are used to update the public map and each only allows
+that one thing, but doesn't access everything else in the account it lives
 in. Someone checking the shared database can be given a "look but don't
 touch" version of access unless they specifically need to make changes.
 
@@ -244,13 +238,13 @@ to someone else — and this system should keep working when that happens,
 not fall apart because one person's personal logins were holding
 everything together. That's the whole reason for using a shared club
 email account (not your own personal one) for things like the map service
-and the shared file storage — so a future person can be handed the keys
+and the shared file storage — so a future leader can be handed the keys
 cleanly, without needing your personal accounts at all. Write things down
 assuming the person reading them later might be far less technical than
 you are right now, not as technical as you'll be after building all of
 this yourself.
 
-One real wrinkle worth flagging honestly, not glossing over: a shared
+One real wrinkle worth flagging, not glossing over: a shared
 club account is great for succession, but it does raise a practical
 question once Winlink becomes part of this system — someone still has to
 actually log in and check that shared account regularly, the same way you
@@ -258,10 +252,12 @@ might check your own personal one out of habit. That's not automatic just
 because it's a shared account. Checking a Winlink account usually means
 connecting to it directly (for example, over telnet), not glancing at a
 regular inbox — so this needs its own clear answer: who checks it, and
-how often, especially during an actual event. We don't have a clean
-answer to that yet ourselves — it's flagged here on purpose as something
-to work out together with your team when you get to that part of the
-system, not something already solved.
+how often, especially during an actual event. We don't have a perfect 
+answer to that ourselves. At present, we're using a google account 
+owned by the club in which we can set up "email rules" that allow 
+forwarding of messages with the "KCGR-RS" subject line.— it's 
+flagged here on purpose as something to work out together with your 
+team when you get to that part of the system, not something fully solved.
 
 **[⁸] A person clears old reports by hand — the system doesn't guess.**
 There's no fully reliable way for the system to know on its own when a
@@ -269,12 +265,13 @@ situation is truly over — a shelter closing, a road reopening — versus
 just quiet for a while. Rather than let a computer guess wrong and remove
 a report that's still true, a real person checks and clears things out
 after an event has settled down. Getting this wrong in the safer
-direction (a report stays visible a little longer than it needs to) is
-far better than getting it wrong in the other direction (a still-true
-report disappears on its own). The corroboration count mentioned earlier
+direction (a report such as "road-closed" stays visible a little longer 
+than it needs to) is far better than getting it wrong in the other direction 
+(a still-true report disappears on its own). The corroboration count mentioned earlier
 is a helpful clue for *where* to look when doing this cleanup — a report
 that many people confirmed, but that's gone quiet for a while, is worth a
-second look — but a person always makes the actual call.
+second look — but a person always makes the actual call. Confirming by 
+various avenues is the way to go.
 
 **[⁹] Build a real relationship with your local EOC — not just a feed
 going out.**
@@ -285,16 +282,16 @@ to your local (or state) emergency management using the standard format
 they already use for this — called an **ICS-213 General Message form**.
 It's a simple, widely-recognized way of relaying a message during an
 emergency, already familiar to most EOC and ARES/RACES people, so using
-it (rather than a made-up format of your own) tends to be taken
-seriously right away.
+it tends to be taken seriously right away.
 
-Doing this well can create a genuine two-way street: official
-information the EOC has — that never would have come from a ham
+Covering both bases can create a genuine two-way street: official
+information the EOC has — that may never would have been relayed from a ham
 operator on the ground — can end up getting added to your public map by
-your Hub Operator, filling in gaps your own reports alone couldn't cover.
+your Hub Operator or those associated with the EOC leadership, filling 
+in gaps your own reports alone couldn't cover.
 
-There's a real trade-off worth naming plainly, though: asking every
-field operator to fill out a second, more formal message on top of their
+There's a real trade-off worth naming: ask every field operator to fill 
+out a second, more formal message on top of their
 quick radio report adds real effort, right when they're busiest. Two
 reasonable ways to handle this, and it's worth picking one on purpose
 rather than leaving it vague:
@@ -304,6 +301,8 @@ rather than leaving it vague:
   gather up the notable reports already coming in and relay *those* to
   the EOC as ICS-213 messages — keeps the field side simple and fast, at
   the cost of a little delay and one more task for whoever runs the hub.
+- The bottom line is ask for reports to the Hb, then file a similar report
+ to the EOC and/or ARES.
 
 Either can work. What matters most is deciding this on purpose, together
 with your team, rather than leaving it to chance — see Part IV, section
@@ -320,13 +319,17 @@ Older or simpler radios usually don't have that built in, and need a
 small separate box in between the radio and the computer to handle audio
 and switch the radio to transmit — a "Signalink" is a well-known example
 of this kind of box. It does the same job, just with an extra piece of
-hardware and a bit more cabling.
+hardware and a bit more cabling. Another option is using digirig ham radio
+cabling. [https://digirig.net/] Please don't consider this an endorsement 
+but, rather, a possible solution.
 
-Neither setup is better than the other for this system — you're not
+Neither setup is 'better' than the other for this system — you're not
 missing out either way. You just need to know which one you have, since
 the setup steps in Part II differ slightly depending on the answer. If
 you're not sure, check your radio's manual for the words "USB audio" or
-"built-in sound card" — that'll tell you which category you're in.
+"built-in sound card" — that'll tell you which category you're in. The 
+advantage of a small Raspberry Pi is that very little energy is used which 
+could affect your power bill.
 
 ---
 
@@ -354,7 +357,9 @@ at a time, not all at once.
 **What you need:**
 - [ ] A small always-on computer (a Raspberry Pi is what this system was
       built around — a credit-card-sized computer that sips very little
-      power and is inexpensive)
+      power and is relatively inexpensive)
+- [ ] An older always-on computer running a Linux distrobution (distro) was
+      the origianl build. It was a repurposing project that expanded.
 - [ ] Your amateur radio, connected using whichever method matches your
       radio (see Part I, note 10 — either a single USB cable, or a
       separate interface box like a Signalink) 🔧
@@ -382,47 +387,66 @@ at a time, not all at once.
 
 ## 2.2 Software Pipeline Setup
 
-**What "the pipeline" actually is, in plain terms:** a small set of
-programs that work together to notice a new report coming in over the
-radio, read what it says, save it, and automatically put it on your
-public map — without anyone needing to do that by hand.
 
-There are five small pieces, each with one simple job:
+**What "the pipeline" actually is, in plain terms:** not one path, but
+several independent capture channels that each notice a new report
+arriving over their own source, read what it says, and save it —
+feeding into one shared step that takes everything saved across every
+channel and republishes your public map together.
 
-| Piece | Its one job |
-|---|---|
-| The **fetcher** | Logs into your APRS software and asks, "any new messages?" |
-| The **reader** | Takes one message and figures out what it actually says |
-| The **filing cabinet** | Saves each report so nothing gets lost |
-| The **publisher** | Takes everything currently saved and updates the public map |
-| The **conductor** | Runs the first four, in the right order, every time |
+**Why more than one channel, on purpose.** Relying on a single capture
+path ties your entire system's uptime to one radio, one piece of
+software, one computer being powered on and connected. This system is
+built around at least two genuinely independent ways of hearing the
+same over-the-air reports — one tied to your own local hardware, and
+one that keeps working even if that hardware is down — plus a separate
+channel for reports that arrive by email instead of radio at all. Each
+channel is deliberately built so a failure in one doesn't take the
+others down with it.
+
+
+Each channel breaks down into the same small set of jobs:
+
+| Piece | Its one job | Scope |
+|---|---|---|
+| The **fetcher** | Logs into that channel's source (your radio software, an internet-based feed, an email account) and asks, "any new messages?" | one per channel |
+| The **reader** | Takes one message and figures out what it actually says | one per channel |
+| The **filing cabinet** | Saves each report — each channel writes only its own file, so no two channels ever fight over the same data | one per channel |
+| The **conductor** | Runs that channel's fetcher, reader, and filing cabinet, in order, on its own schedule | one per channel |
+| The **publisher** | Takes everything currently saved, across *every* channel, and updates the public map together | shared, runs once per update |
+
 
 **Steps:**
 1. Get the code onto your small computer. This system's code is kept on
-   **GitHub** — a free website for storing and sharing code, a bit like
-   a shared drive, except it also keeps a full history of every change
-   ever made to it, which is genuinely useful when something needs to be
-   undone or double-checked later. Create a free account there under
-   your **club's shared email**, not a personal one (see Part I, note 7).
-2. Install Python (the programming language all of this is written in)
-   if it isn't already on your small computer.
-3. Set up a **separate file just for your passwords and logins** — kept
-   completely apart from the actual program files. This matters: it
-   means your real password never accidentally ends up somewhere public,
-   like the shared code repository.
-4. **Test each piece by itself before connecting them.** Run the fetcher
-   alone first, and confirm it can actually log in and pull messages.
-   Then test the conductor, which runs everything together. Don't skip
-   this — testing one piece at a time is exactly how a real, hard-to-spot
-   problem[¹] got caught and fixed in the system this was built from.
-5. Once the conductor runs cleanly by hand, set it up to run
-   automatically and repeatedly, on its own, without you needing to sit
-   there and type anything.[²] How often it checks is worth thinking
-   about deliberately rather than just picking a number — see Note 2 🔧
+   **GitHub**... *(unchanged)*
+2. Install Python... *(unchanged)*
+3. Set up a **separate file just for your passwords and logins** —
+   covering every channel's credentials, not just one — kept completely
+   apart from the actual program files.
+4. **Build and test one channel fully before starting the next.**
+   Confirm its fetcher can log in and pull messages, and that a real
+   test report makes it into that channel's own file, before touching
+   the next channel or wiring anything into the shared publisher.
+   Don't skip this — testing one piece, and one channel, at a time is
+   exactly how a real, hard-to-spot problem[¹] got caught in the system
+   this manual is based on: several channels were each written and
+   tested individually, and everyone assumed they were already running
+   together — they weren't, and real reports simply never reached the
+   map with no error showing up anywhere.
+5. Once a channel's conductor runs cleanly by hand, set it up to run
+   automatically and repeatedly on its own schedule.[²] A channel tied
+   to your own hardware is a reasonable thing to gate behind the manual
+   on/off switch in step 6. A channel that runs independently of your
+   hardware — an internet-based feed, an email account — doesn't need
+   to wait on that switch at all; it can run continuously on its own
+   schedule, since it isn't tying up your local radio or keeping your
+   own computer powered on.
 6. Add a simple on/off switch, reachable from a web browser with a
-   password, so you (or another trained operator) can turn the automatic
-   checking on before an event and off afterward, from anywhere — not
-   just from the small computer itself.[³]
+   password, for the channel(s) tied to your own hardware — so you (or
+   another trained operator) can turn that piece on before an event and
+   off afterward, from anywhere. This switch is scoped to your
+   hardware-tied channel only — it doesn't start or stop any channel
+   that already runs on its own independent schedule.[³]
 
 ---
 
@@ -450,7 +474,7 @@ side.
    map telling it what color and icon to use. **The exact spelling and
    capitalization has to match perfectly between your database, your
    pipeline, and your map's rules** — even one different character means
-   a pin will quietly show up unstyled, with no error or warning
+   a pin will show up **unstyled**, with no error or warning
    anywhere.[⁴] This one actually cost real time to track down during
    testing of the system this manual is based on — not because anyone did
    anything wrong, just because a computer treats two almost-identical
@@ -498,62 +522,72 @@ error showing up anywhere. Testing one piece at a time, and then testing
 the whole chain together deliberately, catches exactly this kind of gap.
 
 **[²] Why "runs automatically" needs an on/off switch, not just "always
-on."**
-It might seem simpler to have this checking for new messages constantly,
-all the time, forever. In practice, there's rarely a need for that
-outside of an actual emergency — and having an explicit on/off switch
-means it's only using your radio and internet connection when there's a
-real reason to. This system defaults to **off**, and someone turns it on
+on" — but only for the channel tied to your own hardware.**
+It might seem simpler to have every channel checking for new messages
+constantly, all the time, forever. For your hardware-tied channel,
+there's rarely a need for that outside an actual emergency — and having
+an explicit on/off switch means it's only using your own radio, your own
+computer's uptime, and your own internet connection when there's a real
+reason to. That channel defaults to **off**, and someone turns it on
 deliberately when it's actually needed, then off again afterward.
 
-Worth thinking about your checking interval the same deliberate way. It's
+Your channel(s) that run independently of your own hardware are
+different on purpose. Checking continuously costs nothing extra of
+yours — no local radio, no local computer staying powered on — so
+there's no reason to gate them behind the same switch. Letting them run
+on their own schedule around the clock is exactly what makes them a
+genuine backup: if your hardware-tied channel is off, or your hardware
+itself is down, those channels keep working regardless. Gating
+everything behind one shared switch would quietly undo the reason a
+second, independent channel was built in the first place.
+
+Worth thinking about each channel's checking interval the same
+deliberate way, independent of whether it's toggled or continuous. It's
 tempting to assume "more often is always better," but that's not
 necessarily true — if your local APRS frequency tends to get busy or
 crowded during a real event, reports may only be getting through the
-shared airwaves occasionally in the first place, no matter how often your
-system checks for them. Checking faster than real reports can actually
-arrive doesn't gain you anything, and just uses more of your radio and
-internet resources for no benefit. A good interval is one that matches
-how busy your own local frequency realistically gets — worth a
-conversation with other local operators who know that frequency well,
-rather than guessing.
+shared airwaves occasionally in the first place, no matter how often any
+channel checks for them. Checking faster than real reports can actually
+arrive doesn't gain you anything, and just uses more of your radio,
+computer, and internet resources for no benefit. A good interval is one
+that matches how busy your own local frequency realistically gets —
+worth a conversation with other local operators who know that frequency
+well, rather than guessing.
 
 **[³] Why the on/off switch is a separate thing from the automatic
 checking itself.**
-These are set up as two independent pieces on purpose: the switch itself
-should always be reachable, even when the automatic checking is turned
-off — otherwise you'd have no way to turn it back on remotely. Keeping
-them separate means one can be "always available" while the other is
-"only running when needed."
+These are set up as two independent pieces on purpose, for your
+hardware-tied channel specifically: the switch itself should always be
+reachable, even when that channel's automatic checking is turned off —
+otherwise you'd have no way to turn it back on remotely. Keeping them
+separate means the switch can be "always available" while the channel it
+controls is "only running when needed."
+
+Your independently-scheduled channels don't have this switch at all, by
+design (see 2.2, steps 5–6) — there's nothing to keep
+reachable-but-off, since there's no cost to leaving them running
+continuously.
 
 **[⁴] Why exact spelling matters so much here.**
 Computers don't understand meaning the way people do — they check
 whether two pieces of text match *exactly*, character for character. To
 a person, "Food-open" and "Food-Open" obviously mean the same thing. To
 the map's styling rules, they're two completely different, unrelated
-values — and a mismatch doesn't cause an error message, it just quietly
-leaves that one pin unstyled, gray or invisible, with nothing telling you
-why. This exact problem happened during real testing of this system, and
-took real effort to track down precisely because nothing "broke" in an
-obvious way. Worth double- and triple-checking every value matches
-exactly, rather than assuming close-enough is good enough.
+values — and a mismatch doesn't cause an error message, it just leaves that one pin unstyled, gray or invisible, with nothing telling you why. This exact problem happened during real testing of this system, and took real effort to track down precisely because nothing failed in an obvious way. Carefully double- and triple-check every value match exactly Don't assume close-enough is good enough, close only counts in horseshoes, hugging, and atomic warfare.
 
-**[⁵] Why not just open the small computer directly to the internet
-instead?**
+**Why not just open the small computer directly to the internet?**[⁵] 
 It's technically possible to make a home computer reachable from the
-internet directly, without a service like Tailscale, by adjusting some
-router settings. This system deliberately avoids that. Doing it that way
-means the whole open internet can attempt to reach your computer, not
-just the people you've actually invited — every additional exposure like
-that is a chance for something to go wrong that has nothing to do with
+internet directly, without an encrypting service like Tailscale, by adjusting some
+router settings. Doing it that way means the whole open internet can attempt to reach your computer, not just the people you've actually invited — every additional exposure like that is a chance for something to go wrong that has nothing to do with
 this project. A private networking service instead only allows in the
 specific devices you've personally approved, over a secure, invitation-
 only connection — the same "give it only the smallest access it needs"
 idea from Part I, applied to your network instead of a password.
+A free tier on github makes Internet security one less hassle to deal with.
 
 ---
 
-*Part III (Making It Yours) picks up next — your category list, field
+# Part III (Making It Yours) picks up next — your category list, field
 format, staleness timing, corroboration rules, and local reference
 resources.*
 
@@ -786,36 +820,60 @@ private residence, regardless of category (full rationale in Part III).
    equivalent) following your one-time device setup (see your Operator
    Manual) 🔧.
 ---
-### REMOVAL-PANAL ACCESS TOKEN ON GITHUB for admin page report  
-  Removal-panel access token — expires 8/14/2027. The admin page's 
-report-removal tool depends on a GitHub access token that expires on this date. 
-If it lapses, the toggle and status sections of this page keep 
-working normally — *** only the removal tool breaks *** , and it fails with an 
-*** authentication error *** rather than anything visible elsewhere on the page. 
-If a removal attempt fails after this date, or if you're checking in proactively 
-around this date: generate a new fine-grained token at 
-github.com/settings/personal-access-tokens/new (repository access: kcgr-resource-feed only; 
-permissions: Contents read-only, Actions read/write), 
-then update GITHUB_PAT in ~/.kcgr_secrets/credentials.env on the Pi and r
-estart the admin app. Contact the Hub Operator if you're not sure how to do this.
+
+### GITHUB PERSONAL ACCESS TOKEN (P.A.T.) FOR THE ADMIN-PAGE REMOVAL PANEL
+
+**Not to be confused with *Pat*, the separate Winlink client program
+used elsewhere in this system — this is an unrelated credential issued
+by GitHub itself, spelled out here in full every time to avoid the
+mix-up.**
+
+The admin page's report-removal tool depends on a GitHub Personal
+Access Token (hereafter **P.A.T.**) that expires **8/14/2027**. If it
+lapses, the toggle and status sections of the admin page keep working
+normally — ***only the removal tool breaks***, and it fails with an
+***authentication error*** rather than anything visible elsewhere on
+the page.
+
+If a removal attempt fails after this date, or if you're checking in
+proactively around this date:
+1. Generate a new fine-grained GitHub Personal Access Token at
+   `github.com/settings/personal-access-tokens/new` — repository
+   access: `kcgr-resource-feed` only; permissions: `Contents:
+   Read-only`, `Actions: Read and write`.
+2. Update the `GITHUB_PAT` value in `~/.kcgr_secrets/credentials.env`
+   on the Pi with the new P.A.T.
+3. Restart the admin app.
+
+Contact the Hub Operator if you're not sure how to do this. (See Part
+VI for a fully click-by-click walkthrough of generating one of these
+from scratch, written for someone who's never created a GitHub P.A.T.
+before.)
 
 ---
 
 ## 4.2 Pre-Event Activation Checklist
 
-**What "activation" means here.** Right now, activation is a technical
-step — turning your automated pipeline on. That's expected to change as
-more of this system moves off local hardware.[²]
+**What "activation" means here.** Most of what you're activating
+already runs on its own, all the time — your independently-scheduled
+channels (an internet-based radio feed and Winlink/email, see 2.2)
+don't wait for anyone to switch them on. What's still a technical step
+is your hardware-tied fallback channel (the Pi's own local capture),
+which stays off by default and someone has to deliberately turn on if
+you want that extra layer running for this event.[²]
 
 **Steps:**
-1. Turn the automated pipeline on (see your Quick Command Reference
-   appendix) and confirm it shows as running.
+1. If you want your hardware-tied fallback channel active for this
+   event, turn it on (see your Quick Command Reference appendix) and
+   confirm it shows as running. Your independently-scheduled channels
+   need no action here — they're already checking on their own
+   schedule.
 2. Do one test entry directly in your database, and confirm the
    matching pin appears correctly on the public map before relying on
    it for real reports.
 3. Notify your data-entry operators and validators that KCGR is active
    — this is the step that actually puts people watching, regardless of
-   what the pipeline itself is doing.
+   what any individual channel is doing.
 4. If your EOC, CERT, or a net (Skywarn or otherwise) is activating
    around the same event, coordinate timing so KCGR can record live
    field reports as they come in — active and ready before other
@@ -833,12 +891,13 @@ more of this system moves off local hardware.[²]
 hour, every channel, no exceptions.**[³]
 
 **Watch for reports that never make it in.** Only your own automated
-channels (APRS, and Winlink once built) get checked by the pipeline
-itself. Anything relayed over DMR, Meshtastic, Facebook, Skywarn, or any
-other channel depends entirely on a person remembering to also put it in
-your database. This is a validator's main job during an active
-event — not just watching what's already on the map, but watching for
-the gap.
+channels — your local radio capture, its independent internet-based
+backup, and Winlink/email — get checked automatically. Anything relayed
+over DMR, Meshtastic, Facebook, Skywarn, or any other channel depends
+entirely on a person remembering to also put it in your database 
+(getgrist in the case of the KCGR project). This
+is a validator's main job during an active event — not just watching
+what's already on the map, but watching for the gap.
 
 **Handling a report that's clearly wrong.**[⁴]
 1. Pull it using your removal tool.
@@ -863,19 +922,20 @@ note 9 🔧.
 
 ## 4.4 Post-Event Wind-Down
 
-**What wind-down means here.** Today, wind-down includes turning the
-pipeline off — the same Pi-hosted toggle covered in note 2. The plan is
-for that step to disappear entirely once the pipeline moves off the Pi
-onto always-on infrastructure; at that point there's nothing to switch
-off, and wind-down becomes purely about people and data, not
-infrastructure. Update step 1 below once that migration is real.
+**What wind-down means here.** Your independently-scheduled channels
+don't need winding down at all — they keep running on their own
+schedule whether or not anything's actively happening, same as before
+the event. If you turned on your hardware-tied fallback channel for
+this event (4.2, step 1), wind-down includes turning it back off.
+Beyond that one optional step, wind-down is already mostly about people
+and data, not infrastructure (see note 2).
 
 **Steps:**
-1. If your pipeline is still Pi-hosted with an on/off toggle, turn it
-   off once you're confident the event is truly over — not
+1. If you turned on your hardware-tied fallback channel for this event,
+   turn it off once you're confident the event is truly over — not
    automatically, not on a timer (Part I, note 8: a person makes this
-   call by hand). Once it's running on always-on infrastructure
-   instead, skip this step — there's nothing to turn off.
+   call by hand). If you never turned it on, or don't use that channel
+   at all, skip this step.
 2. Fill out the post-event questions (Appendix D) while the event is
    still fresh — days later is fine, weeks later loses detail.
 3. Clear out reports that are now confirmed resolved; leave anything
@@ -888,7 +948,6 @@ infrastructure. Update step 1 below once that migration is real.
    just because the event's over 🔧.
 6. Fold anything worth remembering into your changelog / lessons-learned
    record (Part V) — especially anything that surprised you.
-
 ---
 
 ## Notes for Part IV
@@ -902,21 +961,27 @@ trainee taught only the first will enter reports well but may never
 think to check whether *other* reports are missing. Teaching them
 separately, even briefly, makes sure both muscles actually get built.
 
-**[²] Why activation is currently a toggle, but described as changing.**
-Today, your automated pipeline defaults to off (Part II, note 2) and
-someone has to deliberately turn it on. That was a deliberate choice
-when everything ran on a single Pi at home — no reason to poll for
-reports around the clock if there's no active need. Once more of this
-system moves to always-available infrastructure (not tied to your home
-power or internet), that reasoning goes away: there's no real cost to
-leaving it running continuously, and doing so means anyone reporting in
-already "activates" the system just by sending a report — the same way
-a Skywarn net-control operator activates a net simply by starting it,
-not by requesting permission first. When that shift happens, this
-checklist's step 1 becomes unnecessary, and "activation" becomes purely
-about notifying people, not touching any switch. Update this section
-when that migration is complete — don't leave stale toggle instructions
-here once they no longer apply.
+[²] **Why activation is mostly just notifying people now**, with one
+optional toggle left.**
+Early on, "activation" meant turning the whole pipeline on — everything
+lived on a single Pi at home, and there was no reason to poll for
+reports around the clock if there was no active need. That's no longer
+true for most of the system: your independently-scheduled channels
+(2.2) already run continuously on infrastructure that isn't tied to
+your home power or internet, so there's no real cost to leaving them
+running all the time — anyone reporting in already "activates" that
+part of the system just by sending a report, the same way a Skywarn
+net-control operator activates a net simply by starting it, not by
+requesting permission first.
+
+What's left of the old toggle is scoped to a single, now-optional
+fallback channel — your hardware-tied local capture, which still
+defaults to off and still needs a deliberate switch, because it's the
+one piece still tied to your own Pi being powered on and connected.
+Update this note again if that channel is ever migrated off local
+hardware too — at that point there'd be nothing left to switch, and
+step 1 of both 4.2 and 4.4 would become unnecessary rather than just
+optional.
 
 **[³] Why every operator checks their own report, on every channel,
 within an hour.**
@@ -972,11 +1037,542 @@ maintenance burden unless the free tier truly stops fitting) 🔧.
 
 ---
 
-*Part V (Keeping It Alive) picks up next — troubleshooting/recovery,
-succession planning, third-party permissions log, and an append-only
-changelog of lessons learned.*
+# PART V — Keeping It Alive
+
+Parts I through IV got this system built, made it yours, and running.
+This part is different again — it's about what happens *after* that:
+what a successor needs to find without you standing there, what a real
+failure actually looks like when you're staring at it, and a place to
+put what you learn so the next person (possibly a future version of
+you) doesn't have to relearn it the hard way.
 
 ---
+
+## 5.1 Third-Party Permissions Log
+
+**What this is:** a living table of every outside account this system
+depends on — who owns it, who can get into it, and how much they can
+do once they're in. Unlike most of this manual, this section is
+deliberately **not** meant to be reusable across clubs by design — it's
+your own operational reality, specific to your accounts, filled with
+your own real answers, not a generic template.
+
+**Why this matters:** the same "smallest necessary access" principle
+from Part I, applied at the level of *who can see this table at all*.
+A successor who inherits this project cold needs to know what accounts
+exist and who to ask before they need to know it in an emergency — not
+discover it by trial and error while something's actively broken.
+
+**Steps:**
+1. Keep one row per outside service this system touches — not per
+   credential, per *service* — so a reviewer can see the whole
+   footprint at a glance.
+2. Review this table on a fixed cadence (quarterly is reasonable), not
+   only when something breaks. A credential that's still valid but
+   nobody remembers exists is exactly as risky as one that's expired.
+3. Update the "Last reviewed" column every time you touch a row — even
+   if nothing changed. An untouched date tells you as much as a wrong
+   one.
+
+**Real, filled example** (this project's own accounts, as of the last
+edit to this table — replace with your own):
+
+| Service | Account owner | Who has access | Access level | Last reviewed |
+|---|---|---|---|---|
+| GitHub (`kcgr-resource-feed` repo) | Club GitHub org account, not a personal login | Hub Operator + each stand-in, via individual collaborator invites (see 5.2) | Repo write | 🔧 |
+| GitHub Personal Access Token (P.A.T.)[²] | Stored in `~/.kcgr_secrets/credentials.env` on the Pi | Whoever can reach the Pi's admin app or its credentials file | `Contents: Read-only`, `Actions: Read and write`, scoped to `kcgr-resource-feed` only — **expires 8/14/2027** | 🔧 |
+| Admin app (`kcgr-admin.service`) | `KCGR_ADMIN_PASSWORD`, one shared password | Anyone with the password and Tailscale access | Pipeline toggle + `/records` removal panel | 🔧 |
+| Grist | Club shared email | Team members added directly in Grist | Per-seat, capped by the current plan tier — check before adding a new operator | 🔧 |
+| uMap | Club shared email | Whoever needs to edit map layers or styling | Edit access is rare — most operators only ever need view | 🔧 |
+| Tailscale | `kc4rc.fd@gmail.com`, not a personal account | Every device that's joined the tailnet | Personal plan — 6 users, unlimited devices per user | 🔧 |
+| Gmail (`kc4rc.fd@gmail.com`) | Club shared account | Hub Operator, primary; forwarding rules also route copies elsewhere | 2FA via authenticator app + a scoped App Password ("KCGR Automation") powering the Winlink poller; 10 backup codes stored on paper and in a password manager | 🔧 |
+
+---
+
+## 5.2 Access Control & Succession
+
+**What this is:** how a new stand-in Hub Operator actually gets set up
+— and the reasoning behind why access works the way it does, so a
+future maintainer doesn't quietly "simplify" it back into something
+this project already deliberately moved away from.
+
+**The decided policy:**
+- Each stand-in Hub Operator gets their **own individual GitHub
+  account**, granted repo write access directly — never a shared
+  account, never a shared login.
+- Each account enrolls its **own independent TOTP 2FA** (an
+  authenticator app or a hardware key) — deliberately **not**
+  SMS-based, and **not** one shared TOTP secret handed to multiple
+  people.
+- This reuses the access boundary the project already trusts — GitHub
+  repo write permission — instead of building a second, separate
+  authentication system just for this project.
+
+**Steps, for onboarding a new stand-in operator:**
+1. Have them create their own free GitHub account, if they don't
+   already have one.
+2. Have them enroll independent TOTP 2FA on that account before you
+   send an invite — an authenticator app or hardware key, not SMS.
+3. Send a collaborator invite from the `kcgr-resource-feed` repo
+   directly to their account.
+4. Once accepted, confirm they can actually reach the admin app over
+   Tailscale (see 2.4) — GitHub access and admin-app access are two
+   separate things, and a new operator needs both.
+5. Log the new row in the permissions table (5.1) the same day —
+   waiting "until things settle down" is exactly how a table like this
+   goes stale.
+
+**Still genuinely open, not yet decided:**
+- A friendlier setup path for the `GITHUB_PAT` itself, for a future
+  Hub Operator who's never created one before. Three options have been
+  discussed — a proper GitHub App install/authorize flow, a setup
+  script that still uses a PAT but automates writing it to
+  `credentials.env`, or simply documenting the current manual process
+  well as a real worksheet. None of these is blocking today's use of
+  the removal panel; this is a real decision the club hasn't made yet,
+  not an oversight.
+- A second director's phone number as a backup 2-Step Verification
+  method on the shared Gmail account, in case the primary
+  authenticator device is unavailable.
+- Who actively checks the shared Gmail inbox, and how often — a
+  decision the club needs to make on purpose, not default into.
+
+**Out of scope for this section:** someone outside your own area
+adapting this system for their own county or region should **fork**
+the repository rather than receive collaborator access to this one —
+that's a separate guide, not yet written, and belongs on its own
+rather than folded into succession planning for *this* project's own
+operators.
+
+---
+
+## 5.3 Troubleshooting & Recovery
+
+**What this is:** not a list of every bug this project has ever hit —
+those live in the changelog (5.4) — but the *patterns* behind them,
+generalized so you recognize the shape of a new problem even if the
+specific cause is different. Every pattern below was learned from a
+real failure, not anticipated in the abstract.[¹]
+
+| If you're seeing... | It's likely because... | Check this first |
+|---|---|---|
+| The public map isn't updating, even though a channel's own data file looks correct | The publishing step's own trigger file may be silently broken — a single malformed line can disable **every** way that step can run, not just the one you happen to be testing | Open that workflow's own run history directly and read what it actually says, rather than assuming a `push` not firing means only that trigger is affected |
+| A scheduled channel just stops producing anything, with no visible error | A file may have been silently overwritten with the wrong content — easy to do by accident when uploading several similar files back-to-back | Open an actual recent run's log, not just its pass/fail status — a wrong-content crash and a real success can look identical from a run *list* alone |
+| A run's log looks unusually quiet or repetitive, and you're not sure if that's normal | Output may be getting buffered and never reaching the log at all, especially in a non-interactive scheduled environment | Force unbuffered output before trusting a quiet log as meaningful, not just when something's already suspected wrong |
+| A category, status, or lookup value isn't matching even though it looks right in the log | A fixed-width or padded data format may be leaving invisible extra whitespace in the value | Read the actual stored value directly (not a formatted log line) — trailing whitespace is often invisible in normal output |
+| Something you fixed still seems broken, or you're not sure if it's really fixed | A description of a change (a commit message, a checkmark, a "done" note) isn't the same thing as confirming the change | Re-verify against real evidence — the actual file content, the actual log line, the actual live page — every time, not just once |
+
+**General recovery steps, once you've identified what's actually
+wrong:**
+1. Fix the root cause, not just the visible symptom — a silently
+   broken trigger file and the data it should have published are two
+   separate things that both need checking.
+2. Verify the fix with real evidence at every step it touches, not
+   just the last one.
+3. Log it in the changelog (5.4) before moving on — even a fix that
+   feels obvious in the moment is easy to forget the reasoning behind
+   later.
+
+---
+
+## 5.4 Append-Only Changelog
+
+**What this is, and how it's different from the rest of this
+manual.** Every other part of this document describes your system as
+it currently is — when something changes, you update the relevant
+section in place. This section is the opposite on purpose: entries get
+**added**, never rewritten or deleted, even after the thing they
+describe gets fixed or replaced. A troubleshooting guide tells you what
+to do; this tells you what actually happened, in order, so a pattern
+across multiple incidents is visible later even if no single entry
+looks alarming on its own.
+
+**Steps:**
+1. Add a dated entry whenever something breaks, gets fixed, or
+   surprises you — while it's fresh, not from memory weeks later.
+2. Write what actually happened and how it was actually confirmed, not
+   just what you assume caused it.
+3. Never edit or delete a past entry, even if it turns out to be
+   wrong or incomplete — add a new, dated entry correcting it instead.
+   The record of *being* wrong for a while is itself useful information
+   for a future reader.
+
+**Seed entries** (real, to show the format — keep adding below these,
+don't replace them):
+
+- **[date]** — A single mis-indented line in a workflow's own trigger
+  configuration silently disabled every way that workflow could run —
+  push, chained trigger, and manual click alike — for several hours,
+  with no error visible anywhere an operator would naturally look.
+  Fixed by re-indenting; confirmed via a real end-to-end test
+  afterward, not just a clean-looking file.
+- **[date]** — A poller script was found holding a different, unrelated
+  script's content after a multi-file upload session — every scheduled
+  run crashed instantly for hours before this was caught. Restored
+  from a known-good backup; confirmed with a real successful run
+  afterward.
+- **[date]** — A wire format's fixed-width padding survived unstripped
+  into a lookup key, silently misclassifying several categories as
+  "unknown" with no error anywhere. Caught only by reading the raw
+  stored value directly. Fixed by explicitly stripping the value
+  before using it as a key.
+
+---
+
+## Notes for Part V
+
+**[¹] **Why this section teaches patterns** instead of listing every past
+bug.** A list of exactly what broke before is useful once, for
+recognizing the *same* problem again — but it doesn't help with the
+next, different problem. The changelog (5.4) is where the specific
+history lives; this section exists to make that history transferable,
+so a future maintainer facing a genuinely new symptom still recognizes
+the shape of it from a pattern they've seen described here.
+
+**[²] Why this is always spelled out as "P.A.T." with periods.** This
+system also uses a completely unrelated program called *Pat* for
+Winlink. "PAT" as a bare acronym and "Pat" as a program name look
+identical on the page — spelling it out as "GitHub Personal Access
+Token" on first use in any section, and using the punctuated "P.A.T."
+as shorthand after that, is a small, deliberate habit meant to keep the
+two from ever getting confused by a reader skimming quickly.
+
+---
+
+# PART VI — Adapting This System For Your Own Area
+
+Everything built in Parts I–V belongs to one club, in one county. This
+part is for someone else entirely — a different county, a regional ARES
+group, or a statewide effort — who wants their own, fully independent
+version of this system: their own repository, their own database, their
+own map, sharing none of the original project's actual data or
+accounts.
+
+**This part is deliberately hypothetical in one specific way.** The
+naming examples used throughout — swapping `KCGR-` for something like
+`MGS-` (a regional Midlands group) or `SCGR-` (a statewide effort) — are
+illustrative possibilities, not an announced plan. They exist here in
+the hope that more of the state gets involved, not as a commitment any
+group has made. Treat them as a worked example to learn the method
+from, exactly the same way Part III treats its own category-list
+example.
+
+---
+# PART VI — Adapting This System For Your Own Area
+
+Everything built in Parts I–V belongs to one club, in one county. This
+part is for someone else entirely — a different county, a regional ARES
+group, or a statewide effort — who wants their own, fully independent
+version of this system: their own repository, their own database, their
+own map, sharing none of the original project's actual data or
+accounts.
+
+**This part is deliberately hypothetical in one specific way.** The
+naming examples used throughout — swapping `KCGR-` for something like
+`MGS-` (a regional Midlands group) or `SCGR-` (a statewide effort) — are
+illustrative possibilities, not an announced plan. They exist here in
+the hope that more of the state gets involved, not as a commitment any
+group has made. Treat them as a worked example to learn the method
+from, exactly the same way Part III treats its own category-list
+example.
+
+---
+
+## 6.1 Why Fork, Not Ask for Access
+
+**The short version:** you're building your own separate copy of this
+system, not borrowing a seat in someone else's. On GitHub, that's called
+**forking** — it makes you a complete, independent copy of the code,
+under your own account, that you can change freely without touching the
+original project at all.
+
+This matters for two real reasons:
+- **Your data stays yours.** A fork never shares reports, credentials,
+  or map data with the original project — it's a separate system from
+  the moment it's created.
+- **Nothing you do can break the original.** You're free to rename
+  things, experiment, and make mistakes in your own copy without any
+  risk to the project you copied it from.
+
+**The original project's own documentation already anticipated this.**
+Its format was built around a deliberate three-step "prefix ladder,"
+designed in from the start rather than added later:
+
+| Prefix | Covers | Length |
+|---|---|---|
+| `KCGR-` | Kershaw County | 5 characters |
+| `MGS-` | Midlands (regional) | 4 characters |
+| `SCGR-` | South Carolina (statewide) | 5 characters |
+
+**Why the lengths matter, not just the names.** Every character inside
+an APRS object beacon's comment field is scarce — the whole format was
+built around a hard 43-character limit. `MGS-` is one character
+*shorter* than `KCGR-`, which actually gains you one character of room
+elsewhere in the message. `SCGR-` is the same length as `KCGR-`, so a
+statewide adoption ports over with no restructuring needed at all.
+
+**The prefix is deliberately the *only* thing meant to change at a
+larger scale.** Per the original project's own documentation: field
+order and specifier codes are load-bearing — they're what keeps the
+format self-describing and readable under stress, without a lookup
+table. If your own group ever proposes changes beyond a renamed prefix,
+the original author's stated guidance is to shorten or replace the
+prefix further before touching field order or eliminating codes, not
+the other way around.
+
+**Worth knowing, in the original author's own words:** this format was
+"developed June 2026 by AA4TE, Camden SC, EM94, KC4RC / Kershaw County
+ARES... not a final standard — for review by Kershaw County ARES EC,
+Midlands Section 3, and SC ARES." In other words: exactly as hypothetical
+as it sounds when you first hear about it. Forking today doesn't require
+waiting on any of that review to happen — a single county adopting this
+independently, with its own prefix, is a complete and valid use of
+everything in this part, with or without a larger regional or state
+effort ever materializing.
+---
+
+## 6.2 Before You Start: What You'll Need
+
+- [ ] Your own group's shared email address (not anyone's personal
+      email — see the reasoning in Part I, note 7, which applies here
+      just as much as it did to the original project)
+- [ ] Someone comfortable clicking through unfamiliar websites and
+      following instructions closely — you do **not** need a
+      programmer for anything in this part
+- [ ] Your own small always-on computer (Part II, 2.1) — this is not
+      shared with the original project either
+- [ ] About an hour of uninterrupted time for the account-creation
+      steps below — they go faster if you're not stopping and starting
+
+---
+
+## 6.3 Creating Your Own Copy of the Code (Forking on GitHub)
+
+**Step-by-step, starting from nothing:**
+
+1. Go to **github.com** in your web browser.
+2. If you don't already have a GitHub account:
+   - Click **Sign up** (top right corner).
+   - Enter your group's shared email address, choose a password, and
+     choose a username — pick something that identifies your group
+     clearly (e.g. `mgs-groundreport`), since this becomes part of your
+     project's public web address.
+   - Follow GitHub's verification steps (usually a code sent to your
+     email).
+3. Once logged in, go to the original project's repository page: 🔧
+	**https://github.com/taco40sauce/kcgr-resource-feed**
+
+*(fill in the real address — ask whoever shared this manual with
+   you if you don't have it)*
+4. Near the top right of that page, click the **Fork** button.
+5. On the screen that appears:
+   - **Owner**: leave this as your own account/organization.
+   - **Repository name**: replace `kcgr-resource-feed` with your own —
+     e.g. `mgs-resource-feed` or `scgr-resource-feed`.
+   - Leave "Copy the main branch only" checked (the default).
+6. Click **Create fork**.
+
+**You now have your own, completely independent copy of the code**,
+at your own web address (`github.com/[your-username]/[your-repo-name]`).
+Nothing you do to it from here affects the original project at all.
+
+---
+
+## 6.4 Choosing and Renaming Your Own Prefix
+
+**What this is:** every category, file, and workflow in the original
+project uses the prefix `KCGR-` (short for the original project's own
+name). Your copy needs its own prefix, consistently applied everywhere
+— the same exact-spelling principle from Part II, note [4], applies
+here at a larger scale: a computer treats `KCGR-` and `MGS-` as
+completely unrelated text, so every occurrence needs to be found and
+changed, not just the obvious ones.
+
+**Before you rename anything**, do the character math for your own
+prefix** (see 6.1) — a shorter prefix than `KCGR-` gains you room in
+the 43-character field; a same-length prefix (like `SCGR-`) needs no
+adjustment; a longer prefix costs you room elsewhere and may force
+trimming your location or comment fields shorter than the original
+project's own examples.
+
+**Steps:**
+1. Pick your own short prefix (Part III, 3.2, step 1 covers how) —
+   for this walkthrough, we'll use `MGS-` as the worked example.
+2. In your forked repository's page on GitHub, click the **magnifying
+   glass search icon** near the top of the page (or press `/` on your
+   keyboard while viewing the repo).
+3. Type `KCGR-` and press Enter. This searches every file in your
+   repository for that exact text.
+4. GitHub shows you a list of every file containing a match. Click
+   into each one, one at a time.
+5. Inside a file, click the **pencil (edit) icon** near the top right
+   of the file view.
+6. Use your browser's own find function (`Ctrl+F` on Windows/Linux,
+   `Cmd+F` on Mac) to jump to each occurrence of `KCGR-` inside that
+   file, and manually type your own prefix in its place.
+7. Once you've replaced every occurrence in that file, scroll down and
+   click **Commit changes** (a short description like "Rename prefix
+   to MGS-" is fine).
+8. Repeat steps 4–7 for every file in the search results from step 3.
+9. **Re-run the search from step 2 and 3 again after finishing** — a
+   fresh search for `KCGR-` should now return zero results across your
+   whole repository. If it doesn't, you've missed one — go fix it
+   before moving on.
+
+**Places this prefix shows up that are easy to miss:** workflow *names*
+(not just file names) inside `.github/workflows/` files, category names
+inside any parser code, and any text on your web pages (`kcgr-start.html`
+and `kcgr-ops.html` equivalents) — not just the technical files. Treat
+the search in step 9 as your real check, not a mental list of "the
+obvious spots."
+
+---
+
+## 6.5 Setting Up Your Own Database (Grist)
+
+**Step-by-step:**
+
+1. Go to **getgrist.com** in your web browser.
+2. Click **Sign up** (top right).
+3. Enter your group's shared email address and create a password.
+   Follow the verification steps.
+4. Once logged in, you'll land on your **team site** home page. Click
+   **Create empty document** (or **+ New**, then **Document**,
+   depending on the current Grist interface).
+5. Give the document a name matching your own project — e.g.
+   `MGS-ResourceStatus`.
+6. Grist opens a blank document with one empty table. Rename it by
+   clicking the table's current name (usually "Table1") at the top and
+   typing your own name — e.g. `Reports`.
+7. Build your columns to match your own field format (Part III, 3.2).
+   For each column, click the **+** at the far right of the column
+   headers to add a new one, then click the column's **dropdown arrow**
+   → **Column Options** to set its type:
+
+   | Column | Type to choose | Notes |
+   |---|---|---|
+   | `ObjectName` | Choice List (dropdown) | Fill in your own category list from Part III, 3.1 |
+   | `Status` | Choice List (dropdown) | Your own status codes |
+   | `Specifier` | Choice List (dropdown) | Your own specifier codes |
+   | `Location` | Text | Free text |
+   | `Notes` | Text | Free text |
+   | `ReportedBy` | Text | Free text — agency names and callsigns both fit here |
+   | `DateTime` | Date/Time | Set your own display format |
+   | `Latitude` | Numeric | Plain decimal degrees |
+   | `Longitude` | Numeric | Plain decimal degrees |
+   | `Verified` | Toggle (checkbox) | Internal team reference only |
+   | `ReportCount` | Numeric | Internal corroboration bookkeeping only |
+
+8. To fill in a **Choice List's** actual options (e.g. your category
+   list), click the column header dropdown → **Column Options** →
+   find the **Choices** field → type each option on its own line,
+   matching your Part III category list exactly, including your own
+   prefix.
+9. To share access with your own team: click **Share** (top right),
+   enter each teammate's email, and choose their role — most
+   data-entry operators only need **Editor**, not **Owner**.
+
+---
+
+## 6.6 Setting Up Your Own Public Map (uMap)
+
+**Step-by-step:**
+
+1. Go to **umap.openstreetmap.fr** in your web browser.
+2. Click **Log in** (top right). If you don't already have an
+   OpenStreetMap account, click the option to create one — it's free
+   and separate from Grist/GitHub.
+3. Once logged in, click **+ Create a map**.
+4. Give your map a title matching your own project.
+5. Use the map's pan/zoom controls to center the default view on your
+   own coverage area, then click the **wrench/settings icon** →
+   **Save current view as default**.
+6. Add your layers — click the **layers icon** on the left side, then
+   **+ Add a layer**:
+   - One layer reading from your own automated pipeline's published
+     file — point it at your own fork's raw GeoJSON address, e.g.
+     `raw.githubusercontent.com/[your-username]/[your-repo-name]/main/[your-geojson-filename]`
+   - One layer reading from your own Grist table, following Grist's
+     own current instructions for sharing a table as a live data
+     source (this changes from time to time on Grist's side — check
+     their current documentation for the exact steps 🔧).
+7. For each layer, set styling rules matching your own category and
+   status list — click a layer → **Edit properties** → set colors and
+   icons per value. **Match spelling exactly** between this map, your
+   Grist columns, and your codebase's category list (Part II, note
+   [4] — the same invisible-mismatch trap applies here, just in a new
+   system).
+8. Click **Save** (top left), then find your map's public sharing link
+   under the **Share** option to give to your own operators and the
+   public.
+
+---
+
+## 6.7 Setting Up Your Own Private Network (Tailscale)
+
+Follow Part II, 2.4, exactly as written — this step doesn't change at
+all between the original project and your own fork. Create your own
+account under your own group's shared email; don't reuse or request
+access to the original project's tailnet.
+
+---
+
+## 6.8 Generating Your Own GitHub Personal Access Token (P.A.T.)
+
+**Not to be confused with *Pat*, the separate Winlink client program —
+this is an unrelated credential issued by GitHub itself.**
+
+**Step-by-step:**
+
+1. Log into your own GitHub account (the one from 6.3).
+2. Click your **profile picture** (top right corner) → **Settings**.
+3. Scroll to the very bottom of the left sidebar and click
+   **Developer settings**.
+4. Click **Personal access tokens** → **Fine-grained tokens**.
+5. Click **Generate new token**.
+6. Under **Token name**, give it a name that identifies what it's for
+   — e.g. `MGS Removal Panel Token`.
+7. Under **Expiration**, choose a duration — one year is a reasonable
+   default. Whatever you pick, **put a calendar reminder a few weeks
+   before that date now**, while you're already here — this token
+   will eventually need to be regenerated, and there's currently no
+   easier path than doing this manually.[¹]
+8. Under **Repository access**, choose **Only select repositories**,
+   then pick your own forked repository from the list.
+9. Under **Permissions**, expand **Repository permissions** and set:
+   - **Contents**: Read-only
+   - **Actions**: Read and write
+   Leave every other permission at its default (**No access**).
+10. Scroll down and click **Generate token**.
+11. **Copy the token immediately** — GitHub shows it to you exactly
+    once. Paste it into your own credentials file (Part II, step 3)
+    as `GITHUB_PAT=` followed by the token, with no spaces around the
+    `=`. Never paste this token anywhere inside your actual repository
+    files — it belongs only in the separate, private credentials file.
+
+---
+
+## Notes for Part VI
+
+**[¹] Why this manual still says "regenerate it manually," rather than
+something friendlier.** A friendlier setup path for this token — a
+proper GitHub App install flow, or a script that automates writing it
+to your credentials file — has been discussed for the original
+project, but deliberately not built yet; it's a real, open decision
+rather than an oversight. Until that changes, generating and rotating
+this token by hand, as described above, is genuinely the current best
+path — worth revisiting this section if that changes.
+
+**[²] On the naming examples used throughout this part.** `MGS-` and
+`SCGR-` are used here purely as worked examples, the same way Part III
+uses an inland-county and a Gulf-coast-town example side by side to
+teach a method, not to prescribe an answer. Nothing about adopting this
+system requires coordinating with any other group's naming — a single
+county forking this on its own, with its own prefix, is a complete and
+valid use of everything in this part.
+
+
+
 
 # APPENDIX A — Quick Command Reference (Start to Finish)
 
