@@ -22,25 +22,30 @@ exactly the same as a message sent from the real form.
 
 ## 2. Message body — copy everything below this line
 
+**Everything marked with asterisks (`**`) or `*****` is a
+placeholder — replace it completely with your own information before
+sending.** Do not send the placeholder text itself; it isn't a valid
+value.
+
 ```
 KERSHAW COUNTY GROUND REPORT -- RESOURCE STATUS (KCGR-RS)
 ==========================================================
 
 --- REPORTER INFO ---
-Reporter Callsign: YOUR_CALLSIGN
+Reporter Callsign: ***** YOUR_CALLSIGN
 Date of Observation: YYYY-MM-DD
 Time of Observation: HHMM
 
 --- REPORT 1 ---
-Category: KCGR-____
-Status: __
-Specifier: __
+Category: KCGR-***
+Status: **
+Specifier: **
 Location: 
 Date: 
 Time: 
 Notes: 
-Latitude: 34.*****
-Longitude: -80.*****
+Latitude: 34.******
+Longitude: -80.******
 ```
 
 ---
@@ -68,26 +73,30 @@ Location: Elgin BP Hwy1
 Date: 18
 Time: 1033
 Notes: 
-Latitude: 34.*****
-Longitude: -80.*****
+Latitude: 
+Longitude: 
 ```
 
 ---
 
 ## 4. What's required vs. optional
 
-- **`Reporter Callsign`** — leave it blank and the record gets logged
-  as `UNKNOWN` instead of your callsign. Always fill this in.
+- **`Reporter Callsign`** — leave this as a placeholder (or blank) and
+  the record gets logged under that placeholder text instead of your
+  actual callsign. Always replace it with your real callsign.
 - **`Category`** — required. If it's blank, that whole report block is
   silently skipped (treated as "not filed," not an error). If it's
   filled in but doesn't match a real KCGR category code, the report
   still gets published, just flagged for a human to clean up.
 - **`Status`** — if blank or not a recognized code, it's automatically
-  published as `UK - unknown` rather than rejected. Better to fill it
-  in correctly, but a mistake here won't lose the report.
+  published as `UK - unknown` rather than being rejected. Better to
+  fill it in correctly, but a mistake here won't lose the report.
 - **`Specifier`, `Location`, `Date`, `Time`, `Notes`,
   `Latitude`/`Longitude`** — all optional. Blank is fine; the report
-  still gets published.
+  still gets published. If you do have coordinates, use real decimal
+  degrees (look them up if needed) — that's what actually places the
+  report accurately on the map rather than relying on `Location`'s
+  free text alone.
 - For your actual category, status, and specifier codes, use your
   Quick Start / Quick Reference card — this template doesn't repeat
   that list on purpose, so it never goes stale relative to it.
@@ -105,4 +114,5 @@ The section headers (`--- REPORTER INFO ---`, `--- REPORT 1 ---`) and
 the field labels (`Category:`, `Status:`, etc.) must be typed exactly
 as shown — that's literally the text the automated system searches
 for. Everything **after** the colon on each line is yours to fill in
-freely.
+freely — including anything shown above marked with asterisks, which
+must be replaced, not sent as written.
