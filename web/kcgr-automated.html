@@ -134,6 +134,7 @@
     <div class="summary-card"><div class="num" id="countTotal">--</div><div class="lbl">Active reports</div></div>
     <div class="summary-card"><div class="num" id="countWinlink">--</div><div class="lbl">Winlink</div></div>
     <div class="summary-card"><div class="num" id="countAprs">--</div><div class="lbl">APRS</div></div>
+    <div class="summary-card"><div class="num" id="countAprsis">--</div><div class="lbl">APRS-IS</div></div>
     <div class="summary-card warn"><div class="num" id="countUnparsed">--</div><div class="lbl">Needs review</div></div>
   </div>
 
@@ -144,32 +145,13 @@
   </div>
 
   <div class="footnote">
-     Read-only view of <code>winlink/records.json</code> and <code>backups/records_backup.json</code> (live, on the
-    public map) and <code>backups/records_backup_aprsis.json</code> (also live on the public map as of the
-    8/13/2026 merge cutover, shown in its own section below rather than folded into this table)
-    from the <a href="https://github.com/taco40sauce/kcgr-resource-feed" target="_blank" rel="noopener">kcgr-resource-feed</a>
-    repo. Removal/editing isn't done here -- this page only displays what's currently live on the public map.
-    Auto-refreshes every 5 minutes. GitHub's raw file cache can lag a real update by a few minutes -- if a report
-    was just filed or removed and doesn't show up yet, give it a moment and refresh again before assuming
-    something went wrong.
-  </div>
-
-  <div class="test-feed-section">
-    <div class="test-feed-heading">
-      <span class="test-feed-title">APRS-IS Poller</span>
-      <span class="test-feed-tag">Live on public map (via merge)</span>
-      <span class="test-feed-count" id="aprsisCount"></span>
-    </div>
-    <div class="test-feed-note">
-      Output of the APRS-IS-based poller, shown here separately so it can be watched on its own. This reads
-      <code>backups/records_backup_aprsis.json</code> -- as of the 8/13/2026 cutover, this file is one of the
-      three sources <code>kcgr_merge_and_publish.py</code> merges, so what's shown below is already reaching
-      the public map. (The main table above doesn't pull from this file directly, so it won't show these
-      records itself -- that's a separate, smaller gap, not this section's labeling.)
-    </div>
-    <div class="test-feed-wrap">
-      <div id="aprsisTableContainer" class="loading-state">Loading comparison feed&hellip;</div>
-    </div>
+     Read-only view of <code>winlink/records.json</code>, <code>backups/records_backup.json</code>, and
+    <code>backups/records_backup_aprsis.json</code> from the
+    <a href="https://github.com/taco40sauce/kcgr-resource-feed" target="_blank" rel="noopener">kcgr-resource-feed</a>
+    repo -- all three are live on the public map. Removal/editing isn't done here -- this page only displays
+    what's currently live on the public map. Auto-refreshes every 5 minutes. GitHub's raw file cache can lag
+    a real update by a few minutes -- if a report was just filed or removed and doesn't show up yet, give it
+    a moment and refresh again before assuming something went wrong.
   </div>
 
 </div>
@@ -214,7 +196,7 @@
 <script>
   const WINLINK_URL = "https://raw.githubusercontent.com/taco40sauce/kcgr-resource-feed/main/winlink/records.json";
   const APRS_URL = "https://raw.githubusercontent.com/taco40sauce/kcgr-resource-feed/main/backups/records_backup.json";
-  const APRSIS_TEST_URL = "https://raw.githubusercontent.com/taco40sauce/kcgr-resource-feed/main/backups/records_backup_aprsis.json";
+  const APRSIS_URL = "https://raw.githubusercontent.com/taco40sauce/kcgr-resource-feed/main/backups/records_backup_aprsis.json";
   const REFRESH_MS = 5 * 60 * 1000;
 
   const STATUS_LABELS = { OP: "OP - open", CL: "CL - closed", LM: "LM - limited", CA: "CA - caution", UK: "UK - unknown" };
@@ -260,17 +242,20 @@
       </tr>`;
   }
 
-  function render(winlinkRecords, aprsRecords) {
+  function render(winlinkRecords, aprsRecords, aprsisRecords) {
     const winlinkRows = Object.values(winlinkRecords || {});
     const aprsRows = Object.values(aprsRecords || {});
+    const aprsisRows = Object.values(aprsisRecords || {});
     const all = [
       ...winlinkRows.map(r => ({ r, sourceLabel: "Winlink", badgeClass: "src-winlink" })),
       ...aprsRows.map(r => ({ r, sourceLabel: "APRS", badgeClass: "src-aprs" })),
+      ...aprsisRows.map(r => ({ r, sourceLabel: "APRS-IS", badgeClass: "src-aprsis" })),
     ];
 
     document.getElementById("countTotal").textContent = all.length;
     document.getElementById("countWinlink").textContent = winlinkRows.length;
     document.getElementById("countAprs").textContent = aprsRows.length;
+    document.getElementById("countAprsis").textContent = aprsisRows.length;
     document.getElementById("countUnparsed").textContent = all.filter(x => x.r.parsed_cleanly === false).length;
 
     const container = document.getElementById("tableContainer");
@@ -295,32 +280,6 @@
       </table>`;
   }
 
-  function renderAprsisTest(aprsisRecords) {
-    const rows = Object.values(aprsisRecords || {});
-    document.getElementById("aprsisCount").textContent =
-      rows.length === 0 ? "0 heard yet" : `${rows.length} heard`;
-
-    const container = document.getElementById("aprsisTableContainer");
-
-    if (rows.length === 0) {
-      container.innerHTML = `<div class="empty-state">No APRS-IS reports heard yet.<br>This fills in once the aprsis-poller workflow has run and heard a KCGR-* beacon.</div>`;
-      return;
-    }
-
-    rows.sort((a, b) => new Date(b.received_time || 0) - new Date(a.received_time || 0));
-    const rowsHtml = rows.map(r => rowHtml(r, "APRS-IS", "src-aprsis")).join("");
-    container.innerHTML = `
-      <table class="feed-table">
-        <thead>
-          <tr>
-            <th>Source</th><th>Category</th><th>Status</th><th>Location</th>
-            <th>Callsign</th><th>Notes</th><th>Received (UTC)</th><th>Identity</th>
-          </tr>
-        </thead>
-        <tbody>${rowsHtml}</tbody>
-      </table>`;
-  }
-
   async function loadFeed(manual) {
     const btn = document.getElementById("refreshBtn");
     const errorBox = document.getElementById("errorBox");
@@ -328,29 +287,17 @@
     errorBox.innerHTML = "";
 
     try {
-      const [winlinkData, aprsData] = await Promise.all([
+      const [winlinkData, aprsData, aprsisData] = await Promise.all([
         fetchJson(WINLINK_URL).catch(err => { throw new Error("Winlink feed: " + err.message); }),
         fetchJson(APRS_URL).catch(err => { throw new Error("APRS feed: " + err.message); }),
+        fetchJson(APRSIS_URL).catch(err => { throw new Error("APRS-IS feed: " + err.message); }),
       ]);
-      render(winlinkData, aprsData);
+      render(winlinkData, aprsData, aprsisData);
       document.getElementById("lastRefreshed").textContent = new Date().toLocaleTimeString();
     } catch (err) {
       errorBox.innerHTML = `<div class="fetch-error">Couldn't load current data -- ${escapeHtml(err.message)}. The table below shows the last successful load, if any.</div>`;
     } finally {
       if (manual) { btn.disabled = false; btn.textContent = "Refresh now"; }
-    }
-
-    // Fetched and rendered independently of the two feeds above: this file
-    // may not exist yet (before the aprsis-poller workflow's first run), or
-    // may fail on its own, and neither case should touch the live table or
-    // its error state above.
-    try {
-      const aprsisData = await fetchJson(APRSIS_TEST_URL);
-      renderAprsisTest(aprsisData);
-    } catch (err) {
-      document.getElementById("aprsisTableContainer").innerHTML =
-        `<div class="empty-state">Comparison feed not available yet (${escapeHtml(err.message)}).<br>This is expected until the aprsis-poller workflow's first run.</div>`;
-      document.getElementById("aprsisCount").textContent = "";
     }
   }
 
