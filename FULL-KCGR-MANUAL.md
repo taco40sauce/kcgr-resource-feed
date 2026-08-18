@@ -7,6 +7,8 @@ through for your own area, not just copy as-is. A one-page worksheet for
 recording your own answers will be added once the rest of this manual is
 in place.
 
+**For crisis-speed reference**, see quick_start.md / quick_start.pdf"
+
 **Please read this whole manual once, calmly, before you ever need it.**
 Everything here is written so you *can* look something up mid-emergency —
 but you'll move faster and with more confidence if the ideas are already
@@ -841,9 +843,13 @@ proactively around this date:
    `github.com/settings/personal-access-tokens/new` — repository
    access: `kcgr-resource-feed` only; permissions: `Contents:
    Read-only`, `Actions: Read and write`.
-2. Update the `GITHUB_PAT` value in `~/.kcgr_secrets/credentials.env`
+2. Optionally validate it before trusting it: run `setup_pat.py` (in
+   the repo root, from your own computer — not the Pi) to confirm the
+   new token actually works against the repo and its workflows before
+   it goes anywhere near `credentials.env`.
+3. Update the `GITHUB_PAT` value in `~/.kcgr_secrets/credentials.env`
    on the Pi with the new P.A.T.
-3. Restart the admin app.
+4. Restart the admin app.
 
 Contact the Hub Operator if you're not sure how to do this. (See Part
 VI for a fully click-by-click walkthrough of generating one of these
@@ -1258,25 +1264,6 @@ from, exactly the same way Part III treats its own category-list
 example.
 
 ---
-# PART VI — Adapting This System For Your Own Area
-
-Everything built in Parts I–V belongs to one club, in one county. This
-part is for someone else entirely — a different county, a regional ARES
-group, or a statewide effort — who wants their own, fully independent
-version of this system: their own repository, their own database, their
-own map, sharing none of the original project's actual data or
-accounts.
-
-**This part is deliberately hypothetical in one specific way.** The
-naming examples used throughout — swapping `KCGR-` for something like
-`MGS-` (a regional Midlands group) or `SCGR-` (a statewide effort) — are
-illustrative possibilities, not an announced plan. They exist here in
-the hope that more of the state gets involved, not as a commitment any
-group has made. Treat them as a worked example to learn the method
-from, exactly the same way Part III treats its own category-list
-example.
-
----
 
 ## 6.1 Why Fork, Not Ask for Access
 
@@ -1539,29 +1526,60 @@ this is an unrelated credential issued by GitHub itself.**
    easier path than doing this manually.[¹]
 8. Under **Repository access**, choose **Only select repositories**,
    then pick your own forked repository from the list.
-9. Under **Permissions**, expand **Repository permissions** and set:
-   - **Contents**: Read-only
-   - **Actions**: Read and write
-   Leave every other permission at its default (**No access**).
-10. Scroll down and click **Generate token**.
-11. **Copy the token immediately** — GitHub shows it to you exactly
+9. Under **Permissions**, tap **Add permissions**. Check the boxes for
+   **Actions** and **Contents**. Once you do, a third item —
+   **Metadata (Required)** — "Search repositories, list collaborators,
+   and access repository metadata" — may appear automatically in the
+   Repositories box. Metadata's access level is greyed out and can't be
+   changed; leave it alone.
+   - Find **Actions** in the list and change its dropdown from the
+     default **Access: Read-only** to **Access: Read and write**.
+   - Find **Contents** in the list — its dropdown is active and could
+     be changed, but leave it at the default **Read-only** (may also
+     display as simply **Read**) — don't change this one, even though
+     you can.
+   - Leave every other permission at its default (**No access**).
+10. A confirmation popup titled **"New personal access token"** will
+    ask "Are you sure?" — write down or screenshot the token's name,
+    the date, and the three settings shown (Actions: Read and write,
+    Contents: Read-only, Metadata: Read-only or just Read) before continuing. This
+    becomes your own record if anything needs troubleshooting later —
+    the token itself is only ever shown once, but this confirmation
+    screen is a second, useful place to capture the same details.
+11. Scroll down and click **Generate token**.
+12. **Copy the token immediately** — GitHub shows it to you exactly
     once. Paste it into your own credentials file (Part II, step 3)
     as `GITHUB_PAT=` followed by the token, with no spaces around the
     `=`. Never paste this token anywhere inside your actual repository
     files — it belongs only in the separate, private credentials file.
 
+**Optional but recommended — validate it before trusting it:** run
+`setup_pat.py` (in the repo root) from your own computer, not the Pi.
+It's a standalone, stdlib-only script — no install step, nothing to
+set up — that checks your new token against the real repo and the
+three workflows the removal panel depends on
+(`aprsis-removal.yml`, `winlink-removal.yml`, `merge-and-publish.yml`)
+before you paste it anywhere. It does not write to your credentials
+file itself; it prints the `GITHUB_PAT=` line for you to paste by
+hand, same as step 12 above, just with the token already confirmed
+working.
 ---
 
 ## Notes for Part VI
 
 **[¹] Why this manual still says "regenerate it manually," rather than
-something friendlier.** A friendlier setup path for this token — a
-proper GitHub App install flow, or a script that automates writing it
-to your credentials file — has been discussed for the original
-project, but deliberately not built yet; it's a real, open decision
-rather than an oversight. Until that changes, generating and rotating
-this token by hand, as described above, is genuinely the current best
-path — worth revisiting this section if that changes.
+something friendlier.** A friendlier setup path for this token was an
+open question for a while — options considered were a proper GitHub
+App install flow, a script that automates writing it to your
+credentials file, or just documenting the manual process well.
+**Decided:** a validation script (`setup_pat.py`, referenced in step 12
+above) — not a GitHub App, and not documentation-only. It confirms a
+newly generated token actually works against your repo and workflows
+before you trust it, but deliberately doesn't write to your
+credentials file for you; you still paste that line by hand.
+Generating and *rotating* the token itself is still a manual process —
+this script only removes the guesswork of whether a freshly generated
+token is actually valid.
 
 **[²] On the naming examples used throughout this part.** `MGS-` and
 `SCGR-` are used here purely as worked examples, the same way Part III
@@ -1575,9 +1593,6 @@ valid use of everything in this part.
 
 
 # APPENDIX A — Quick Command Reference (Start to Finish)
-
-*(Note: this will move to the very end of the manual once Part V is
-written. It's placed here for now so it isn't lost in the meantime.)*
 
 This appendix assumes your Raspberry Pi, radio, and Graywolf software are
 already set up and running — see your separate station guide for the
@@ -1789,5 +1804,96 @@ building an EOC relationship), this section will cover:
   layer, separate from ham radio reports and manual entries)
 
 ---
+# APPENDIX C — Winlink Tactical Address Format Reference
 
-*End of Appendix B.*
+This appendix covers the actual formatting rules for a Winlink tactical
+address — the kind of address `KCGR-OPS` already is. It's built
+entirely from Winlink's own official documentation (`winlink.org`),
+not a third-party summary.
+
+---
+
+### What a tactical address actually is
+
+**Not a callsign, and not treated as one.** A tactical address is a
+functional email account inside the Winlink system — tied to a role or
+project rather than a specific person — that's always associated with
+one or more real amateur callsigns for sending and receiving.
+
+---
+
+### Format rules
+
+- **Length:** 3 to 24 total characters, before `@winlink.org`.
+- **Before any hyphen:** letters only, and at least 3 of them.
+- **After a hyphen:** letters, numbers, or additional hyphens, in any
+  combination.
+
+| Example | Valid? | Why |
+|---|---|---|
+| `KCGR-OPS` | Yes | 4 letters before the hyphen, 3 alphanumeric after |
+| `EOC` | Yes | 3 letters, no hyphen needed |
+| `MGS-1` | Yes | 3 letters before the hyphen, a number after |
+| `AB` | No | Fewer than 3 letters before any hyphen |
+| `1CGR-OPS` | No | Starts with a number, not a letter |
+
+**This project's own tactical address, `KCGR-OPS`, is fully compliant**
+— worth confirming explicitly here rather than assuming, since nothing
+about the format rules was checked against the real standard until now.
+If you're building a renamed version for your own area (Part VI), the
+same rule applies to whatever prefix you choose: `MGS-OPS` and
+`SCGR-OPS` are both valid under this same rule, since both prefixes are
+3+ letters.
+
+---
+
+### Password — not required, but genuinely worth setting
+
+A tactical address doesn't require a password to receive mail. Without
+one, though, it isn't secure, and nobody can log into the account on
+Winlink's own website to manage its settings. Set a password for any
+tactical address meant to last beyond a single short-term event.
+
+---
+
+### Filtering incoming internet mail (ACCEPTLIST)
+
+Each tactical address has its own accept/reject list for internet
+email reaching it — managed either on the account's own page at
+`winlink.org` after logging in, or by sending a specially-formatted
+message to the system itself from the tactical address. Full detail
+isn't reproduced here; see the source link below if you need to
+configure this.
+
+---
+
+### Which Winlink clients actually support this
+
+**Supported:** Winlink Express (the preferred client) and Paclink.
+**Not supported:** Airmail, or any other third-party client — a
+tactical address won't work if your operators are using one of those.
+
+---
+
+### How long a tactical address stays active
+
+Per Winlink's own FAQ documentation, a tactical address's registration
+lapses after **6 months without use** — worth knowing if this project's
+own `KCGR-OPS` address, or any address a forking group sets up under
+Part VI, ever goes quiet for an extended stretch between activations.
+
+---
+
+### Notes for Appendix C
+
+**On the character-count discrepancy.** Winlink's dedicated "Tactical
+Addresses" page (last updated April 2023) states the current limit as
+3–24 characters. A separate Winlink FAQ document states a 12-character
+limit. Since the dedicated page is the more specific, more recently
+updated source, this appendix treats 3–24 as current. Either number is
+irrelevant for `KCGR-OPS` itself, which fits comfortably under both —
+but worth knowing this exists in case you cross-reference Winlink's own
+FAQ directly and see a different number.
+
+**Source:** Winlink Global Radio Email, "Tactical Addresses,"
+`winlink.org/content/tactical_addresses` (updated April 27, 2023).
