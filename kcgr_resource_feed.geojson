@@ -1,36 +1,5 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-08-18T22:19:17.774761+00:00",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -80.5633,
-          34.28038
-        ]
-      },
-      "properties": {
-        "ObjectName": "KCGR-PWR-power",
-        "Status": "LM-limited",
-        "Specifier": "CH-device charging",
-        "DateTime": "18 Aug 2026 16:28",
-        "ReportedBy": "YOUR_CALLSIGN",
-        "ReportCount": 1,
-        "Location": "Woodward Field Airport Camden",
-        "Comment": "Entry just north of Military Sch",
-        "name": "KCGR-PWR-power \u2014 Woodward Field Airport Camden",
-        "description": "LM-limited | CH-device charging | Reported: 18 Aug 2026 16:28 | By: YOUR_CALLSIGN",
-        "Contributors": [
-          {
-            "callsign": "YOUR_CALLSIGN",
-            "received_time": "2026-08-18T20:48:32.176899+00:00",
-            "status_mapped": "LM-limited",
-            "location": "Woodward Field Airport Camden"
-          }
-        ]
-      }
-    }
-  ]
+  "generated_at": "2026-08-18T22:30:37.802977+00:00",
+  "features": []
 }
