@@ -189,6 +189,10 @@ in `winlink_forms/`:
   Current entry/display forms embed their CSS directly instead
   (avoids a `{FormFolder}` path-substitution bug in some clients), so
   this file is no longer referenced by them.
+  
+  **No form installed?** Use `winlink_forms/KCGR_NoForm_Winlink_Template.md`
+instead — a plain-text, copy/paste version of the same report that
+doesn't require any client-side form software.
 
 **To install (Pat):** copy all files into
 `~/.local/share/pat/Standard_Forms/kcgr_forms/`.
