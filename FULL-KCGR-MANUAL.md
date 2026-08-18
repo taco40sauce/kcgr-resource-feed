@@ -308,7 +308,7 @@ rather than leaving it vague:
 
 Either can work. What matters most is deciding this on purpose, together
 with your team, rather than leaving it to chance — see Part IV, section
-4.3, for how this plays out during an actual activation.
+4.4, for how this plays out during an actual activation.
 
 **[¹⁰] Does your radio already have a sound card built in? Start there.**
 The single most useful question to answer first is: **does your radio
@@ -785,7 +785,49 @@ your categories are picked, your database and map are live.
 
 ---
 
-## 4.1 Training Operators
+## 4.1 Filing a KCGR Report
+
+**Two channels reach the map automatically: APRS and Winlink.** Both
+skip the database entirely — a correctly formatted report on either
+channel appears on the public map with no one manually entering it.
+
+**APRS.** Send a `KCGR-<CATEGORY>` object beacon with your status,
+specifier, location, and timestamp packed into the comment field. The
+full field grammar, category list, and status/specifier codes are
+kept in one place — your Quick Start reference — rather than repeated
+here, so operators always look in the same spot and it can't drift out
+of sync with this manual.
+
+**Winlink, with the form installed.** File the **KCGR Resource
+Status** template (`winlink_forms/` in the repo) addressed to
+`KCGR-OPS` — type the address yourself; the form's own "Send To"
+field is a reminder only; it does not address the message. Up to 3
+reports per message. See the README for install paths for Winlink
+Express and Pat.
+
+**Winlink, without the form.** Not every station will have the form
+installed — someone relaying on your behalf from an unfamiliar client,
+for instance. `winlink_forms/KCGR_NoForm_Winlink_Template.md` is a
+plain-text, copy/paste version of the same message: address it the
+same way, keep the section headers and field labels exactly as
+written (that's the literal text the automated parser matches on),
+and fill in the blanks after each colon.
+
+**What happens if a field's wrong or missing — nothing is ever
+silently lost:**
+- A blank `Category` means that report block is treated as not filed
+  and skipped — not an error, just as if it wasn't there.
+- A `Category` that's filled in but not a recognized code still
+  publishes — flagged for a human to clean up, never dropped.
+- A missing or unrecognized `Status` auto-publishes as `UK -
+  unknown` rather than being rejected.
+
+Same design principle as the APRS side (Part III, §3.2): built for the
+untrained sender, not just the trained one.
+
+---
+
+## 4.2 Training Operators
 
 **Two roles, and why they're trained differently.**
 
@@ -858,7 +900,7 @@ before.)
 
 ---
 
-## 4.2 Pre-Event Activation Checklist
+## 4.3 Pre-Event Activation Checklist
 
 **What "activation" means here.** Most of what you're activating
 already runs on its own, all the time — your independently-scheduled
@@ -891,7 +933,7 @@ you want that extra layer running for this event.[²]
 
 ---
 
-## 4.3 During-Event Operations & Monitoring
+## 4.4 During-Event Operations & Monitoring
 
 **Every operator confirms their own report reached the map — within one
 hour, every channel, no exceptions.**[³]
@@ -926,13 +968,13 @@ note 9 🔧.
 
 ---
 
-## 4.4 Post-Event Wind-Down
+## 4.5 Post-Event Wind-Down
 
 **What wind-down means here.** Your independently-scheduled channels
 don't need winding down at all — they keep running on their own
 schedule whether or not anything's actively happening, same as before
 the event. If you turned on your hardware-tied fallback channel for
-this event (4.2, step 1), wind-down includes turning it back off.
+this event (4.3, step 1), wind-down includes turning it back off.
 Beyond that one optional step, wind-down is already mostly about people
 and data, not infrastructure (see note 2).
 
@@ -986,7 +1028,7 @@ defaults to off and still needs a deliberate switch, because it's the
 one piece still tied to your own Pi being powered on and connected.
 Update this note again if that channel is ever migrated off local
 hardware too — at that point there'd be nothing left to switch, and
-step 1 of both 4.2 and 4.4 would become unnecessary rather than just
+step 1 of both 4.3 and 4.5 would become unnecessary rather than just
 optional.
 
 **[³] Why every operator checks their own report, on every channel,
