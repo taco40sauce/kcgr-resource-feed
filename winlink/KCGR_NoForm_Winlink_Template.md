@@ -39,8 +39,8 @@ Location:
 Date: 
 Time: 
 Notes: 
-Latitude: 
-Longitude: 
+Latitude: 34.*****
+Longitude: -80.*****
 ```
 
 ---
@@ -68,8 +68,8 @@ Location: Elgin BP Hwy1
 Date: 18
 Time: 1033
 Notes: 
-Latitude: 
-Longitude: 
+Latitude: 34.*****
+Longitude: -80.*****
 ```
 
 ---
