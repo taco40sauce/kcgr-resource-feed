@@ -822,7 +822,7 @@ silently lost:**
 - A missing or unrecognized `Status` auto-publishes as `UK -
   unknown` rather than being rejected.
 
-Same design principle as the APRS side (Part III, §3.2): built for the
+Same design principle as the APRS side (Part III, 3.2): built for the
 untrained sender, not just the trained one.
 
 ---
@@ -1678,6 +1678,23 @@ http://100.68.180.65:5050
 ```
 Log in with the admin password, click **Turn ON**. 🔧
 
+### 2  Alternative Turn the automated pipeline ON
+
+**From the terminal:**
+
+```
+sudo systemctl start kcgr-pipeline
+```
+
+
+**Or from a web browser** (any device on your Tailscale network):
+http://100.68.180.65:5050
+
+
+**If the page doesn't load:** the admin panel itself
+(`kcgr-admin.service`) is a separate service from the pipeline this
+page controls, and may not be running. Check and start it from the
+Pi's terminal:
 ---
 
 ### 3. Check whether it's actually running
@@ -1686,7 +1703,13 @@ Log in with the admin password, click **Turn ON**. 🔧
 sudo systemctl status kcgr-pipeline
 ```
 Look for `Active: active (running)` in green.
-
+```
+sudo systemctl status kcgr-admin.service
+sudo systemctl start kcgr-admin.service
+```
+Then reload the page. Once it loads, log in with the admin password
+(from your credentials file — see Part I, note [⁶]) and click
+**Turn ON**.
 ---
 
 ### 4. Watch it live (see reports come in as they happen)
