@@ -52,15 +52,6 @@ infrastructure is down.
 
 No spreadsheet, no manual data entry required for the automated
 channels, no gatekeeper between a report being radioed (or Winlink'd)
-in and it appearing on the public map.                   
-**A fourth, fully independent channel** runs in parallel: hand-entered
-reports in a shared Grist database, published through their own
-separate uMap layer — this path doesn't touch this repo's code or
-GeoJSON pipeline at all, and keeps working even if this entire repo's
-infrastructure is down.
-
-No spreadsheet, no manual data entry required for the automated
-channels, no gatekeeper between a report being radioed (or Winlink'd)
 in and it appearing on the public map.
 
 ## Status (as of 8/17/2026)
@@ -101,6 +92,7 @@ in and it appearing on the public map.
 | `geojson_writer.py` | Backs up a channel's own record store as part of the merge/publish step |
 | `admin_app.py` | Web-based admin app: pipeline on/off toggle, and the `/records` removal panel |
 | `remove_record.py` | Manual terminal tool — the *only* removal path currently available for the Pi's own local channel |
+| `setup_pat.py` | Standalone, stdlib-only tool — validates a new GitHub P.A.T. against the repo and its workflows before it's trusted; run on your own machine, not the Pi |
 | `credentials.env.example` | Template for the (never-committed) real credentials file |
 | `winlink_forms/` | Template Winlink reports, tested with Winlink Express and the Pat Linux client (www.getpat.io) |
 
@@ -113,8 +105,6 @@ in and it appearing on the public map.
    (**outside** this repo) and fill in your real credentials for
    whichever channels you're running.
 3. Install dependencies:
-merged into one shared public map, plus a fourth fully independent
-reporting path:
 ```bash
 pip install -r requirements.txt --break-system-packages
 ```
@@ -126,6 +116,9 @@ pip install -r requirements.txt --break-system-packages
    key.) **This is separate from the GitHub Personal Access Token
    (P.A.T.) used by the admin removal panel** — the two credentials
    serve different purposes and aren't interchangeable.
+5. If using the admin removal panel: generate your own P.A.T. following
+   the manual's §6.8, then optionally validate it with `setup_pat.py`
+   before pasting it into your credentials file.
 
 ## Running channels manually (for testing/debugging)
 
