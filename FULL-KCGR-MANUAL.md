@@ -2044,7 +2044,77 @@ the standard edition difficult to read.
 
 ---
 
+---
 
+# APPENDIX E — Activation Logs & Questions
+
+THREE TOOLS for running an activation day to day: 
+- a log to handoff between operators, 
+- questions to answer at each shift change, and
+- questions to answer once the event is over. 
+None of this needsanything beyond paper and a pen — this is
+meant to work even if every piece of technology in this system is down.
+
+### Paper Handoff Log
+
+Start a fresh page at the beginning of every activation. One line per
+notable event — a report you had to dig into, a tool acting up, a
+decision you made that the next operator should know about. Keep it
+short; this is a working log, not a narrative.
+
+| Time | What happened | Who | Handled? |
+|------|---------------|-----|----------|
+|      |               |     |          |
+
+Hand this page directly to the next operator at shift change — don't
+leave it for them to find.
+
+### Shift-Change Questions
+
+Answer these before handing the paper log to the next operator — out
+loud if they're already there, written down if they're not:
+
+1. Is the hardware-tied fallback channel (Pi/Graywolf, §2.1) currently
+   on or off? If on, does the next operator know it's their
+   responsibility to turn it off later?
+2. Any reports you pulled with the removal tool this shift? Note what
+   and why, even briefly — the full review comes later (note 4 below),
+   but the next operator should know it happened.
+3. Any reports you manually entered into the database because they
+   came in over a channel this system doesn't watch automatically
+   (DMR, Meshtastic, Facebook, Skywarn, phone)? The next operator
+   can't watch for gaps they don't know exist.
+4. Did every report you personally sent or handled this shift get
+   confirmed on the live map? (Part IV, note 3 — every operator
+   confirms their own report within the hour, no exceptions.) If
+   anything's still unconfirmed, say so now, not later.
+5. Anything unusual — a channel acting slow, a tool behaving
+   strangely, a report that took extra digging to place — worth
+   flagging even if you already handled it? (This is exactly the kind
+   of thing Part V's changelog wants captured before it's forgotten.)
+6. What's the single most important thing the next operator should
+   look at first?
+
+### Post-Event Questions
+
+Answer these once the event is over — days later is fine, weeks later
+loses detail:
+
+1. Did any report sit unconfirmed longer than it should have? What
+   happened?
+2. Did any channel go quiet during the event when it shouldn't have —
+   and if so, was that caught during the event or only afterward?
+3. Was the on/off timing for the hardware-tied fallback channel right,
+   or should it have gone on sooner / come off later next time?
+4. Anything from the handoff log worth folding into Part V's
+   changelog, so the next person doesn't relearn it the hard way?
+5. Did your category list, staleness timing, or vetting policy (Part
+   III) hold up as written, or does anything need revisiting before
+   the next event?
+6. Anything the EOC or partner agencies asked for that this system
+   doesn't currently provide?
+
+---
 
 
 
