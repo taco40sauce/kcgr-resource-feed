@@ -54,7 +54,7 @@ No spreadsheet, no manual data entry required for the automated
 channels, no gatekeeper between a report being radioed (or Winlink'd)
 in and it appearing on the public map.
 
-## Status (as of 8/17/2026)
+## Status (as of 8/30/2026)
 
 **Live and running automatically**, not a manually-triggered prototype:
 - The **APRS-IS poller** and **Winlink poller** each run on their own
@@ -70,13 +70,13 @@ in and it appearing on the public map.
   Pi's own local channel still requires the manual `remove_record.py`
   script (see below).
 
-**Still genuinely open, not yet done:**
+**Still open, not yet done:**
 - A real end-to-end test of the Pi's own local pipeline under its
   *unattended*, scheduled 15-minute cron (rather than a manually timed
   run) hasn't been completed yet.
 - Confirming a real report reaches APRS-IS via a genuinely independent
   iGate — not this Pi's own gate — which is the actual point of that
-  channel's redundancy.
+  channel's redundancy. Not yet attempted.
 
 ## Files
 
@@ -109,7 +109,7 @@ in and it appearing on the public map.
 pip install -r requirements.txt --break-system-packages
 ```
 
-   4. If running the Pi-local channel: set up a GitHub deploy key scoped
+4. If running the Pi-local channel: set up a GitHub deploy key scoped
    to this one repo, with write access, so the Pi can push updates
    without needing broader account access. (SSH host alias example:
    add a `github-kcgr` entry to `~/.ssh/config` pointing at the deploy
