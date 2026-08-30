@@ -2008,3 +2008,46 @@ FAQ directly and see a different number.
 
 **Source:** Winlink Global Radio Email, "Tactical Addresses,"
 `winlink.org/content/tactical_addresses` (updated April 27, 2023).
+---
+
+---
+
+# APPENDIX D — Related Companion Documents
+
+This manual doesn't stand alone — a few companion documents live
+alongside it, each built for a different moment or a different reader.
+None of them are part of this manual itself, and none of their content
+is duplicated here — this appendix exists so you know they exist. All
+three live in this repo's `companion-docs/` folder:
+https://github.com/taco40sauce/kcgr-resource-feed/tree/main/companion-docs
+
+**Global Variables Worksheet**
+(`companion-docs/Resource-Status_Global_Variables_Worksheet.pdf`)
+A one-page, fill-in-once worksheet for a new adopting club. Walks
+through every value you'll substitute for KCGR's own throughout Parts
+III and VI (your prefix, coverage area, account names, category lists,
+and so on) — fill it out once before you start building, so you're
+copying from one page instead of hunting through several sections
+mid-build. See Part VI for where these values actually get used.
+
+**Quick Start**
+(`companion-docs/quick_start.pdf`)
+A one-page, crisis-speed reference for field operators and validators —
+sending a report, status codes, object types and specifiers, worked
+examples. Built to be printed and kept on hand, not read start to
+finish. See Part IV, 4.1 for the full report-filing walkthrough this
+reference summarizes.
+
+**Quick Start — Large Print**
+(`companion-docs/quick_start_large_print.pdf`)
+Same content as the Quick Start reference above, reformatted as a
+two-page, double-sided document with larger fonts for anyone who finds
+the standard edition difficult to read.
+
+---
+
+
+
+
+
+
