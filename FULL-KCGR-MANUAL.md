@@ -42,7 +42,7 @@ What he noticed was a whole club, engaged in planning, drills,
 and supplies — a real, visible change, according to those members, from what that same club used to be. They explained why: they'd been caught unprepared once, and had decided never to let that happen again.
 
 You don't have to wait for your own hard lesson to take this seriously.
-That's really the purpose of this whole manual — letting you
+That's the purpose of this whole manual — letting you
 borrow someone else's hard-earned experience, instead of needing to earn
 your own the same way.
 
@@ -106,7 +106,7 @@ Before starting any technical setup, confirm you have:
       organizational email, for remote operator access
 
 **Decisions to make before building (don't skip — see Part III for how)**
-- [ ] Your category list — what hazards actually matter in your area 🔧
+- [ ] Your category list — what hazards matter in your area 🔧
 - [ ] Your field-format grammar and prefix (e.g. `KCGR-` → your own) 🔧 
 - [ ] Your vetting policy — who is auto-trusted, who needs corroboration 🔧
 
@@ -177,7 +177,7 @@ doesn't mean it's wrong. Say someone reports a road closed on Monday, and
 by Thursday nobody's heard anything more about it — that doesn't mean the
 road reopened, it might just mean the operator who reported it lost power
 or moved on to something else. So instead of deleting that report, or
-pretending it's still fresh, the map simply marks it "unconfirmed" after
+pretending it's still fresh, the map marks it "unconfirmed" after
 a certain amount of time. The original information stays visible the
 whole time — it's just being labeled as older. How long that takes
 before something gets marked unconfirmed is different for every type of
@@ -413,7 +413,7 @@ channel and republishes your public map together.
 **Why more than one channel, on purpose.** Relying on a single capture
 path ties your entire system's uptime to one radio, one piece of
 software, one computer being powered on and connected. This system is
-built around at least two genuinely independent ways of hearing the
+built around at least two independent ways of hearing the
 same over-the-air reports — one tied to your own local hardware, and
 one that keeps working even if that hardware is down — plus a separate
 channel for reports that arrive by email instead of radio at all. Each
@@ -447,7 +447,7 @@ Each channel breaks down into the same small set of jobs:
    exactly how a real, hard-to-spot problem[¹] got caught in the system
    this manual is based on: several channels were each written and
    tested individually, and everyone assumed they were already running
-   together — they weren't, and real reports simply never reached the
+   together — they weren't, and real reports never reached the
    map with no error showing up anywhere.
 5. Once a channel's conductor runs cleanly by hand, set it up to run
    automatically and repeatedly on its own schedule.[²] A channel tied
@@ -532,8 +532,8 @@ which piece is actually broken when something doesn't work — and in the
 real system this manual is based on, exactly that happened: several
 pieces were each written and tested individually, and everyone assumed
 they were already working together as one connected process. They
-weren't — nothing was actually calling them in sequence, so real reports
-went out over the radio and simply never made it to the map, without any
+weren't — nothing was calling them in sequence, so real reports
+went out over the radio and never made it to the map, without any
 error showing up anywhere. Testing one piece at a time, and then testing
 the whole chain together deliberately, catches exactly this kind of gap.
 
@@ -598,8 +598,7 @@ stores this project's code. GitHub offers a feature called **GitHub
 Actions**: you give it a small program and a schedule, and GitHub's own
 computers run it for you, for free, whether or not anything of yours is
 turned on. This system uses that to check for new reports every fifteen
-minutes, automatically, forever, at no cost — which is a genuinely
-useful thing to get for free, and worth appreciating rather than taking
+minutes, automatically, forever, at no cost — which is a useful thing to get for free, and worth appreciating rather than taking
 for granted.
 
 One of those channels checks **APRS-IS** — "IS" stands for **Internet
@@ -730,7 +729,7 @@ your timing to that.
 1. Group your categories into a few speed tiers — some things (cell
    service, road status) tend to change within a day; others (shelters)
    stay accurate for closer to a week; still others (water systems,
-   power in hard-hit rural or low-lying areas) can genuinely take weeks.
+   power in hard-hit rural or low-lying areas) can take weeks.
 2. For each tier, look for real historical recovery data from a past
    event in your own region if you can find it — a coastal town's power
    and water recovery curve after storm surge flooding looks very
@@ -973,7 +972,7 @@ you want that extra layer running for this event.[²]
    field reports as they come in — active and ready before other
    channels start generating them, not scrambling to catch up
    afterward 🔧.
-5. Start a fresh paper handoff log for this activation (see Appendix D).
+5. Start a fresh paper handoff log for this activation (see Appendix E).
 6. If your county EM office has agreed to help promote the map
    publicly, let them know it's live 🔧.
 
@@ -999,7 +998,7 @@ what's already on the map, but watching for the gap.
 3. Note it (paper handoff log is fine) for a full review after the
    event.
 
-**Shift changes.** Fill out the shift-end questions (Appendix D) before
+**Shift changes.** Fill out the shift-end questions (Appendix E) before
 you hand off, and hand the paper log to the next operator directly, not
 left for them to find.
 
@@ -1030,7 +1029,7 @@ and data, not infrastructure (see note 2).
    automatically, not on a timer (Part I, note 8: a person makes this
    call by hand). If you never turned it on, or don't use that channel
    at all, skip this step.
-2. Fill out the post-event questions (Appendix D) while the event is
+2. Fill out the post-event questions (Appendix E) while the event is
    still fresh — days later is fine, weeks later loses detail.
 3. Clear out reports that are now confirmed resolved; leave anything
    uncertain marked unconfirmed rather than deleting it (Part I, note
@@ -1052,8 +1051,7 @@ doing both. Entering a report quickly and accurately is a narrow,
 focused task. Validating is broad and comparative — noticing that
 something's missing, stale, or doesn't match what the map shows. A
 trainee taught only the first will enter reports well but may never
-think to check whether *other* reports are missing. Teaching them
-separately, even briefly, makes sure both muscles actually get built.
+think to check whether *other* reports are missing. Teaching them separately, even briefly, makes sure both skills actually get developed.
 
 [²] **Why activation is mostly just notifying people now**, with one
 optional toggle left.**
@@ -1095,9 +1093,9 @@ validator is doing broad, shallow monitoring — scanning everything at
 once. A field operator checking their own one or two reports is doing
 narrow, deep monitoring on exactly the item they have the most context
 to judge — they know what they meant to send, and can catch a wrong
-location or wrong code that a broad scan would miss entirely. One hour
-was chosen as tight enough to catch a genuinely dropped report
-same-shift, before an operator moves on and forgets to circle back.
+location or wrong code that a broad scan would miss entirely. One hour was chosen as tight enough to catch a dropped report while
+the same operator is still on shift, before they move on and forget to
+circle back.
 
 **[⁴] Why "pull it, keep moving, review later" — and why the deeper
 policy isn't written here.**
@@ -1216,7 +1214,7 @@ this project already deliberately moved away from.
    waiting "until things settle down" is exactly how a table like this
    goes stale.
 
-**Still genuinely open, not yet decided:**
+**Still open, not yet decided:**
 - A friendlier setup path for the `GITHUB_PAT` itself, for a future
   Hub Operator who's never created one before. Three options have been
   discussed — a proper GitHub App install/authorize flow, a setup
@@ -1320,7 +1318,7 @@ bug.** A list of exactly what broke before is useful once, for
 recognizing the *same* problem again — but it doesn't help with the
 next, different problem. The changelog (5.4) is where the specific
 history lives; this section exists to make that history transferable,
-so a future maintainer facing a genuinely new symptom still recognizes
+so a future maintainer facing a new symptom still recognizes
 the shape of it from a pattern they've seen described here.
 
 **[²] Why this is always spelled out as "P.A.T." with periods.** This
@@ -1958,7 +1956,7 @@ same rule applies to whatever prefix you choose: `MGS-OPS` and
 
 ---
 
-### Password — not required, but genuinely worth setting
+### Password — not required, but worth setting
 
 A tactical address doesn't require a password to receive mail. Without
 one, though, it isn't secure, and nobody can log into the account on
