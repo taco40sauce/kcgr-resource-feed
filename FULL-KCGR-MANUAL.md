@@ -19,7 +19,7 @@ have time to read anything else — this fuller version is what backs it up.
 *Each section below has two parts: short instructions you can act on
 right away, and numbered notes at the end explaining the "why" behind
 them. You don't need the notes to get moving. They're there for whenever
-you have a quiet moment, or want to understand something well enough to
+you have a moment, or want to understand something well enough to
 change it for your own location and situation.*
 
 ---
@@ -42,7 +42,7 @@ What he noticed was a whole club, engaged in planning, drills,
 and supplies — a real, visible change, according to those members, from what that same club used to be. They explained why: they'd been caught unprepared once, and had decided never to let that happen again.
 
 You don't have to wait for your own hard lesson to take this seriously.
-That's really the quiet purpose of this whole manual — letting you
+That's really the purpose of this whole manual — letting you
 borrow someone else's hard-earned experience, instead of needing to earn
 your own the same way.
 
@@ -271,7 +271,7 @@ direction (a report such as "road-closed" stays visible a little longer
 than it needs to) is far better than getting it wrong in the other direction 
 (a still-true report disappears on its own). The corroboration count mentioned earlier
 is a helpful clue for *where* to look when doing this cleanup — a report
-that many people confirmed, but that's gone quiet for a while, is worth a
+that many people confirmed, but that's gone silent for a while, is worth a
 second look — but a person always makes the actual call. Confirming by 
 various avenues is the way to go.
 
@@ -310,28 +310,38 @@ Either can work. What matters most is deciding this on purpose, together
 with your team, rather than leaving it to chance — see Part IV, section
 4.4, for how this plays out during an actual activation.
 
-**[¹⁰] Does your radio already have a sound card built in? Start there.**
+**[¹⁰] Does your radio already have a sound card built in? Start here.**
 The single most useful question to answer first is: **does your radio
-already have its own built-in sound card?** Some newer radios (including
-the one this system was originally built around) do — which means audio
-and radio control both travel over one plain USB cable straight from the
-radio to your computer, with nothing extra to buy or wire up.
+already have its own built-in sound card?** This matters because of
+what a radio interface actually has to do — carry audio (what the radio
+hears and transmits) and carry control commands (telling the radio when
+to transmit, called PTT, and sometimes other settings) between the
+radio and your computer.
 
-Older or simpler radios usually don't have that built in, and need a
-small separate box in between the radio and the computer to handle audio
-and switch the radio to transmit — a "Signalink" is a well-known example
-of this kind of box. It does the same job, just with an extra piece of
-hardware and a bit more cabling. Another option is using digirig ham radio
-cabling. [https://digirig.net/] Please don't consider this an endorsement 
-but, rather, a possible solution.
+Some newer radios — this system runs on an **Icom IC-7100**, which is
+one example — have that sound card built directly into the radio
+itself. That means both audio and control travel over a single plain
+USB cable straight from the radio to your computer, with nothing extra
+to buy, configure, or wire up. If your radio has this, you're done —
+skip the rest of this note.
 
-Neither setup is 'better' than the other for this system — you're not
+Older or simpler radios usually don't have a built-in sound card, and
+need a small separate box in between the radio and the computer to do
+that same job — handling audio and switching the radio to transmit — a
+**Signalink** is a well-known example of this kind of box. It does the
+same job as a built-in sound card, just with an extra piece of hardware
+and a bit more cabling. Another option is **digirig** ham radio cabling
+[https://digirig.net/] — mentioned as a possible solution, not an
+endorsement.
+
+Neither setup is "better" than the other for this system — you're not
 missing out either way. You just need to know which one you have, since
-the setup steps in Part II differ slightly depending on the answer. If
-you're not sure, check your radio's manual for the words "USB audio" or
-"built-in sound card" — that'll tell you which category you're in. The 
-advantage of a small Raspberry Pi is that very little energy is used which 
-could affect your power bill.
+the setup steps in Part II (2.1) differ slightly depending on the
+answer. If you're not sure, check your radio's manual for the words
+"USB audio" or "built-in sound card" — that'll tell you which category
+you're in. The advantage of a small Raspberry Pi is that very little
+energy is used, which could affect your power bill less than the
+alternatives.
 
 ---
 
@@ -357,11 +367,15 @@ at a time, not all at once.
 ## 2.1 Hardware & Radio Interfacing
 
 **What you need:**
-- [ ] A small always-on computer (a Raspberry Pi is what this system was
-      built around — a credit-card-sized computer that sips very little
-      power and is relatively inexpensive)
-- [ ] An older always-on computer running a Linux distrobution (distro) was
-      the origianl build. It was a repurposing project that expanded.
+- [ ] A small always-on computer. Two paths work equally well — pick
+      based on what you already have on hand:
+      - A **Raspberry Pi** — the reference build this system's setup
+        steps assume; a credit-card-sized computer that sips very
+        little power and is relatively inexpensive.
+      - An **older computer running a Linux distro** — this project's
+        actual original build was a repurposing project like this,
+        which then grew into what's documented here. Still a
+        completely valid starting point.
 - [ ] Your amateur radio, connected using whichever method matches your
       radio (see Part I, note 10 — either a single USB cable, or a
       separate interface box like a Signalink) 🔧
@@ -540,7 +554,7 @@ there's no reason to gate them behind the same switch. Letting them run
 on their own schedule around the clock is exactly what makes them a
 genuine backup: if your hardware-tied channel is off, or your hardware
 itself is down, those channels keep working regardless. Gating
-everything behind one shared switch would quietly undo the reason a
+everything behind one shared switch would silently undo the reason a
 second, independent channel was built in the first place.
 
 Worth thinking about each channel's checking interval the same
@@ -577,7 +591,39 @@ a person, "Food-open" and "Food-Open" obviously mean the same thing. To
 the map's styling rules, they're two completely different, unrelated
 values — and a mismatch doesn't cause an error message, it just leaves that one pin unstyled, gray or invisible, with nothing telling you why. This exact problem happened during real testing of this system, and took real effort to track down precisely because nothing failed in an obvious way. Carefully double- and triple-check every value match exactly Don't assume close-enough is good enough, close only counts in horseshoes, hugging, and atomic warfare.
 
-**Why not just open the small computer directly to the internet?**[⁵] 
+**[⁵] A free, always-on helper that isn't your computer at all.**
+Two of this system's channels don't run on your Pi, your radio, or your
+internet connection — they run on **GitHub**, the same free service that
+stores this project's code. GitHub offers a feature called **GitHub
+Actions**: you give it a small program and a schedule, and GitHub's own
+computers run it for you, for free, whether or not anything of yours is
+turned on. This system uses that to check for new reports every fifteen
+minutes, automatically, forever, at no cost — which is a genuinely
+useful thing to get for free, and worth appreciating rather than taking
+for granted.
+
+One of those channels checks **APRS-IS** — "IS" stands for **Internet
+Service** — a shared internet feed that most local APRS stations
+(including yours) already relay their over-the-air traffic onto. It's
+how a website like aprs.fi shows APRS activity from anywhere, and it's
+run by volunteers as a public service to the whole ham community, not by
+this project. Background on how it actually works is at **aprs2.net**,
+if you want to go deeper. Checking APRS-IS means this channel can hear a
+report even if your own Pi and radio are completely off — as long as
+*some* nearby station relayed it. That's the real value here: you get a
+second way to capture reports without buying or running any extra
+hardware.
+
+What to keep in mind: this only helps if some station near the
+reporting operator is relaying to APRS-IS in the first place. In an
+area with few such stations, a report might never reach APRS-IS at all
+— which is exactly why your own hardware-tied channel (2.1) still
+matters as a fallback, not a redundant extra step. Also worth knowing:
+GitHub's own free scheduling isn't perfectly precise for very-frequent
+jobs like this one — expect checks roughly every 15–60 minutes in
+practice, not a metronome-exact 15.
+
+**Why not just open the small computer directly to the internet?**[⁶]
 It's technically possible to make a home computer reachable from the
 internet directly, without an encrypting service like Tailscale, by adjusting some
 router settings. Doing it that way means the whole open internet can attempt to reach your computer, not just the people you've actually invited — every additional exposure like that is a chance for something to go wrong that has nothing to do with
@@ -1141,7 +1187,7 @@ edit to this table — replace with your own):
 
 **What this is:** how a new stand-in Hub Operator actually gets set up
 — and the reasoning behind why access works the way it does, so a
-future maintainer doesn't quietly "simplify" it back into something
+future maintainer doesn't "simplify" it back into something
 this project already deliberately moved away from.
 
 **The decided policy:**
@@ -1206,7 +1252,7 @@ real failure, not anticipated in the abstract.[¹]
 |---|---|---|
 | The public map isn't updating, even though a channel's own data file looks correct | The publishing step's own trigger file may be silently broken — a single malformed line can disable **every** way that step can run, not just the one you happen to be testing | Open that workflow's own run history directly and read what it actually says, rather than assuming a `push` not firing means only that trigger is affected |
 | A scheduled channel just stops producing anything, with no visible error | A file may have been silently overwritten with the wrong content — easy to do by accident when uploading several similar files back-to-back | Open an actual recent run's log, not just its pass/fail status — a wrong-content crash and a real success can look identical from a run *list* alone |
-| A run's log looks unusually quiet or repetitive, and you're not sure if that's normal | Output may be getting buffered and never reaching the log at all, especially in a non-interactive scheduled environment | Force unbuffered output before trusting a quiet log as meaningful, not just when something's already suspected wrong |
+| A run's log looks unusually repetitive, and you're not sure if that's normal | Output may be getting buffered and never reaching the log at all, especially in a non-interactive scheduled environment | Force unbuffered output before trusting a quiet log as meaningful, not just when something's already suspected wrong |
 | A category, status, or lookup value isn't matching even though it looks right in the log | A fixed-width or padded data format may be leaving invisible extra whitespace in the value | Read the actual stored value directly (not a formatted log line) — trailing whitespace is often invisible in normal output |
 | Something you fixed still seems broken, or you're not sure if it's really fixed | A description of a change (a commit message, a checkmark, a "done" note) isn't the same thing as confirming the change | Re-verify against real evidence — the actual file content, the actual log line, the actual live page — every time, not just once |
 
@@ -1945,7 +1991,7 @@ tactical address won't work if your operators are using one of those.
 Per Winlink's own FAQ documentation, a tactical address's registration
 lapses after **6 months without use** — worth knowing if this project's
 own `KCGR-OPS` address, or any address a forking group sets up under
-Part VI, ever goes quiet for an extended stretch between activations.
+Part VI, ever goes silent for an extended stretch between activations.
 
 ---
 
