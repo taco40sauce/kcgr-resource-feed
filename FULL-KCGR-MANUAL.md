@@ -83,6 +83,13 @@ Before starting any technical setup, confirm you have:
 - [ ] At least one licensed amateur radio operator willing to serve as
       **Hub Operator** — the person whose credentials, accounts, and
       judgment the system runs on day one 🔧
+
+**A license is only required for this one role.** Data-entry and
+validator roles (Part IV) don't need one — anyone can listen to
+APRS/Meshtastic traffic, monitor a scanner, or take a phone report and
+enter it by hand. Only the Hub Operator role above actually requires a
+license.
+
 - [ ] A relationship (even informal) with your local ARES/RACES group or
       equivalent 🔧
 - [ ] Awareness at your county/parish EOC or Director of Emergency
@@ -887,6 +894,16 @@ person sometimes does both:
   checking incoming reports for anything that looks wrong, and watching
   for reports that should have made it onto the map but didn't.[¹]
 
+**Neither of these roles requires an amateur radio license.** Listening
+to APRS/Meshtastic traffic, reading a scanner, or reading a report over
+the phone doesn't require a license — only *transmitting* on ham
+frequencies does. That means these two roles are a real way to involve
+people who aren't hams yet: a neighbor, a family member, a Scout, anyone
+interested in emergency communications but not yet licensed. Beyond
+just filling seats, it's a genuine on-ramp — someone doing this work
+firsthand is far more likely to get curious about the license itself
+than someone who's only heard about ham radio secondhand.
+
 **One rule every operator needs before their first shift:** report only
 businesses, organizations, and charitable/public services — never a
 private residence, regardless of category (full rationale in Part III).
@@ -1112,20 +1129,22 @@ baked into a manual. Treat that policy as open until your club settles
 it on purpose.
 
 **[⁵] Why database accounts are scoped to roles, not everyone.**
-As of 8/2026, Grist's free tier caps a team at three members; Grist has
-announced this rising to ten by the end of August 2026, but that's
-still a real ceiling, not unlimited seats. Handing every trained
-operator a login — including field operators who only ever report over
-APRS or Winlink and never open the database at all — would burn through
-those seats fast for no operational reason. Scoping accounts to the
-people who actually need direct access (data-entry operators,
-validators) keeps you within the free tier longer, and is really just
-Part I's smallest-necessary-access principle applied to seat count
-instead of permission level. If your roster ever outgrows even the
-higher seat cap, that's a real decision point for the club: pay for
-additional seats, or move to self-hosting (already confirmed technically
-workable — no hard cap there — though not obviously worth the added
-maintenance burden unless the free tier truly stops fitting) 🔧.
+Grist's free tier raised its team-member cap from three to ten seats
+on 8/31/2026, confirmed working directly (a real invite went through
+past the old three-seat limit). Ten is a real ceiling, not unlimited
+seats. Handing every trained operator a login — including field
+operators who only ever report over APRS or Winlink and never open
+the database at all — would burn through those seats fast for no
+operational reason. Scoping accounts to the people who actually need
+direct access (data-entry operators, validators) keeps you within the
+free tier longer (and note — needing direct access is about the job,
+not a license; see Part IV's role definitions), and is Part I's
+smallest-necessary-access principle applied to seat count instead of
+permission level. If your roster ever outgrows even the higher seat
+cap, that's a real decision point for the club: pay for additional
+seats, or move to self-hosting (already confirmed technically workable
+— no hard cap there — though not obviously worth the added maintenance
+burden unless the free tier truly stops fitting) 🔧.
 
 ---
 
@@ -1501,9 +1520,23 @@ obvious spots."
 
 ---
 
-## 6.5 Setting Up Your Own Database (Grist)
+## 6.5 Setting Up Your Own Database
 
-**Step-by-step:**
+Two options work well here — pick based on what your team already
+knows:
+
+- **Grist** — purpose-built for this: dropdown columns, enforced data
+  types, no manual setup needed for validation. Its free tier currently
+  caps a team at ten members (raised from three, 8/31/2026) — plenty
+  for most clubs, worth checking only if yours is unusually large.
+- **Google Sheets** — most people already know it, and there's no
+  per-seat cap under one Google account's sharing — but dropdown-style
+  validation has to be set up manually per column, and it takes one
+  extra step to make a live layer for your map (below).
+
+Steps for each are below — follow whichever one you picked.
+
+### Option A: Grist
 
 1. Go to **getgrist.com** in your web browser.
 2. Click **Sign up** (top right).
@@ -1545,6 +1578,35 @@ obvious spots."
    enter each teammate's email, and choose their role — most
    data-entry operators only need **Editor**, not **Owner**.
 
+### Option B: Google Sheets
+
+1. In your club's shared Google account, go to **sheets.google.com**
+   and click **Blank** to start a new sheet.
+2. Rename it matching your own project — click the title top-left
+   (e.g. `MGS-ResourceStatus`).
+3. In row 1, type one column header per piece of information a report
+   needs, matching your own field format (Part III, 3.2) — e.g.
+   `ObjectName`, `Status`, `Specifier`, `Location`, `Notes`,
+   `ReportedBy`, `DateTime`, `Latitude`, `Longitude`, `Verified`,
+   `ReportCount`.
+4. To make `ObjectName`, `Status`, and `Specifier` behave like
+   dropdowns: select the column (click its letter at the top), go to
+   **Data → Data validation**, choose **Dropdown** as the criteria,
+   and type each option from your Part III category/status/specifier
+   lists on its own line. 🔧 (Google's exact menu wording shifts from
+   time to time — look for "Data validation" if this doesn't match
+   what you see.)
+5. To share access with your team: click **Share** (top right), enter
+   each teammate's email, and set their role to **Editor**, not
+   **Owner**.
+6. To let your map read this sheet as a live layer (needed for §6.6):
+   go to **File → Share → Publish to web**, choose the specific sheet
+   (not "Entire Document"), select **Comma-separated values (.csv)** as
+   the format, and click **Publish**. Copy the link this gives you —
+   you'll paste it into uMap in the next section. 🔧 Anyone with this
+   link can view (not edit) this data — that's expected and fine for a
+   read-only map layer, not a security gap.
+
 ---
 
 ## 6.6 Setting Up Your Own Public Map (uMap)
@@ -1565,16 +1627,18 @@ obvious spots."
    - One layer reading from your own automated pipeline's published
      file — point it at your own fork's raw GeoJSON address, e.g.
      `raw.githubusercontent.com/[your-username]/[your-repo-name]/main/[your-geojson-filename]`
-   - One layer reading from your own Grist table, following Grist's
-     own current instructions for sharing a table as a live data
-     source (this changes from time to time on Grist's side — check
-     their current documentation for the exact steps 🔧).
+   - One layer reading from your own hand-entry database — for Grist,
+     follow Grist's own current instructions for sharing a table as a
+     live data source (this changes from time to time on their side —
+     check their current documentation for the exact steps 🔧); for
+     Google Sheets, use the published CSV link from 6.5's last step
+     above.
 7. For each layer, set styling rules matching your own category and
    status list — click a layer → **Edit properties** → set colors and
    icons per value. **Match spelling exactly** between this map, your
-   Grist columns, and your codebase's category list (Part II, note
-   [4] — the same invisible-mismatch trap applies here, just in a new
-   system).
+   database columns (Grist or Google Sheets), and your codebase's
+   category list (Part II, note [4] — the same invisible-mismatch
+   trap applies here, just in a new system).
 8. Click **Save** (top left), then find your map's public sharing link
    under the **Share** option to give to your own operators and the
    public.

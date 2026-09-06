@@ -1,12 +1,5 @@
 # KCGR Pipeline — Operator Manual (Web Toggle & Remote Access)
 
-**Who this is for:** any trained KCGR operator who needs to turn the
-automated reporting pipeline on/off, check its status, or remove a
-stale report — from home, from an EOC, or anywhere else — without
-needing to SSH into the Pi or understand the code behind it.
-
----
-
 ## 1. One-Time Setup (do this once, on each device you'll use)
 
 Before you can reach the admin page remotely, your device needs to join
@@ -28,7 +21,15 @@ use the admin page.
 
 ---
 
-## 2. Turning the Pipeline On or Off
+## 2. Turning the Hardware-Tied Fallback Channel On or Off
+
+**First, what this toggle actually controls.** Most of KCGR's
+automated capture doesn't run on the Pi at all — it runs on GitHub's
+own free infrastructure, checking for new reports on its own schedule
+whether or not the Pi is even turned on. This toggle controls only the
+one channel that's tied to this Pi and its radio (Graywolf's direct
+RF capture) — an extra layer of redundancy, not the only thing keeping
+reports flowing.
 
 1. Open a browser on any device that's joined the tailnet (see Section 1).
 2. Go to:
@@ -39,84 +40,84 @@ use the admin page.
    Operator if you don't have it — it's not your Tailscale login and not
    your Pi login, it's a separate password just for this page.)
 4. You'll see the current status:
-   - **Green "Turn ON" button** = pipeline is currently off
-   - **Red "Turn OFF" button** = pipeline is currently on
+   - **Green "Turn ON" button** = this channel is currently off
+   - **Red "Turn OFF" button** = this channel is currently on
 5. Click the button to change it. The page will reload showing the new
    status within a couple seconds.
 
-**When to turn it ON:** at the start of an active incident/exercise, so
-incoming KCGR reports automatically reach the public map every 15 minutes
-without anyone needing to run anything by hand.
+**When to turn it ON:** at the start of an active incident/exercise, if
+you want this Pi's own direct radio capture running as an extra layer
+alongside the channels that are already running regardless.
 
-**When to turn it OFF:** once the incident/exercise is over, so it's not
-polling unnecessarily in the background.
+**When to turn it OFF:** once the incident/exercise is over, so it's
+not tying up the radio and computer unnecessarily.
 
 ---
 
 ## 3. Checking Whether It's Actually Working
 
-After turning it on, reports can take up to **15 minutes** to appear on
-the public map — that's normal, not a malfunction. The pipeline only
-checks for new reports every 15 minutes while it's on.
+After turning the hardware-tied fallback channel on, reports captured
+directly by this Pi's own radio can take up to **15 minutes** to
+appear on the public map — that's normal, not a malfunction. This
+15-minute cycle only applies to this one channel; the independently-
+scheduled APRS-IS and Winlink channels (see Section 2) run on their
+own schedule on GitHub regardless of this toggle's state.
 
-If you want to confirm it's genuinely running (not just that the page
-says so):
+If you want to confirm the hardware-tied channel is genuinely running
+(not just that the page says so):
 - Refresh the admin page — the status should stay accurate.
 - Check the public map itself after waiting at least 15 minutes.
 - If something seems off after a reasonable wait, contact the Hub
   Operator rather than trying to fix it yourself — the underlying system
   (the Pi, the scripts) isn't meant to be touched from this page.
 
-### REMOVAL-PANAL ACCESS TOKEN ON GITHUB for admin page report  
-  Removal-panel access token — expires 8/14/2027. The admin page's 
-report-removal tool depends on a GitHub access token that expires on this date. 
-If it lapses, the toggle and status sections of this page keep 
-working normally — *** only the removal tool breaks *** , and it fails with an 
-*** authentication error *** rather than anything visible elsewhere on the page. 
-If a removal attempt fails after this date, or if you're checking in proactively 
-around this date: generate a new fine-grained token at 
-github.com/settings/personal-access-tokens/new (repository access: kcgr-resource-feed only; 
-permissions: Contents read-only, Actions read/write), 
-then update GITHUB_PAT in ~/.kcgr_secrets/credentials.env on the Pi and r
-estart the admin app. Contact the Hub Operator if you're not sure how to do this.
+### Removal-Panel Access Token on GitHub
 
+Removal-panel access token — expires **8/14/2027**. The admin page's
+report-removal tool depends on a GitHub access token that expires on
+this date. If it lapses, the toggle and status sections of this page
+keep working normally — only the removal tool breaks, and it fails
+with an authentication error rather than anything visible elsewhere
+on the page.
 
+If a removal attempt fails after this date, or if you're checking in
+proactively around this date: generate a new fine-grained token at
+github.com/settings/personal-access-tokens/new (repository access:
+`kcgr-resource-feed` only; permissions: Contents read-only, Actions
+read/write), then update `GITHUB_PAT` in
+`~/.kcgr_secrets/credentials.env` on the Pi and restart the admin app.
+Contact the Hub Operator if you're not sure how to do this.
 
 ---
 
-## 4. Removing a Report from the Map
+## 4. If a Report Needs to Be Removed
 
 **Important: deleting a marker directly on the uMap map itself does NOT
 work permanently** — it will reappear, because the map is just a display
 of data that lives elsewhere. Don't use the map's own delete/trash tools
 for this.
 
-**Any trained operator with the admin password can remove a report
-directly** — this no longer requires the Hub Operator to do it for you.
+**Any trained operator can remove a report directly** — this no longer
+requires the Hub Operator or Pi terminal access, for reports that came
+in over APRS-IS or Winlink (the two channels currently in active use):
 
-1. Open the admin page (same login as Section 2):
+1. From any device on the tailnet, go to:
    ```
-   http://100.68.180.65:5050
+   http://100.68.180.65:5050/records
    ```
-2. Click **View/remove active records** (or go directly to
-   `http://100.68.180.65:5050/records`).
-3. You'll see a table of every report currently live, labeled by which
-   channel it came in on (APRS-IS, Winlink), plus its category, status,
+2. Find the report in the list — labeled by source, category, status,
    location, and callsign.
-4. Find the report you want gone, and click **Remove** next to it.
-5. You'll be shown a confirmation screen with the exact report's source
-   and identity — **check that it matches the report you meant** before
-   confirming; there's no undo from this page.
-6. Click **Yes, remove it.** The underlying data updates immediately;
-   the listing on the Auto-Feed page usually updates within moments,
-   and the embedded map on the main Hub page can take a couple of
-   minutes to catch up — that's normal, not a malfunction.
+3. Click **Remove**, then confirm on the next screen.
 
-**One channel isn't covered by this page yet:** any report that came in
-through this Pi's own local pipeline (it would show as "Pi APRS" if one
-ever appears) won't have a Remove button — that row shows "no removal
-tool" instead. If you need one of those removed, **contact the Hub
-Operator** (Section 7) rather than trying to do it yourself.
+This updates the underlying data and republishes the public map
+automatically — usually within an hour, sometimes sooner.
+
+**One remaining gap:** reports that came in through this Pi's own local
+capture channel (not the two above) can't yet be removed through this
+panel — that case still needs the Hub Operator. If you're not sure
+which channel a report came from, remove it through the panel above
+first; if it's not listed there, contact the Hub Operator with the
+details (which report, and why it needs to come down).
 
 ---
 
@@ -126,8 +127,9 @@ Operator** (Section 7) rather than trying to do it yourself.
   It controls a real, live public safety data feed.
 - **Don't try to access this page without Tailscale set up first** —
   the address won't load from a device that hasn't joined the tailnet.
-- **Don't leave the pipeline on indefinitely "just in case"** — turn it
-  off when there's no active need, to keep things simple and predictable.
+- **Don't leave the hardware-tied fallback channel on indefinitely
+  "just in case"** — turn it off when there's no active need, to keep
+  things simple and predictable.
 - **Double-check the identity shown on the removal confirmation screen
   before clicking "Yes, remove it"** — there's no undo, and more than
   one similar-looking report can be live at the same time.
