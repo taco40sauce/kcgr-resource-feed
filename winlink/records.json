@@ -1,1 +1,19 @@
-{}
+{
+  "AA4TE:KCGR-PWR:1": {
+    "identity": "AA4TE:KCGR-PWR:1",
+    "callsign": "AA4TE",
+    "category_wire": "KCGR-PWR",
+    "category_mapped": "KCGR-PWR-power",
+    "lat": 34.230937,
+    "lon": -80.673972,
+    "received_time": "2026-09-10T14:46:55.180829+00:00",
+    "raw_comment": "Generators are good. (This is a test for presentation on Thurs. First one didn't work due to two stray '?' marks that the scripts didn't expect. in line 3 and line 7.)",
+    "status_wire": "LM",
+    "status_mapped": "LM-limited",
+    "specifier": "GN",
+    "location": "Harbor Freight Lugoff",
+    "timestamp_field": "Sept 9 2030",
+    "parsed_cleanly": true,
+    "source_channel": "winlink"
+  }
+}
