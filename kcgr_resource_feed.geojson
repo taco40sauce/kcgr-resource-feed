@@ -1,5 +1,36 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-09-10T13:59:05.774604+00:00",
-  "features": []
+  "generated_at": "2026-09-10T14:47:21.389069+00:00",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.673972,
+          34.230937
+        ]
+      },
+      "properties": {
+        "ObjectName": "KCGR-PWR-power",
+        "Status": "LM-limited",
+        "Specifier": "GN-generator",
+        "DateTime": "Sept 9 2030",
+        "ReportedBy": "AA4TE",
+        "ReportCount": 1,
+        "Location": "Harbor Freight Lugoff",
+        "Comment": "Generators are good. (This is a test for presentation on Thurs. First one didn't work due to two stray '?' marks that the scripts didn't expect. in line 3 and line 7.)",
+        "name": "KCGR-PWR-power \u2014 Harbor Freight Lugoff",
+        "description": "LM-limited | GN-generator | Reported: Sept 9 2030 | By: AA4TE",
+        "Contributors": [
+          {
+            "callsign": "AA4TE",
+            "received_time": "2026-09-10T14:46:55.180829+00:00",
+            "status_mapped": "LM-limited",
+            "location": "Harbor Freight Lugoff"
+          }
+        ]
+      }
+    }
+  ]
 }
