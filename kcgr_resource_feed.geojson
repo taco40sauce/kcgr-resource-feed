@@ -1,7 +1,37 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-09-11T17:14:56.694302+00:00",
+  "generated_at": "2026-09-11T17:49:11.129498+00:00",
   "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.743858,
+          34.148401
+        ]
+      },
+      "properties": {
+        "ObjectName": "KCGR-CELL-cell",
+        "Status": "OP-open",
+        "Specifier": "VZ-Verizon",
+        "DateTime": "11 1245",
+        "ReportedBy": "UNKNOWN",
+        "ReportCount": 1,
+        "Location": "Elgin Ole Still Ln and Whiting Way",
+        "Comment": "",
+        "name": "KCGR-CELL-cell \u2014 Elgin Ole Still Ln and Whiting Way",
+        "description": "OP-open | VZ-Verizon | Reported: 11 1245 | By: UNKNOWN",
+        "Contributors": [
+          {
+            "callsign": "UNKNOWN",
+            "received_time": "2026-09-11T17:48:59.369608+00:00",
+            "status_mapped": "OP-open",
+            "location": "Elgin Ole Still Ln and Whiting Way"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "geometry": {
