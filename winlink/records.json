@@ -16,23 +16,6 @@
     "parsed_cleanly": true,
     "source_channel": "winlink"
   },
-  "UNKNOWN:KCGR-TEST:1": {
-    "identity": "UNKNOWN:KCGR-TEST:1",
-    "callsign": "UNKNOWN",
-    "category_wire": "KCGR-TEST",
-    "category_mapped": "KCGR-UNKNOWN-unknown",
-    "lat": 34.148401,
-    "lon": -80.743858,
-    "received_time": "2026-09-11T14:25:15.744900+00:00",
-    "raw_comment": "",
-    "status_wire": "OP",
-    "status_mapped": "OP-open",
-    "specifier": "KCGR-CELL VZ",
-    "location": "Elgin Ole Still Ln and Whiting Way",
-    "timestamp_field": "11 0945",
-    "parsed_cleanly": false,
-    "source_channel": "winlink"
-  },
   "UNKNOWN:KCGR-CELL:1": {
     "identity": "UNKNOWN:KCGR-CELL:1",
     "callsign": "UNKNOWN",
