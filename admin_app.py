@@ -42,6 +42,14 @@ SOURCES = {
     },
 }
 
+# Which sources have a poller workflow that can be triggered on demand.
+# Pi-APRS has no entry here — it's the local RF pipeline, controlled by
+# the existing Turn ON/OFF button, not a GitHub Actions poller.
+POLLABLE = {
+    "winlink": {"label": "Winlink", "poll_workflow": "winlink-poller.yml"},
+    "aprs-is": {"label": "APRS-IS", "poll_workflow": "aprsis-poller.yml"},
+}
+
 
 def gh_headers():
     return {
@@ -132,6 +140,21 @@ ADMIN_PAGE = """
     When ON, the pipeline polls every {{ poll_interval }} seconds for new KCGR reports
     and pushes updates to the public map automatically.
   </p>
+  <hr style="margin: 24px 0;">
+  <p><strong>Poll now</strong> — check for new reports immediately instead of
+     waiting for the next scheduled check. Useful right after a test message.</p>
+  <form method="post" action="{{ url_for('poll_now') }}" style="display: inline;">
+    <input type="hidden" name="source" value="winlink">
+    <button type="submit" style="font-size: 1em; padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 6px;">
+      Poll Winlink Now
+    </button>
+  </form>
+  <form method="post" action="{{ url_for('poll_now') }}" style="display: inline; margin-left: 8px;">
+    <input type="hidden" name="source" value="aprs-is">
+    <button type="submit" style="font-size: 1em; padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 6px;">
+      Poll APRS-IS Now
+    </button>
+  </form>
   <p><a href="{{ url_for('refresh') }}">Refresh status</a> &nbsp;|&nbsp;
      <a href="{{ url_for('records') }}">View/remove active records</a> &nbsp;|&nbsp;
      <a href="{{ url_for('logout') }}">Log out</a></p>
@@ -318,6 +341,46 @@ def records_remove():
 
     return render_template_string(RESULT_PAGE, ok=True,
         message=f"Removed {identity} from {cfg['label']} and triggered a map republish. Give it a minute, then check the map.")
+
+
+@app.route("/poll", methods=["POST"])
+@login_required
+def poll_now():
+    source = request.form.get("source")
+    cfg = POLLABLE.get(source)
+    if not cfg:
+        return render_template_string(RESULT_PAGE, ok=False, message="Unknown source.")
+
+    try:
+        gh_dispatch_workflow(cfg["poll_workflow"])
+    except Exception as e:
+        return render_template_string(RESULT_PAGE, ok=False,
+            message=f"Failed to trigger {cfg['label']} poll: {e}")
+
+    # Same wait-and-confirm pattern as records_remove. Note: if this
+    # lands within a couple seconds of the Cloudflare cron trigger or
+    # GitHub's own schedule also firing, gh_latest_run_status could
+    # report on that run instead of this exact click - harmless (both
+    # reflect real current state), just not guaranteed to be *this* run.
+    poll_run = None
+    for _ in range(20):  # ~40s max
+        time.sleep(2)
+        run = gh_latest_run_status(cfg["poll_workflow"])
+        if run and run.get("status") == "completed":
+            poll_run = run
+            break
+
+    if not poll_run:
+        return render_template_string(RESULT_PAGE, ok=False,
+            message=f"{cfg['label']} poll was triggered but didn't finish within the wait window — check GitHub Actions directly.")
+    if poll_run.get("conclusion") != "success":
+        return render_template_string(RESULT_PAGE, ok=False,
+            message=f"{cfg['label']} poll finished with conclusion '{poll_run.get('conclusion')}' — check its log before assuming anything changed.")
+
+    # Unlike removal, the poller already has its own workflow_run link
+    # to merge-and-publish - no need to dispatch that separately here.
+    return render_template_string(RESULT_PAGE, ok=True,
+        message=f"{cfg['label']} poll completed. If it found anything new, the map will update automatically within a minute or two.")
 
 
 if __name__ == "__main__":
