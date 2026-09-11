@@ -67,31 +67,30 @@ def _parse_fields(block_lines: list) -> dict:
             fields[m.group(1).strip()] = m.group(2).strip()
     return fields
 
-
-def _split_into_sections(body: str) -> dict:
-    """Splits the message body on '--- SECTION NAME ---' headers into
-    {section_name: [lines]}. Section names are normalized to upper case
-    with surrounding whitespace stripped."""
-    sections = {}
-    current_name = None
-    current_lines = []
-    section_re = re.compile(r"^---\s*(.+?)\s*---$")
-
-    for raw_line in body.splitlines():
-        m = section_re.match(raw_line.strip())
-        if m:
-            if current_name is not None:
-                sections[current_name] = current_lines
-            current_name = m.group(1).strip().upper()
-            current_lines = []
-        elif current_name is not None:
-            current_lines.append(raw_line)
-
-    if current_name is not None:
-        sections[current_name] = current_lines
-
-    return sections
-
+     sections = {}
+     current_name = None
+     current_lines = []
+-    section_re = re.compile(r"^---\s*(.+?)\s*---$")
++    # Tolerates a small amount of stray leading junk before the dashes
++    # (e.g. a mis-typed or copy/paste-mangled character landing right
++    # before "---") without loosening things so far that ordinary body
++    # text could be mistaken for a header - that's what the
++    # KNOWN_SECTION_NAMES check below guards against.
++    section_re = re.compile(r"^.{0,3}?---\s*(.+?)\s*---$")
++    KNOWN_SECTION_NAMES = {"REPORTER INFO", "REPORT 1", "REPORT 2", "REPORT 3"}
+ 
+     for raw_line in body.splitlines():
+         m = section_re.match(raw_line.strip())
+-        if m:
++        candidate_name = m.group(1).strip().upper() if m else None
++        if m and candidate_name in KNOWN_SECTION_NAMES:
+             if current_name is not None:
+                 sections[current_name] = current_lines
+-            current_name = m.group(1).strip().upper()
++            current_name = candidate_name
+             current_lines = []
+         elif current_name is not None:
+             current_lines.append(raw_line)
 
 def _to_float(value: str):
     """Best-effort float parse. Returns None rather than raising - a
