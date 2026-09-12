@@ -1197,7 +1197,21 @@ edit to this table — replace with your own):
 | uMap | Club shared email | Whoever needs to edit map layers or styling | Edit access is rare — most operators only ever need view | 🔧 |
 | Tailscale | `kc4rc.fd@gmail.com`, not a personal account | Every device that's joined the tailnet | Personal plan — 6 users, unlimited devices per user | 🔧 |
 | Gmail (`kc4rc.fd@gmail.com`) | Club shared account | Hub Operator, primary; forwarding rules also route copies elsewhere | 2FA via authenticator app + a scoped App Password ("KCGR Automation") powering the Winlink poller; 10 backup codes stored on paper and in a password manager | 🔧 |
+**Renewing the admin app's GitHub P.A.T. before 8/14/2027**:
 
+| GitHub Personal Access Token (kcgr-poller-trigger) | Stored as a Cloudflare Worker secret (GITHUB_PAT) on kcgr-winlink-trigger-worker | Whoever can edit that Worker's settings | Actions: Read and write, scoped to kcgr-resource-feed only — deliberately set to never expire, since this token only supplements an already-unreliable schedule and an unnoticed expiration would silently recreate the exact reliability gap it was built to fix | 🔧 |
+| Cloudflare (Workers: kcgr-grist-worker, kcgr-winlink-trigger-worker) | Club Cloudflare account, tied to the kc4rc.com domain | Whoever has the login | Can edit/redeploy Worker code, secrets, and Cron Triggers for both Workers | 🔧 |
+| Grist API Key (GRIST_API_KEY, used by kcgr-grist-worker) | Generated from Grist's own Developer settings | Whoever can edit kcgr-grist-worker's secrets | Read access to the KCGR-ResourceStatus table — no expiration mechanism exists for this key type (confirmed directly, 9/11/2026) | 🔧 |
+
+Renewing the admin app's GitHub P.A.T. before 8/14/2027:
+
+Do this a few weeks early — late July 2027, not the expiration date itself — in case anything needs a second attempt.
+On GitHub: Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token. Same scope as the current one: repository access limited to kcgr-resource-feed only, permissions Contents: Read-only + Actions: Read and write.
+On graywolf: edit ~/.kcgr_secrets/credentials.env and replace the GITHUB_PAT= line with the new token value. (This is the only place this credential lives — no git pull involved.)
+Restart the service that reads it: sudo systemctl restart kcgr-admin.
+Confirm it actually works — reload the admin page and click one of the Poll Now buttons or open the records panel.
+Once confirmed, go back to GitHub and revoke the old token.
+Update this table's expiration date and "Last reviewed" column.
 ---
 
 ## 5.2 Access Control & Succession
