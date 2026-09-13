@@ -624,8 +624,9 @@ What to keep in mind: this only helps if some station near the
 reporting operator is relaying to APRS-IS in the first place. In an
 area with few such stations, a report might never reach APRS-IS at all
 — which is exactly why your own hardware-tied channel (2.1) still
-matters as a fallback, not a redundant extra step. 
-Also worth knowing: GitHub's own free scheduling has been observed running far less consistently than documented for jobs this frequent — real gaps of several hours between checks, not the 15-minute cadence the schedule itself claims. A Cloudflare Worker was tried as a supplementary trigger; its Cron Trigger configuration was confirmed present and unchanged via Cloudflare's own API, yet the Worker silently stopped invoking after roughly 50 minutes to an hour, with no error anywhere — an unresolved platform-side issue, not something fixable from this end. The working fix is an external scheduled service, cron-job.org, calling GitHub's workflow_dispatch API directly every 5 minutes for both the Winlink and APRS-IS pollers (see §5.1 for the credential, §5.4 for the full story). You can also trigger a check manually at any time from GitHub's Actions tab using workflow_dispatch, without waiting on any schedule.
+matters as a fallback, not a redundant extra step. Also worth knowing:
+GitHub's own free scheduling has been observed running far less
+consistently than documented for jobs this frequent — real gaps of several hours between checks, not the 15-minute cadence the schedule itself claims. A Cloudflare Worker was tried as a supplementary trigger; its Cron Trigger configuration was confirmed present and unchanged via Cloudflare's own API, yet the Worker silently stopped invoking after roughly 50 minutes to an hour, with no error anywhere — an unresolved platform-side issue, not something fixable from this end. The working fix is an external scheduled service, cron-job.org, calling GitHub's workflow_dispatch API directly every 5 minutes for both the Winlink and APRS-IS pollers (see §5.1 for the credential, §5.4 for the full story). You can also trigger a check manually at any time from GitHub's Actions tab using workflow_dispatch, without waiting on any schedule.
 
 **Why not just open the small computer directly to the internet?**[⁶]
 It's technically possible to make a home computer reachable from the
@@ -1195,15 +1196,12 @@ edit to this table — replace with your own):
 | uMap | Club shared email | Whoever needs to edit map layers or styling | Edit access is rare — most operators only ever need view | 🔧 |
 | Tailscale | `kc4rc.fd@gmail.com`, not a personal account | Every device that's joined the tailnet | Personal plan — 6 users, unlimited devices per user | 🔧 |
 | Gmail (`kc4rc.fd@gmail.com`) | Club shared account | Hub Operator, primary; forwarding rules also route copies elsewhere | 2FA via authenticator app + a scoped App Password ("KCGR Automation") powering the Winlink poller; 10 backup codes stored on paper and in a password manager | 🔧 |
-**Renewing the admin app's GitHub P.A.T. before 8/14/2027**:
-
 | GitHub Personal Access Token (kcgr-poller-trigger) | Stored as a Cloudflare Worker secret (GITHUB_PAT) on kcgr-winlink-trigger-worker | Whoever can edit that Worker's settings | Actions: Read and write, scoped to kcgr-resource-feed only — deliberately set to never expire, since this token only supplements an already-unreliable schedule and an unnoticed expiration would silently recreate the exact reliability gap it was built to fix | 🔧 |
-| Cloudflare (Workers: kcgr-grist-worker, kcgr-winlink-trigger-worker) | Club Cloudflare account, tied to the kc4rc.com domain | Whoever has the login | Can edit/redeploy Worker code, secrets, and Cron Triggers for both Workers | 🔧 |
 | GitHub Personal Access Token (kcgr-cronjob-trigger) | Stored directly in cron-job.org's job configuration (Authorization header, both the Winlink and APRS-IS trigger jobs) | Whoever can log into the cron-job.org account | Actions: Read and write, scoped to kcgr-resource-feed only — deliberately set to never expire, same reasoning as kcgr-poller-trigger | 🔧 |
+| Cloudflare (Workers: kcgr-grist-worker, kcgr-winlink-trigger-worker) | Club Cloudflare account, tied to the kc4rc.com domain | Whoever has the login | Can edit/redeploy Worker code, secrets, and Cron Triggers for both Workers | 🔧 |
 | Grist API Key (GRIST_API_KEY, used by kcgr-grist-worker) | Generated from Grist's own Developer settings | Whoever can edit kcgr-grist-worker's secrets | Read access to the KCGR-ResourceStatus table — no expiration mechanism exists for this key type (confirmed directly, 9/11/2026) | 🔧 |
 
-Renewing the admin app's GitHub P.A.T. before 8/14/2027:
-| GitHub Personal Access Token (kcgr-poller-trigger) | Stored as a Cloudflare Worker secret... | 🔧 |
+**Renewing the admin app's GitHub P.A.T. before 8/14/2027**:
 
 Do this a few weeks early — late July 2027, not the expiration date itself — in case anything needs a second attempt.
 On GitHub: Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token. Same scope as the current one: repository access limited to kcgr-resource-feed only, permissions Contents: Read-only + Actions: Read and write.
@@ -2206,7 +2204,3 @@ loses detail:
    doesn't currently provide?
 
 ---
-
-
-
-
