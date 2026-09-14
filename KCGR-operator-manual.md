@@ -59,7 +59,7 @@ not tying up the radio and computer unnecessarily.
 After turning the hardware-tied fallback channel on, reports captured
 directly by this Pi's own radio can take up to **15 minutes** to
 appear on the public map — that's normal, not a malfunction. This
-15-minute cycle only applies to this one channel; the independently-
+5-minute cycle only applies to this one channel; the independently-
 scheduled APRS-IS and Winlink channels (see Section 2) run on their
 own schedule on GitHub regardless of this toggle's state.
 
