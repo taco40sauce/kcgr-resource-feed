@@ -54,13 +54,20 @@ No spreadsheet, no manual data entry required for the automated
 channels, no gatekeeper between a report being radioed (or Winlink'd)
 in and it appearing on the public map.
 
-## Status (as of 8/30/2026)
+## Status (as of 9/13/2026)
 
 **Live and running automatically**, not a manually-triggered prototype:
-- The **APRS-IS poller** and **Winlink poller** each run on their own
-  15-minute schedule via GitHub Actions, entirely independent of any
-  local hardware — confirmed end-to-end 8/12/2026 and 8/13/2026
-  respectively.
+- The **APRS-IS poller** and **Winlink poller** each run on GitHub
+  Actions, entirely independent of any local hardware — confirmed
+  end-to-end 8/12/2026 and 8/13/2026 respectively.
+- **GitHub's own native schedule for these workflows is unreliable in
+  practice** — documented as roughly 15 minutes, observed running with
+  gaps of several hours under real conditions. As of 9/13/2026, both
+  pollers are additionally triggered every 5 minutes by cron-job.org (a
+  free external scheduler calling GitHub's `workflow_dispatch` API
+  directly), confirmed holding a reliable cadence. GitHub's native
+  schedule still runs underneath as an independent fallback floor. See
+  `FULL-KCGR-MANUAL.md` §2.3 and §5.4 for the full investigation.
 - The **Pi's own local Graywolf pipeline** still exists and still
   works, but is intended to become an optional fallback rather than the
   primary path — it runs as a `systemd` service (`kcgr-pipeline`),
@@ -72,7 +79,7 @@ in and it appearing on the public map.
 
 **Still open, not yet done:**
 - A real end-to-end test of the Pi's own local pipeline under its
-  *unattended*, scheduled 15-minute cron (rather than a manually timed
+  *unattended*, scheduled cron (rather than a manually timed
   run) hasn't been completed yet.
 - Confirming a real report reaches APRS-IS via a genuinely independent
   iGate — not this Pi's own gate — which is the actual point of that
