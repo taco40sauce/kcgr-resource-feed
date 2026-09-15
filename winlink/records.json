@@ -32,5 +32,22 @@
     "timestamp_field": "11 1245",
     "parsed_cleanly": true,
     "source_channel": "winlink"
+  },
+  "AI4AE YOUR_CALLSIGN:KCGR-FUEL:1": {
+    "identity": "AI4AE YOUR_CALLSIGN:KCGR-FUEL:1",
+    "callsign": "AI4AE YOUR_CALLSIGN",
+    "category_wire": "KCGR-FUEL",
+    "category_mapped": "KCGR-FUEL-fuel",
+    "lat": null,
+    "lon": null,
+    "received_time": "2026-09-15T11:35:12.878994+00:00",
+    "raw_comment": "",
+    "status_wire": "OP",
+    "status_mapped": "OP-open",
+    "specifier": "FUEL",
+    "location": "Murphy Gas Express",
+    "timestamp_field": "2026-09-15 0723",
+    "parsed_cleanly": true,
+    "source_channel": "winlink"
   }
 }
