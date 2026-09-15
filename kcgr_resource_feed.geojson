@@ -1,7 +1,37 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-09-15T11:31:49.698289+00:00",
+  "generated_at": "2026-09-15T11:35:25.474529+00:00",
   "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          null,
+          null
+        ]
+      },
+      "properties": {
+        "ObjectName": "KCGR-FUEL-fuel",
+        "Status": "OP-open",
+        "Specifier": "FUEL",
+        "DateTime": "2026-09-15 0723",
+        "ReportedBy": "AI4AE YOUR_CALLSIGN",
+        "ReportCount": 1,
+        "Location": "Murphy Gas Express",
+        "Comment": "",
+        "name": "KCGR-FUEL-fuel \u2014 Murphy Gas Express",
+        "description": "OP-open | FUEL | Reported: 2026-09-15 0723 | By: AI4AE YOUR_CALLSIGN",
+        "Contributors": [
+          {
+            "callsign": "AI4AE YOUR_CALLSIGN",
+            "received_time": "2026-09-15T11:35:12.878994+00:00",
+            "status_mapped": "OP-open",
+            "location": "Murphy Gas Express"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "geometry": {
