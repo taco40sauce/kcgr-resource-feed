@@ -16,7 +16,7 @@ operations manual. If you're looking for how to actually run this
 system day to day — activation/wind-down procedures, data entry
 standards, validator workflow, troubleshooting, succession planning, or
 how to adapt this for your own county or region — see
-`FULL-KCGR-MANUAL.md` in this repo instead. That manual assumes this
+`Full-Manual-KCGR-Pipeline.md` in this repo instead. That manual assumes this
 README as background, not the other way around.
 
 ## Why this exists
