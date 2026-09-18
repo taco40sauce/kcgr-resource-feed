@@ -346,6 +346,33 @@ you're in. The advantage of a small Raspberry Pi is that very little
 energy is used, which could affect your power bill less than the
 alternatives.
 
+**[¹³] Why a good-enough report is better than a perfect report.**
+In the field, waiting until every detail is perfect can mean the useful
+information never gets sent at all. The system is deliberately built to
+accept a report that may need clarification and mark it accordingly.
+The operator's job is to send what they actually know, as accurately as
+they can, and let the system and later validation add confidence rather
+than delaying the first report.
+
+**[¹¹] Why designate a Hub Operator.**
+The Hub Operator is not there because one person should control the whole
+system. The role gives the project a clearly identified person who owns
+the initial credentials, knows where the pieces are, and can make sure
+important decisions don't get lost between several people. Other trained
+operators can be added as stand-ins and given only the access their role
+requires. The important part is that everyone knows who has the keys and
+who is responsible for making sure those keys can be handed to the next
+person.
+
+**[¹²] Why the internet connection is still part of the design.**
+This is a distributed reporting system, but it is not an internet-free
+system. APRS and Winlink provide ways for reports to enter the pipeline
+without a reporter using the public internet, while the processing,
+database, and public map still depend on internet-connected services.
+Thinking about that dependency up front makes it easier to identify what
+can keep working during a local outage and what needs an alternate path.
+
+
 ---
 
 
@@ -388,9 +415,12 @@ conditions**, or **marina/boat-launch status**. Neither list is more
 **Steps:**
 1. Gather your own experienced operators and ask what mattered most last
    time, or what they worry about most next time.
-2. Aim for somewhere around eight to twelve categories — enough to cover
-   real needs, few enough that someone can remember them without looking
-   them up.
+2. Start with somewhere around eight to ten categories — enough to cover
+   the things your area is likely to need, but few enough that operators
+   can remember them without constantly looking them up. The **Health and
+   Welfare** category can also serve as a miscellaneous or catch-all
+   category when something useful doesn't justify creating another
+   category. Add categories later if real experience shows you need them.
 3. For each category, pick a short 2–4 letter specifier code (e.g. a
    status of shelter capacity, or type of road hazard) — same idea as
    the worked example, just your own list.
@@ -465,24 +495,22 @@ your timing to that.
 system treats them as "the same real-world thing," rather than two
 separate locations.
 
-**Worth knowing first — how much precision a coordinate actually has.**
-GPS coordinates are just numbers with decimal places, and it's easy to
-assume more decimal places always means "more precise" without a sense
-of what that actually means in real distance on the ground:
+**Why coordinate precision matters:** Don't round coordinates just to
+make them easier to type. A small change in the decimal places can move
+a reported location by hundreds of feet or more, which can matter when
+you're trying to determine whether two reports describe the same incident.
 
-| Decimal places | Roughly this precise |
-|---|---|
-| 1 | ~11 km (about 7 miles) |
-| 2 | ~1.1 km (about ⅔ mile) |
-| 3 | ~110 meters (about a football field) |
-| 4 | ~11 meters (about a car length) |
-| 5 | ~1.1 meters |
-| 6 | ~11 centimeters |
+**Getting accurate coordinates:** When using **aprs.fi**, the latitude
+and longitude for the map position appear in the upper corner as you
+move the cursor over the map. Move the cursor to the location you want
+and record the displayed coordinates rather than rounding them yourself.
 
-This matters directly for this section: if your data source only gives
-you coordinates to 3 decimal places, setting your corroboration distance
-tighter than about 110 meters doesn't actually gain you anything — you'd
-be asking for more precision than your own data can really deliver.
+You can also get coordinates from Google Maps. On `maps.google.com`,
+**left-click** the location and the latitude/longitude will be displayed.
+Click the coordinates to copy them.
+
+Use the full coordinate precision provided by the source when entering a
+report.
 
 **Steps:**
 1. Start somewhere in the range of 50–150 meters as a first guess — this
@@ -537,6 +565,49 @@ than you'd expect.
 ---
 
 ## SECTION II — BUILD IT
+
+## Notes for Part II
+
+**[¹] Why the category list stays deliberately small.**
+A category list can grow almost forever if every new kind of report gets
+its own label. That sounds useful until an operator has to remember the
+list during an event. The goal is to cover the important things without
+turning the reference card into a lookup exercise. **Health and Welfare**
+is useful here because it can absorb a legitimate report that doesn't
+fit neatly anywhere else, without forcing you to create a new category
+for every unusual situation. Add categories when real experience shows
+you need them.
+
+**[²] Why use a fixed field grammar instead of free-form reports.**
+People can read a free-form message, but computers have a much harder time
+deciding where one piece of information ends and another begins. A fixed
+field order gives the operator a repeatable habit and gives the parser
+something predictable to work with. It also means a future maintainer can
+understand the format without having to reverse-engineer dozens of old
+messages.
+
+**[³] Why staleness is a local decision.**
+A report doesn't become wrong simply because a clock reached an arbitrary
+number. A road closure, a shelter's available beds, and a power outage
+can all have very different useful lifetimes. That's why the system treats
+staleness as something each implementation should tune to its own area
+and revise after real experience.
+
+**[⁴] Why corroboration does not mean throwing away the first report.**
+The first report may be the only information anyone has for a while.
+Corroboration is a way to increase confidence when another independent
+report appears; it isn't a reason to hide the original report while
+waiting for confirmation. An unconfirmed report can still be useful when
+its status is made clear.
+
+**[⁵] Why local reference links belong beside the system, not inside it.**
+The pipeline is not intended to replace the official sources that already
+exist for roads, utilities, shelters, or other local information. Those
+sources provide another view of what is happening, and keeping the links
+together gives operators and the public a practical way to cross-check
+what they see.
+
+---
 
 # PART 3 — Building It
 
@@ -664,12 +735,13 @@ side.
 
 **Steps:**
 1. Create a free account with a simple database service (this system
-   uses one called **Grist**) under your club's shared email.
+   uses one called **Grist**) under your club's shared email. If you don't
+   want to use Grist, §4.5 describes another option using Google Sheets.
 2. Create one table with a column for each piece of information a report
    needs — category, status, location, timestamp, and so on — matching
    your own field format (see Part II).
-3. Create a free account with a public mapping service (this system uses
-   one called **uMap**), also under your club's shared email.
+3. Create a free account with a **free, open-source map** service called
+   **uMap**, under your club's shared email.
 4. Set up **two separate layers** on the same map: one that reads
    directly from your hand-entered database, and one that reads from the
    automatic pipeline's output. Both can show pins on the same map at the
@@ -694,7 +766,7 @@ side.
 ## 3.4 Remote Access (So You're Not Tied to One Location)
 
 **What this is for:** letting you, and any trained operator, reach the
-small computer's on/off switch (Section 2.2, step 6) and check on things
+small computer's on/off switch (Section 3.2, step 6) and check on things
 from anywhere — home, an EOC, on the road — without needing to be
 physically near it or connected to its home network.
 
@@ -794,6 +866,27 @@ only connection — the same "give it only the smallest access it needs"
 idea from Part I, applied to your network instead of a password.
 
 ---
+
+**[⁷] Why the reporting channels stay separate.**
+Keeping each intake channel in its own file and processing path means a
+problem in one channel is easier to identify and doesn't automatically
+make every other channel look broken. It also preserves the original
+source of a report, which makes troubleshooting and later review much
+easier.
+
+**[⁸] Why the database and public map are separate.**
+The database is where the working information lives; the map is how that
+information is presented to the public. Keeping those jobs separate means
+the map can be rebuilt from the underlying data instead of becoming the
+only copy of the information. It also makes it possible to change the
+public presentation without redesigning the reporting system underneath
+it.
+
+**[⁹] Why the prefix should be short and boring.**
+The prefix is an identifier, not a branding exercise. A short, consistent
+prefix leaves more room for the useful information that follows it and
+makes the format easier to recognize under stress. The important thing is
+that your organization chooses it once and then applies it consistently.
 
 # PART 4 — Adapting This System For Your Own Area
 
@@ -1447,22 +1540,15 @@ baked into a manual. Treat that policy as open until your club settles
 it on purpose.
 
 **[⁵] Why database accounts are scoped to roles, not everyone.**
-Grist's free tier raised its team-member cap from three to ten seats
-on 8/31/2026, confirmed working directly (a real invite went through
-past the old three-seat limit). Ten is a real ceiling, not unlimited
-seats. Handing every trained operator a login — including field
-operators who only ever report over APRS or Winlink and never open
-the database at all — would burn through those seats fast for no
-operational reason. Scoping accounts to the people who actually need
-direct access (data-entry operators, validators) keeps you within the
-free tier longer (and note — needing direct access is about the job,
-not a license; see Part V's role definitions), and is Part I's
-smallest-necessary-access principle applied to seat count instead of
-permission level. If your roster ever outgrows even the higher seat
-cap, that's a real decision point for the club: pay for additional
-seats, or move to self-hosting (already confirmed technically workable
-— no hard cap there — though not obviously worth the added maintenance
-burden unless the free tier truly stops fitting).
+Grist is purpose-built for this kind of work: dropdown columns, enforced
+data types, and relatively little manual setup for validation. But direct
+access should still go only to people who actually need it, such as
+data-entry operators and validators. Field operators who report through
+APRS or Winlink don't need a database account simply because they're part
+of the operation. The people using those accounts may or may not be
+licensed amateurs; the need for database access is based on the job, not
+the license. Check the current Grist plan limits before deciding how many
+people will need direct access.
 
 ---
 
@@ -1630,14 +1716,43 @@ looks alarming on its own.
   the Authorization header missing the required `Bearer ` prefix,
   causing an identical-looking 401 until caught by direct comparison
   against a working curl request. Cloudflare Worker left running, no
-  longer relied upon (see the monthly maintenance check).
+  longer relied upon (see §6.5).
+
+---
+
+## 6.5 Ongoing Maintenance
+
+**What this is:** the small, easy-to-forget checks that keep a working
+system working — separate from Troubleshooting (6.3), which is what to
+do once something's already visibly wrong. These are the checks that can
+catch a problem before it becomes visible at all.
+
+**Steps:**
+1. **Regularly** — confirm that the current code and configuration being
+   used by your implementation are actually the versions you expect. If
+your system has a local component that runs code separately from the
+repository, update that component according to its own maintenance
+procedure.
+2. **Monthly** — confirm that your scheduling mechanism actually fired
+   recently, using its real execution history — not just that its
+   configuration still exists. A schedule can be configured correctly and
+   still silently stop running. Configuration existing and configuration
+   executing are two different facts, and only the second one is what you
+   actually need to know.
+3. **Quarterly** — restore one of your backup files somewhere separate from
+   production and confirm that it opens and contains real data. A backup
+   being created on schedule is not automatically proof that it would work
+   if you needed it.
+
+These three intervals are a starting point, not a rule. Adjust them to
+match how often your own system changes, and how much it would cost you to
+find out about a silent failure late rather than early.
 
 ---
 
 ## Notes for Part VI
 
-**[¹] **Why this section teaches patterns** instead of listing every past
-bug.** A list of exactly what broke before is useful once, for
+**[¹] Why this section teaches patterns instead of listing every past bug.** A list of exactly what broke before is useful once, for
 recognizing the *same* problem again — but it doesn't help with the
 next, different problem. The changelog (6.4) is where the specific
 history lives; this section exists to make that history transferable,
@@ -1651,6 +1766,21 @@ identical on the page — spelling it out as "GitHub Personal Access
 Token" on first use in any section, and using the punctuated "P.A.T."
 as shorthand after that, is a small, deliberate habit meant to keep the
 two from ever getting confused by a reader skimming quickly.
+
+**[³] Why keep a permissions log even when nothing seems to change.**
+Access tends to change quietly: someone takes on a new role, a credential
+is replaced, an account is no longer needed, or a new service gets added.
+The log turns that scattered knowledge into one place a successor can
+check. It is especially useful during an emergency, when discovering an
+unknown account or expired credential is about the worst possible time to
+learn that the documentation is incomplete.
+
+**[⁴] Why succession belongs in the operating plan.**
+A system that only one person knows how to access is not really an
+organizational system yet. Writing down who owns the accounts, who can
+stand in, and how access is transferred gives the project a way to survive
+changes in club leadership, availability, or interest. It also makes the
+system less intimidating for the next person who has to pick it up.
 
 ---
 
@@ -1817,10 +1947,17 @@ why this matters.
 
 # APPENDIX B — Opening Your Web-Based Tools
 
-Appendix A covers the automated pipeline, which mostly lives in a
-terminal. This appendix is for the tools most operators will actually
-spend their time in — entering a report by hand, or checking the public
-map itself. No terminal needed for anything below.
+Appendix A covers the Pi-based side of the system. This appendix is for
+the web-based tools an operator is more likely to use during normal
+operations — entering a report by hand in the database, or checking the
+public map.
+
+No terminal is needed for anything below.
+
+The important distinction is simple: **the database holds the data; uMap
+displays it.** When you need to add or change a report, work in the place
+where that report actually lives rather than trying to edit the map
+directly.
 
 ---
 
@@ -1833,9 +1970,9 @@ map itself. No terminal needed for anything below.
 2. Log in with your account.
 3. Open your team site, then your resource-status document (e.g.
    `KCGR-ResourceStatus`).
-4. Click into the table, and add a new row — one row per report, filling
-   in status, category, location, and so on, matching your own field
-   format from Part II.
+4. Click into the table and add a new row — one row per report. Fill in
+   the fields required by your implementation, using the field definitions
+   from Part III.
 5. If you're marking something as officially checked/confirmed, use the
    `Verified` column (a simple checkbox) — this is for your team's own
    reference and does not change how it looks on the public map.
@@ -1855,25 +1992,17 @@ map itself. No terminal needed for anything below.
    something most operators will need day to day — log in and open the
    map in edit mode.
 4. **Important reminder:** don't use uMap's own delete/trash tool to
-   remove a report from the automated feed layer — it doesn't actually
-   stick (see Appendix A, Step 6, for the real way to remove a report).
-   Deleting a hand-entered report from the manual-entry layer, though,
-   should be done by deleting the actual row in your database instead,
-   for the same reason — the map is just a display of data that lives
-   somewhere else.
+   remove a report from an automated feed layer. The map is displaying
+   data that comes from somewhere else, so deleting the feature in uMap
+   doesn't remove it from the underlying source — and the report can
+   simply come back the next time the layer refreshes. Use the appropriate
+   removal tool described in Appendix A, Step 6.
+
+   The same principle applies to hand-entered reports: delete or correct
+   the actual row in your database rather than trying to remove the pin
+   from the map.
 
 ---
-
-### County / partner agency spreadsheet
-
- *This section is being written as this integration is actually built —
-placeholder for now.* Once a county or partner agency's spreadsheet is
-connected as its own feed (see the note on this in Part I, section on
-building an EOC relationship), this section will cover:
-- Where to find their spreadsheet
-- Who has permission to view or edit it
-- How its data appears on the public map (as its own clearly-labeled
-  layer, separate from ham radio reports and manual entries)
 
 ---
 
@@ -2022,6 +2151,13 @@ THREE TOOLS for running an activation day to day:
 None of this needs anything beyond paper and a pen — this is
 meant to work even if every piece of technology in this system is down.
 
+**[⁵] Why keep a human handoff log.**
+The paper log is deliberately independent of the software. During an
+outage, shift change, or confusing event, a short human record can carry
+forward information that no automated system can guarantee will be seen.
+It also gives the next operator a quick picture of what happened without
+requiring them to reconstruct the shift from scattered logs.
+
 ### Paper Handoff Log
 
 Start a fresh page at the beginning of every activation. One line per
@@ -2041,7 +2177,7 @@ leave it for them to find.
 Answer these before handing the paper log to the next operator — out
 loud if they're already there, written down if they're not:
 
-1. Is the hardware-tied fallback channel (Pi/Graywolf, §31) currently
+1. Is the hardware-tied fallback channel (hardware-tied fallback channel) currently
    on or off? If on, does the next operator know it's their
    responsibility to turn it off later?
 2. Any reports you pulled with the removal tool this shift? Note what
