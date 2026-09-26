@@ -70,10 +70,18 @@ def cluster_records(records: list) -> list:
     )
     for record in sorted_records:
         placed = False
-        for cluster in clusters:
+        # A report with no location can't be distance-compared to anything,
+        # so it always becomes its own cluster (never discarded). Skipping
+        # the comparison loop entirely also guarantees no cluster with a
+        # missing location is ever passed to _haversine_meters, which used
+        # to crash the whole merge step (TypeError on None) whenever the
+        # newest report in a category was unlocated and an older one in the
+        # same category was located.
+        has_location = record.get("lat") is not None and record.get("lon") is not None
+        for cluster in clusters if has_location else ():
             if cluster["category_wire"] != record["category_wire"]:
                 continue
-            if record.get("lat") is None or record.get("lon") is None:
+            if cluster.get("lat") is None or cluster.get("lon") is None:
                 continue
             dist = _haversine_meters(
                 cluster["lat"], cluster["lon"], record["lat"], record["lon"]
@@ -124,10 +132,18 @@ def build_geojson(clusters: list) -> dict:
         )
         feature = {
             "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [cluster["lon"], cluster["lat"]],
-            },
+            # RFC 7946: an unlocated feature uses "geometry": null rather
+            # than a Point with null coordinates (which is invalid GeoJSON
+            # and can make strict readers such as GIS tools reject the
+            # file). The report itself is kept, per the never-discard rule.
+            "geometry": (
+                {
+                    "type": "Point",
+                    "coordinates": [cluster["lon"], cluster["lat"]],
+                }
+                if cluster.get("lat") is not None and cluster.get("lon") is not None
+                else None
+            ),
             "properties": {
                 "ObjectName": object_name_mapped,
                 "Status": cluster["status_mapped"],
