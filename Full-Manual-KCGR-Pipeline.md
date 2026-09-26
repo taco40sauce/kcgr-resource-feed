@@ -1,30 +1,37 @@
-# [County/Town] Emergency Ground-Report Pipeline — Full Setup & Operations Manual
+# Emergency Ground-Report Pipeline
 
-**Adapted from the KCGR (Kershaw County Ground Report) system, built by
-the Kershaw County Amateur Radio Club (KC4RC), South Carolina.** Every 🔧
-marks something specific to Kershaw County that you'll want to think
-through for your own area, not just copy as-is. A one-page worksheet for
-recording your own answers will be added once the rest of this manual is
-in place.
+*The KCGR Model — A Guide to Local Adoption, Setup & Operations*
 
-**For crisis-speed reference**, see quick_start.md / quick_start.pdf"
+**Adapted from the KCGR (Kershaw County Ground Report) implementation, built by the Kershaw County Amateur Radio Club (KC4RC), South Carolina.** KCGR is the working example used throughout this manual. If another county, region, or state adopts the system, its reporting prefix and tactical identifiers can be changed to match the new implementation.
 
-**Please read this whole manual once, calmly, before you ever need it.**
-Everything here is written so you *can* look something up mid-emergency —
-but you'll move faster and with more confidence if the ideas are already
-familiar before that day comes. A short Quick Start guide will sit at the
-very front of the finished manual for exactly the moment when you don't
-have time to read anything else — this fuller version is what backs it up.
+For crisis-speed reference, see `quick_start.md` / `quick_start.pdf`.
 
-*Each section below has two parts: short instructions you can act on
-right away, and numbered notes at the end explaining the "why" behind
-them. You don't need the notes to get moving. They're there for whenever
-you have a moment, or want to understand something well enough to
-change it for your own location and situation.*
+**Please read this whole manual once, calmly, before you ever need it.** Everything here is written so you *can* look something up mid-emergency — but you'll move faster and with more confidence if the ideas are already familiar before that day comes. A short Quick Start guide is intended to sit at the front of the finished manual for exactly the moment when you don't have time to read anything else — this fuller version is what backs it up.
+
+*Most sections below have two parts: short instructions you can act on right away, and numbered notes at the end explaining the "why" behind them. You don't need the notes to get moving. They're there for whenever you have a moment, or want to understand something well enough to change it for your own location and situation.*
 
 ---
 
-# PART I — Before You Start
+## SECTION I — UNDERSTAND IT
+
+### Road Map
+
+- **Part 1 — Before You Start** explains the thinking behind the system and the choices to make before building.
+- **Part 2 — Making It Yours** covers the categories, field grammar, staleness, corroboration, vetting, and local references that you must adapt.
+- **Part 3 — Building It** walks through the working example.
+- **Part 4 — Adapting This System For Your Own Area** shows how to create an independent implementation.
+- **Part 5 — Running It** covers reporting and event operations.
+- **Part 6 — Keeping It Alive** covers maintenance, troubleshooting, access, and succession.
+
+### Credentials Warning
+
+This manual describes credentials, tokens, passwords, API keys, and access controls because the system depends on them. **Do not copy credentials from this manual into your own system.** Use your own organizational accounts, generate your own tokens and passwords, and store them according to your organization's security practices.
+
+Operational examples are intentionally generic. Your permissions log should contain the real account owners, access levels, review dates, and credential locations for your implementation — but that operational record should be kept where only the people who need it can see it.
+
+---
+
+# PART 1 — Before You Start
 
 ### A Word for the Skeptics in the Room
 
@@ -34,7 +41,7 @@ short passage isn't really for you. It's for the club member, spouse, or
 town official looking over your shoulder right now, thinking "we've
 never needed anything like this before."
 
-Here's something worth considering: most clubs that take
+Here's something worth considering: many clubs that take
 preparedness seriously didn't start out that way. Often, it took getting
 caught off guard once, and deciding out loud that they never wanted that
 feeling again. One of our own members, while on vacation, sat in on another town's ham  club meeting.
@@ -50,9 +57,7 @@ your own the same way.
 
 ## 1.1 The Thinking Behind This System
 
-A handful of ideas shaped every decision in this system. Read through
-these once before building anything — they'll save you from running into
-the same problems we already worked through.
+Read through these once before building anything. They're the lessons that shaped the system and will help you avoid some of the problems we already worked through.
 
 - **Build this for someone who's never been trained, not just for
   yourself.**[¹]
@@ -61,8 +66,7 @@ the same problems we already worked through.
   duplicate to clean up.**[³]
 - **An old report doesn't get deleted. It gets labeled as
   unconfirmed and rechecked.**[⁴]
-- **A valid ham radio license is enough to trust someone's report
-  automatically.**[⁵]
+- **A report received through the designated amateur-radio reporting path from an identified licensed operator is treated as a vetted report by this system.**[⁵]
 - **Give every password and every key only the smallest amount of access
   it actually needs.**[⁶]
 - **Set this up so it still works even if you're not the one running it
@@ -78,33 +82,33 @@ the same problems we already worked through.
 
 Before starting any technical setup, confirm you have:
 
-**KCGR project** (Kershaw County Ground Report — ham radio emergency resource map).You can find the open source github repository at github.com/taco40sauce/kcgr-resource-feed.
+**KCGR project** — The Kershaw County Ground Report system used as the working example throughout this manual. The open-source repository is available on GitHub at `github.com/taco40sauce/kcgr-resource-feed`.
 
 - [ ] At least one licensed amateur radio operator willing to serve as
       **Hub Operator** — the person whose credentials, accounts, and
-      judgment the system runs on day one 🔧
+      judgment the system runs on day one
 
 **A license is only required for this one role.** Data-entry and
-validator roles (Part IV) don't need one — anyone can listen to
+validator roles (Part V) don't need one — anyone can listen to
 APRS/Meshtastic traffic, monitor a scanner, or take a phone report and
 enter it by hand. Only the Hub Operator role above actually requires a
 license.
 
 - [ ] A relationship (even informal) with your local ARES/RACES group or
-      equivalent 🔧
+      equivalent
 - [ ] Awareness at your county/parish EOC or Director of Emergency
-      Services level that this exists, even if informal at first 🔧
+      Services level that this exists, even if informal at first
 
 **Hardware**
 - [ ] A small always-on computer to run the pipeline (a Raspberry Pi Zero
       2 W or similar is sufficient for this workload)
 - [ ] An amateur radio capable of APRS operation, with a clear connection
-      method identified for your specific radio model 🔧[¹⁰]
+      method identified for your specific radio model[¹⁰]
 - [ ] Stable home/office internet connection for the host computer
 
 **Accounts (create these before writing any code)**
 - [ ] A **dedicated organizational email account** (not a personal one)
-      to own shared services going forward[⁷] — e.g. `yourclub.emcomm@gmail.com` 🔧
+      to own shared services going forward[⁷] — e.g. `yourclub.emcomm@gmail.com`
 - [ ] A GitHub account under that organizational identity, or a clear
       plan to transfer to one later
 - [ ] A free-tier database account (Grist or equivalent) for manual entry
@@ -112,10 +116,10 @@ license.
 - [ ] A **Tailscale** (or equivalent mesh VPN) account under the
       organizational email, for remote operator access
 
-**Decisions to make before building (don't skip — see Part III for how)**
-- [ ] Your category list — what hazards matter in your area 🔧
-- [ ] Your field-format grammar and prefix (e.g. `KCGR-` → your own) 🔧 
-- [ ] Your vetting policy — who is auto-trusted, who needs corroboration 🔧
+**Decisions to make before building (don't skip — see Part II for how)**
+- [ ] Your category list — what hazards matter in your area
+- [ ] Your field-format grammar and prefix (e.g. `KCGR-` → your own) 
+- [ ] Your vetting policy — who is auto-trusted, who needs corroboration
 
 ---
 
@@ -189,7 +193,7 @@ a certain amount of time. The original information stays visible the
 whole time — it's just being labeled as older. How long that takes
 before something gets marked unconfirmed is different for every type of
 report, and should be based on how fast things actually tend to change in
-your area (see Part III for how to work that out for yourself).
+your area (see Part II for how to work that out for yourself).
 
 **[⁵] Why a license alone is enough to trust a report.**
 Any licensed ham radio operator's report gets posted automatically,
@@ -306,15 +310,7 @@ reasonable ways to handle this, and it's worth picking one on purpose
 rather than leaving it vague:
 - Ask operators to send both, for reports they judge important enough —
   simple but adds workload to the person out in the field.
-- Have your Hub Operator (or someone else in that role) periodically
-  gather up the notable reports already coming in and relay *those* to
-  the EOC as ICS-213 messages — keeps the field side simple and fast, at
-  the cost of a little delay and one more task for whoever runs the hub.
-- The bottom line is ask for reports to the Hb, then file a similar report
- to the EOC and/or ARES.
-
-Either can work. What matters most is deciding this on purpose, together
-with your team, rather than leaving it to chance — see Part IV, section
+hance — see Part V, section
 4.4, for how this plays out during an actual activation.
 
 **[¹⁰] Does your radio already have a sound card built in? Start here.**
@@ -343,21 +339,277 @@ endorsement.
 
 Neither setup is "better" than the other for this system — you're not
 missing out either way. You just need to know which one you have, since
-the setup steps in Part II (2.1) differ slightly depending on the
+the setup steps in Part III (3.1) differ slightly depending on the
 answer. If you're not sure, check your radio's manual for the words
 "USB audio" or "built-in sound card" — that'll tell you which category
 you're in. The advantage of a small Raspberry Pi is that very little
 energy is used, which could affect your power bill less than the
 alternatives.
 
+**[¹³] Why a good-enough report is better than a perfect report.**
+In the field, waiting until every detail is perfect can mean the useful
+information never gets sent at all. The system is deliberately built to
+accept a report that may need clarification and mark it accordingly.
+The operator's job is to send what they actually know, as accurately as
+they can, and let the system and later validation add confidence rather
+than delaying the first report.
+
+**[¹¹] Why designate a Hub Operator.**
+The Hub Operator is not there because one person should control the whole
+system. The role gives the project a clearly identified person who owns
+the initial credentials, knows where the pieces are, and can make sure
+important decisions don't get lost between several people. Other trained
+operators can be added as stand-ins and given only the access their role
+requires. The important part is that everyone knows who has the keys and
+who is responsible for making sure those keys can be handed to the next
+person.
+
+**[¹²] Why the internet connection is still part of the design.**
+This is a distributed reporting system, but it is not an internet-free
+system. APRS and Winlink provide ways for reports to enter the pipeline
+without a reporter using the public internet, while the processing,
+database, and public map still depend on internet-connected services.
+Thinking about that dependency up front makes it easier to identify what
+can keep working during a local outage and what needs an alternate path.
+
+
 ---
 
-*Part II (Building It) picks up next — hardware interfacing, software
-pipeline setup, database/map setup, and remote access.*
 
 ---
 
-# PART II — Building It
+
+
+
+
+# PART 2 — Making It Yours
+
+Everything in this part is meant to be rebuilt, not copied. Nothing here
+came from a rulebook — it came from one club, in one county, working out
+what fit their own area. Yours will look different, and it should.
+Nobody who wasn't there with you during your last storm knows your roads,
+your shelters, or your radio traffic better than you and your own
+operators do — so treat everything below as a worked example to learn
+the *method* from, not a checklist to copy word for word.
+
+---
+
+## 2.1 Building Your Own Category List
+
+**The method, not the answer:** start from the actual hazards your area
+faces, not from someone else's list. Ask your own experienced operators
+and local emergency contacts: *"What did people actually need to know
+during our last real event?"*
+
+**Worked example, to show the method in action:** a county well inland,
+prone to wind damage and long power/water outages, might land on
+categories like shelter, medical, road, water, food, fuel, power, cell
+signal, ATM access, and a general health-and-welfare relay. A small town
+right on the Gulf coast, though, is looking at a different mix of real
+dangers — storm surge, evacuation routes, marina and boat-launch
+conditions — so its list might swap some of those out entirely for
+things like **evacuation route status**, **storm surge/levee
+conditions**, or **marina/boat-launch status**. Neither list is more
+"correct" than the other — each fits the place it was built for.
+
+**Steps:**
+1. Gather your own experienced operators and ask what mattered most last
+   time, or what they worry about most next time.
+2. Start with somewhere around eight to ten categories — enough to cover
+   the things your area is likely to need, but few enough that operators
+   can remember them without constantly looking them up. The **Health and
+   Welfare** category can also serve as a miscellaneous or catch-all
+   category when something useful doesn't justify creating another
+   category. Add categories later if real experience shows you need them.
+3. For each category, pick a short 2–4 letter specifier code (e.g. a
+   status of shelter capacity, or type of road hazard) — same idea as
+   the worked example, just your own list.
+4. Write your final list down somewhere every operator can easily find
+   it — this becomes the actual reference card operators use in the
+   field.
+
+---
+
+## 2.2 Your Field-Format Grammar
+
+**What this is:** the short, consistent pattern a report gets typed
+into, so it can be read by both a person and a computer without any
+confusion.
+
+**Steps:**
+1. Pick your own short prefix, in place of something like `KCGR-`, that
+   ties every report clearly to your project (e.g. your county's
+   initials plus "RS" for "resource status," or similar).
+2. Decide your field order — most systems put status first, then a
+   short category-specific code, then a plain-text location, then a
+   timestamp last. This order isn't sacred; what matters is picking one
+   order and using it consistently, so operators develop a habit around
+   it.
+3. Keep the whole thing well under your actual length limit — and it's
+   worth knowing there are genuinely two different numbers here,
+   depending on which part of APRS you're using. A one-to-one APRS text
+   message can hold around 60–70 characters. But the **object beacon**
+   format this whole system is actually built around — the one that
+   creates a labeled pin at a location — has a much tighter limit, often
+   around **43 characters** for the descriptive part of the message.
+   That's a real constraint, not a rounding error, and it's exactly why
+   the field-format grammar needs to be short and abbreviated rather than
+   free-flowing sentences. Check which limit actually applies to your own
+   setup before finalizing your format.
+4. Write a handful of realistic worked examples, using real local place
+   names, and put them directly on whatever reference card or webpage
+   operators will actually look at in the field. An abstract rule is
+   much easier to follow once you've seen it filled in with a real,
+   familiar example.
+
+---
+
+## 2.3 Setting Your Own Staleness Timing
+
+**The method:** rather than picking numbers that sound reasonable, look
+at how *your* area actually recovered from a real past event, and match
+your timing to that.
+
+**Steps:**
+1. Group your categories into a few speed tiers — some things (cell
+   service, road status) tend to change within a day; others (shelters)
+   stay accurate for closer to a week; still others (water systems,
+   power in hard-hit rural or low-lying areas) can take weeks.
+2. For each tier, look for real historical recovery data from a past
+   event in your own region if you can find it — a coastal town's power
+   and water recovery curve after storm surge flooding looks very
+   different from an inland county's after wind damage, so don't assume
+   another area's numbers apply to yours.
+3. Write down your chosen window for each tier, and *why* you picked it
+   — future you, or your successor, will want to know the reasoning
+   later, not just the number.
+4. Treat these numbers as a first draft. Revisit them after your system
+   gets used in a real event or a serious exercise — real experience
+   beats an educated guess every time.
+
+---
+
+## 2.4 Corroboration Distance
+
+**What this is:** how close together two reports need to be before the
+system treats them as "the same real-world thing," rather than two
+separate locations.
+
+**Why coordinate precision matters:** Don't round coordinates just to
+make them easier to type. A small change in the decimal places can move
+a reported location by hundreds of feet or more, which can matter when
+you're trying to determine whether two reports describe the same incident.
+
+**Getting accurate coordinates:** When using **aprs.fi**, the latitude
+and longitude for the map position appear in the upper corner as you
+move the cursor over the map. Move the cursor to the location you want
+and record the displayed coordinates rather than rounding them yourself.
+
+You can also get coordinates from Google Maps. On `maps.google.com`,
+**left-click** the location and the latitude/longitude will be displayed.
+Click the coordinates to copy them.
+
+Use the full coordinate precision provided by the source when entering a
+report.
+
+**Steps:**
+1. Start somewhere in the range of 50–150 meters as a first guess — this
+   is roughly what similar crowd-reporting projects have landed on
+   before, so it's a reasonable starting point, not a rule.
+2. Think about your own area's geography — a dense small town might want
+   a tighter number, so two nearby-but-different locations don't get
+   collapsed into one pin by mistake; a spread-out rural area might
+   reasonably want a looser one.
+3. Adjust after real use, the same way as your staleness timing above —
+   this is a dial to tune, not a one-time decision.
+
+---
+
+## 2.5 Your Vetting Policy
+
+**What this is:** deciding who gets trusted automatically, and who needs
+a second confirmation first.
+
+**Steps:**
+1. Decide, together with your local ARES/RACES leadership and EOC
+   contact, which channels count as automatically trusted. A report received through the designated amateur-radio reporting path from an identified licensed operator is treated as a vetted report by this system.
+2. Decide which other channels — a public web form, a different radio
+   service, unsolicited tips — need a second person to confirm before
+   posting, rather than posting automatically.
+3. Write this policy down somewhere public-facing (your own version of
+   an operations FAQ page), so operators and the public both know how
+   it works, rather than leaving it as an internal assumption.
+
+---
+
+## 2.6 Local Reference Resources
+
+**What this is:** a short list of official, already-existing sources of
+information — road conditions, power outages, shelters, and so on — that
+your operators and the public can check alongside your own map. This list is almost entirely local and needs its own research for your area.
+
+Examples include state DOT road-condition sites, power-outage tracking tools, regional Red Cross or equivalent shelter listings, and local water-utility or boil-water-advisory pages.
+
+These resources tend to change more than you'd expect, so check the links before an event and periodically during normal operations.
+
+Build this list once, check that every link still works before an actual
+event, and revisit it occasionally — these resources tend to change more
+than you'd expect.
+
+---
+
+
+
+
+
+---
+
+## SECTION II — BUILD IT
+
+## Notes for Part II
+
+**[¹] Why the category list stays deliberately small.**
+A category list can grow almost forever if every new kind of report gets
+its own label. That sounds useful until an operator has to remember the
+list during an event. The goal is to cover the important things without
+turning the reference card into a lookup exercise. **Health and Welfare**
+is useful here because it can absorb a legitimate report that doesn't
+fit neatly anywhere else, without forcing you to create a new category
+for every unusual situation. Add categories when real experience shows
+you need them.
+
+**[²] Why use a fixed field grammar instead of free-form reports.**
+People can read a free-form message, but computers have a much harder time
+deciding where one piece of information ends and another begins. A fixed
+field order gives the operator a repeatable habit and gives the parser
+something predictable to work with. It also means a future maintainer can
+understand the format without having to reverse-engineer dozens of old
+messages.
+
+**[³] Why staleness is a local decision.**
+A report doesn't become wrong simply because a clock reached an arbitrary
+number. A road closure, a shelter's available beds, and a power outage
+can all have very different useful lifetimes. That's why the system treats
+staleness as something each implementation should tune to its own area
+and revise after real experience.
+
+**[⁴] Why corroboration does not mean throwing away the first report.**
+The first report may be the only information anyone has for a while.
+Corroboration is a way to increase confidence when another independent
+report appears; it isn't a reason to hide the original report while
+waiting for confirmation. An unconfirmed report can still be useful when
+its status is made clear.
+
+**[⁵] Why local reference links belong beside the system, not inside it.**
+The pipeline is not intended to replace the official sources that already
+exist for roads, utilities, shelters, or other local information. Those
+sources provide another view of what is happening, and keeping the links
+together gives operators and the public a practical way to cross-check
+what they see.
+
+---
+
+# PART 3 — Building It
 
 A quick heads-up before you start: this part has real technical steps in
 it — typing commands, creating accounts, connecting things together.
@@ -371,7 +623,7 @@ at a time, not all at once.
 
 ---
 
-## 2.1 Hardware & Radio Interfacing
+## 3.1 Hardware & Radio Interfacing
 
 **What you need:**
 - [ ] A small always-on computer. Two paths work equally well — pick
@@ -385,10 +637,10 @@ at a time, not all at once.
         completely valid starting point.
 - [ ] Your amateur radio, connected using whichever method matches your
       radio (see Part I, note 10 — either a single USB cable, or a
-      separate interface box like a Signalink) 🔧
+      separate interface box like a Signalink)
 - [ ] APRS software installed on the small computer — this system was
       built and tested using software called **Graywolf**; if you use
-      different APRS software, the steps below will need to be adapted 🔧
+      different APRS software, the steps below will need to be adapted
 
 **Steps:**
 1. Connect your radio to the small computer using the method you
@@ -396,7 +648,7 @@ at a time, not all at once.
 2. Install your chosen APRS software and confirm your radio's control
    settings match your radio's actual settings (the exact port name, the
    control address, and the connection speed are specific to your radio
-   model — check your radio's manual) 🔧
+   model — check your radio's manual)
 3. Set your station's callsign, beacon message, and how often it
    transmits, inside the APRS software's settings.
 4. **Test before moving on:** trigger a manual beacon from the software,
@@ -408,7 +660,7 @@ at a time, not all at once.
 
 ---
 
-## 2.2 Software Pipeline Setup
+## 3.2 Software Pipeline Setup
 
 
 **What "the pipeline" actually is, in plain terms:** not one path, but
@@ -473,7 +725,7 @@ Each channel breaks down into the same small set of jobs:
 
 ---
 
-## 2.3 Database & Map Setup
+## 3.3 Database & Map Setup
 
 **What this part is:** a simple online spreadsheet-style database where
 reports can be entered by hand (as a backup method, and for anything
@@ -483,12 +735,13 @@ side.
 
 **Steps:**
 1. Create a free account with a simple database service (this system
-   uses one called **Grist**) under your club's shared email.
+   uses one called **Grist**) under your club's shared email. If you don't
+   want to use Grist, §4.5 describes another option using Google Sheets.
 2. Create one table with a column for each piece of information a report
    needs — category, status, location, timestamp, and so on — matching
-   your own field format (see Part III).
-3. Create a free account with a public mapping service (this system uses
-   one called **uMap**), also under your club's shared email.
+   your own field format (see Part II).
+3. Create a free account with a **free, open-source map** service called
+   **uMap**, under your club's shared email.
 4. Set up **two separate layers** on the same map: one that reads
    directly from your hand-entered database, and one that reads from the
    automatic pipeline's output. Both can show pins on the same map at the
@@ -504,16 +757,16 @@ side.
    words as completely unrelated. People are far more forgiving of a
    close match than code is. Worth testing this one carefully up front,
    so you don't lose the same time we did.
-6. **Test with one real, made-up report before trusting this for real
+6. **Test with one realistic test report before trusting this for real
    use:** enter a test report, confirm the correct pin, color, and popup
    text appear on the map. Do this for both layers separately.
 
 ---
 
-## 2.4 Remote Access (So You're Not Tied to One Location)
+## 3.4 Remote Access (So You're Not Tied to One Location)
 
 **What this is for:** letting you, and any trained operator, reach the
-small computer's on/off switch (Section 2.2, step 6) and check on things
+small computer's on/off switch (Section 3.2, step 6) and check on things
 from anywhere — home, an EOC, on the road — without needing to be
 physically near it or connected to its home network.
 
@@ -530,7 +783,7 @@ physically near it or connected to its home network.
 
 ---
 
-## Notes for Part II
+## Notes for Part III
 
 **[¹] Why testing one piece at a time actually matters.**
 It's tempting to write all the pieces at once and only test them
@@ -587,7 +840,7 @@ separate means the switch can be "always available" while the channel it
 controls is "only running when needed."
 
 Your independently-scheduled channels don't have this switch at all, by
-design (see 2.2, steps 5–6) — there's nothing to keep
+design (see 3.2, steps 5–6) — there's nothing to keep
 reachable-but-off, since there's no cost to leaving them running
 continuously.
 
@@ -596,38 +849,12 @@ Computers don't understand meaning the way people do — they check
 whether two pieces of text match *exactly*, character for character. To
 a person, "Food-open" and "Food-Open" obviously mean the same thing. To
 the map's styling rules, they're two completely different, unrelated
-values — and a mismatch doesn't cause an error message, it just leaves that one pin unstyled, gray or invisible, with nothing telling you why. This exact problem happened during real testing of this system, and took real effort to track down precisely because nothing failed in an obvious way. Carefully double- and triple-check every value match exactly Don't assume close-enough is good enough, close only counts in horseshoes, hugging, and atomic warfare.
+values — and a mismatch doesn't cause an error message, it just leaves that one pin unstyled, gray or invisible, with nothing telling you why. This exact problem happened during real testing of this system, and took real effort to track down precisely because nothing failed in an obvious way. Carefully double- and triple-check every value. Don't assume that “close enough” is good enough — close only counts in horseshoes, hugging, and hand grenades.
 
 **[⁵] A free, always-on helper that isn't your computer at all.**
-Two of this system's channels don't run on your Pi, your radio, or your
-internet connection — they run on **GitHub**, the same free service that
-stores this project's code. GitHub offers a feature called **GitHub
-Actions**: you give it a small program and a schedule, and GitHub's own
-computers run it for you, for free, whether or not anything of yours is
-turned on. This system uses that to check for new reports every fifteen
-minutes, automatically, forever, at no cost — which is a useful thing to get for free, and worth appreciating rather than taking
-for granted.
+Two of this system's channels don't run on your Pi, your radio, or your internet connection — they run on **GitHub**, the same service that stores this project's code. GitHub Actions can run a workflow on a schedule whether or not your local hardware is turned on.
 
-One of those channels checks **APRS-IS** — "IS" stands for **Internet
-Service** — a shared internet feed that most local APRS stations
-(including yours) already relay their over-the-air traffic onto. It's
-how a website like aprs.fi shows APRS activity from anywhere, and it's
-run by volunteers as a public service to the whole ham community, not by
-this project. Background on how it actually works is at **aprs2.net**,
-if you want to go deeper. Checking APRS-IS means this channel can hear a
-report even if your own Pi and radio are completely off — as long as
-*some* nearby station relayed it. That's the real value here: you get a
-second way to capture reports without buying or running any extra
-hardware.
-
-What to keep in mind: this only helps if some station near the
-reporting operator is relaying to APRS-IS in the first place. In an
-area with few such stations, a report might never reach APRS-IS at all
-— which is exactly why your own hardware-tied channel (2.1) still
-matters as a fallback, not a redundant extra step. Also worth knowing:
-GitHub's own free scheduling isn't perfectly precise for very-frequent
-jobs like this one — expect checks roughly every 15–60 minutes in
-practice, not a metronome-exact 15.
+The current implementation uses an external scheduled service, cron-job.org, to call GitHub's `workflow_dispatch` API every five minutes for the Winlink and APRS-IS pollers. You can also trigger a check manually from GitHub's Actions tab without waiting on the schedule. The history of how the scheduling arrangement evolved belongs in the changelog rather than in this setup note.
 
 **Why not just open the small computer directly to the internet?**[⁶]
 It's technically possible to make a home computer reachable from the
@@ -637,197 +864,388 @@ this project. A private networking service instead only allows in the
 specific devices you've personally approved, over a secure, invitation-
 only connection — the same "give it only the smallest access it needs"
 idea from Part I, applied to your network instead of a password.
-A free tier on github makes Internet security one less hassle to deal with.
 
 ---
 
-# Part III (Making It Yours) picks up next — your category list, field
-format, staleness timing, corroboration rules, and local reference
-resources.*
+**[⁷] Why the reporting channels stay separate.**
+Keeping each intake channel in its own file and processing path means a
+problem in one channel is easier to identify and doesn't automatically
+make every other channel look broken. It also preserves the original
+source of a report, which makes troubleshooting and later review much
+easier.
+
+**[⁸] Why the database and public map are separate.**
+The database is where the working information lives; the map is how that
+information is presented to the public. Keeping those jobs separate means
+the map can be rebuilt from the underlying data instead of becoming the
+only copy of the information. It also makes it possible to change the
+public presentation without redesigning the reporting system underneath
+it.
+
+**[⁹] Why the prefix should be short and boring.**
+The prefix is an identifier, not a branding exercise. A short, consistent
+prefix leaves more room for the useful information that follows it and
+makes the format easier to recognize under stress. The important thing is
+that your organization chooses it once and then applies it consistently.
+
+# PART 4 — Adapting This System For Your Own Area
+
+Everything built in Parts I–V belongs to one club, in one county. This
+part is for someone else entirely — a different county, a regional ARES
+group, or a statewide effort — who wants their own, fully independent
+version of this system: their own repository, their own database, their
+own map, sharing none of the original project's actual data or
+accounts.
+
+**This part is deliberately hypothetical in one specific way.** The
+naming examples used throughout — swapping `KCGR-` for something like
+`MGS-` (a regional Midlands group) or `SCGR-` (a statewide effort) — are
+illustrative possibilities, not an announced plan. They exist here in
+the hope that more of the state gets involved, not as a commitment any
+group has made. Treat them as a worked example to learn the method
+from, exactly the same way Part II treats its own category-list
+example.
 
 ---
 
-# PART III — Making It Yours
+## 4.1 Why Fork, Not Ask for Access
 
-Everything in this part is meant to be rebuilt, not copied. Nothing here
-came from a rulebook — it came from one club, in one county, working out
-what fit their own area. Yours will look different, and it should.
-Nobody who wasn't there with you during your last storm knows your roads,
-your shelters, or your radio traffic better than you and your own
-operators do — so treat everything below as a worked example to learn
-the *method* from, not a checklist to copy word for word.
+**The short version:** you're building your own separate copy of this
+system, not borrowing a seat in someone else's. On GitHub, that's called
+**forking** — it makes you a complete, independent copy of the code,
+under your own account, that you can change freely without touching the
+original project at all.
+
+This matters for two real reasons:
+- **Your data stays yours.** A fork never shares reports, credentials,
+  or map data with the original project — it's a separate system from
+  the moment it's created.
+- **Nothing you do can break the original.** You're free to rename
+  things, experiment, and make mistakes in your own copy without any
+  risk to the project you copied it from.
+
+**The format was designed with this kind of reuse in mind.** The prefix identifies the local implementation, while the field order and specifier codes remain the same.
+
+
+| Prefix | Covers | Length |
+|---|---|---|
+| `KCGR-` | Kershaw County | 5 characters |
+| `MGS-` | Midlands (regional) | 4 characters |
+| `SCGR-` | South Carolina (statewide) | 5 characters |
+
+**Why the lengths matter, not just the names.** The APRS object name has room for up to nine characters, while the comment field has its own 43-character limit. `MGS-` is one character shorter than `KCGR-`, while `SCGR-` is the same length. Keep those limits in mind when choosing your own prefix and designing the rest of the reporting format.
+
+
+
+**The prefix is deliberately the main thing meant to change at a larger scale.** Keep the field order and specifier codes unless your own implementation has a documented reason to change them; those pieces are what keep the format self-describing and readable under stress, without a lookup table.
+
+
+## 4.2 Before You Start: What You'll Need
+
+- [ ] Your own group's shared email address (not anyone's personal
+      email — see the reasoning in Part I, note 7, which applies here
+      just as much as it did to the original project)
+- [ ] Someone comfortable clicking through unfamiliar websites and
+      following instructions closely — you do **not** need a
+      programmer for anything in this part
+- [ ] Your own small always-on computer (Part III, 3.1) — this is not
+      shared with the original project either
+- [ ] About an hour of uninterrupted time for the account-creation
+      steps below — they go faster if you're not stopping and starting
 
 ---
 
-## 3.1 Building Your Own Category List
+## 4.3 Creating Your Own Copy of the Code (Forking on GitHub)
 
-**The method, not the answer:** start from the actual hazards your area
-faces, not from someone else's list. Ask your own experienced operators
-and local emergency contacts: *"What did people actually need to know
-during our last real event?"*
+**Step-by-step, starting from nothing:**
 
-**Worked example, to show the method in action:** a county well inland,
-prone to wind damage and long power/water outages, might land on
-categories like shelter, medical, road, water, food, fuel, power, cell
-signal, ATM access, and a general health-and-welfare relay. A small town
-right on the Gulf coast, though, is looking at a different mix of real
-dangers — storm surge, evacuation routes, marina and boat-launch
-conditions — so its list might swap some of those out entirely for
-things like **evacuation route status**, **storm surge/levee
-conditions**, or **marina/boat-launch status**. Neither list is more
-"correct" than the other — each fits the place it was built for.
+1. Go to **github.com** in your web browser.
+2. If you don't already have a GitHub account:
+   - Click **Sign up** (top right corner).
+   - Enter your group's shared email address, choose a password, and
+     choose a username — pick something that identifies your group
+     clearly (e.g. `mgs-groundreport`), since this becomes part of your
+     project's public web address.
+   - Follow GitHub's verification steps (usually a code sent to your
+     email).
+3. Once logged in, go to the original project's repository page:
+	**https://github.com/taco40sauce/kcgr-resource-feed**
+
+
+4. Near the top right of that page, click the **Fork** button.
+5. On the screen that appears:
+   - **Owner**: leave this as your own account/organization.
+   - **Repository name**: replace `kcgr-resource-feed` with your own —
+     e.g. `mgs-resource-feed` or `scgr-resource-feed`.
+   - Leave "Copy the main branch only" checked (the default).
+6. Click **Create fork**.
+
+**You now have your own, completely independent copy of the code**,
+at your own web address (`github.com/[your-username]/[your-repo-name]`).
+Nothing you do to it from here affects the original project at all.
+
+---
+
+## 4.4 Choosing and Renaming Your Own Prefix
+
+**What this is:** every category, file, and workflow in the original
+project uses the prefix `KCGR-` (short for the original project's own
+name). Your copy needs its own prefix, consistently applied everywhere
+— the same exact-spelling principle from Part II, note [4], applies
+here at a larger scale: a computer treats `KCGR-` and `MGS-` as
+completely unrelated text, so every occurrence needs to be found and
+changed, not just the obvious ones.
+
+**Before you rename anything**, do the character math for your own prefix. The APRS object name allows up to nine characters, while the comment field has its own 43-character limit. A shorter prefix can give you more room within the object name or wherever that prefix is used in the reporting format; a same-length prefix (like `SCGR-`) is the same length; a longer prefix may require changes elsewhere in your format.
 
 **Steps:**
-1. Gather your own experienced operators and ask what mattered most last
-   time, or what they worry about most next time.
-2. Aim for somewhere around eight to twelve categories — enough to cover
-   real needs, few enough that someone can remember them without looking
-   them up.
-3. For each category, pick a short 2–4 letter specifier code (e.g. a
-   status of shelter capacity, or type of road hazard) — same idea as
-   the worked example, just your own list.
-4. Write your final list down somewhere every operator can easily find
-   it — this becomes the actual reference card operators use in the
-   field.
+1. Pick your own short prefix (Part II, 2.2, step 1 covers how) —
+   for this walkthrough, we'll use `MGS-` as the worked example.
+2. In your forked repository's page on GitHub, click the **magnifying
+   glass search icon** near the top of the page (or press `/` on your
+   keyboard while viewing the repo).
+3. Type `KCGR-` and press Enter. This searches every file in your
+   repository for that exact text.
+4. GitHub shows you a list of every file containing a match. Click
+   into each one, one at a time.
+5. Inside a file, click the **pencil (edit) icon** near the top right
+   of the file view.
+6. Use your browser's own find function (`Ctrl+F` on Windows/Linux,
+   `Cmd+F` on Mac) to jump to each occurrence of `KCGR-` inside that
+   file, and manually type your own prefix in its place.
+7. Once you've replaced every occurrence in that file, scroll down and
+   click **Commit changes** (a short description like "Rename prefix
+   to MGS-" is fine).
+8. Repeat steps 4–7 for every file in the search results from step 3.
+9. **Re-run the search from step 2 and 3 again after finishing** — a
+   fresh search for `KCGR-` should now return zero results across your
+   whole repository. If it doesn't, you've missed one — go fix it
+   before moving on.
+
+**Places this prefix shows up that are easy to miss:** workflow *names*
+(not just file names) inside `.github/workflows/` files, category names
+inside any parser code, and any text on your web pages (`kcgr-start.html`
+and `kcgr-ops.html` equivalents) — not just the technical files. Treat
+the search in step 9 as your real check, not a mental list of "the
+obvious spots."
 
 ---
 
-## 3.2 Your Field-Format Grammar
+## 4.5 Setting Up Your Own Database
 
-**What this is:** the short, consistent pattern a report gets typed
-into, so it can be read by both a person and a computer without any
-confusion.
+Two options work well here — pick based on what your team already
+knows:
 
-**Steps:**
-1. Pick your own short prefix, in place of something like `KCGR-`, that
-   ties every report clearly to your project (e.g. your county's
-   initials plus "RS" for "resource status," or similar).
-2. Decide your field order — most systems put status first, then a
-   short category-specific code, then a plain-text location, then a
-   timestamp last. This order isn't sacred; what matters is picking one
-   order and using it consistently, so operators develop a habit around
-   it.
-3. Keep the whole thing well under your actual length limit — and it's
-   worth knowing there are genuinely two different numbers here,
-   depending on which part of APRS you're using. A one-to-one APRS text
-   message can hold around 60–70 characters. But the **object beacon**
-   format this whole system is actually built around — the one that
-   creates a labeled pin at a location — has a much tighter limit, often
-   around **43 characters** for the descriptive part of the message.
-   That's a real constraint, not a rounding error, and it's exactly why
-   the field-format grammar needs to be short and abbreviated rather than
-   free-flowing sentences. Check which limit actually applies to your own
-   setup before finalizing your format. 🔧
-4. Write a handful of realistic worked examples, using real local place
-   names, and put them directly on whatever reference card or webpage
-   operators will actually look at in the field. An abstract rule is
-   much easier to follow once you've seen it filled in with a real,
-   familiar example.
+- **Grist** — purpose-built for this: dropdown columns, enforced data types, and relatively little manual setup for validation. Check Grist's current plan limits before deciding how many people will need direct access.
+- **Google Sheets** — most people already know it, and there's no
+  per-seat cap under one Google account's sharing — but dropdown-style
+  validation has to be set up manually per column, and it takes one
+  extra step to make a live layer for your map (below).
 
----
+Steps for each are below — follow whichever one you picked.
 
-## 3.3 Setting Your Own Staleness Timing
+### Option A: Grist
 
-**The method:** rather than picking numbers that sound reasonable, look
-at how *your* area actually recovered from a real past event, and match
-your timing to that.
+1. Go to **getgrist.com** in your web browser.
+2. Click **Sign up** (top right).
+3. Enter your group's shared email address and create a password.
+   Follow the verification steps.
+4. Once logged in, you'll land on your **team site** home page. Click
+   **Create empty document** (or **+ New**, then **Document**,
+   depending on the current Grist interface).
+5. Give the document a name matching your own project — e.g.
+   `MGS-ResourceStatus`.
+6. Grist opens a blank document with one empty table. Rename it by
+   clicking the table's current name (usually "Table1") at the top and
+   typing your own name — e.g. `Reports`.
+7. Build your columns to match your own field format (Part II, 2.2).
+   For each column, click the **+** at the far right of the column
+   headers to add a new one, then click the column's **dropdown arrow**
+   → **Column Options** to set its type:
 
-**Steps:**
-1. Group your categories into a few speed tiers — some things (cell
-   service, road status) tend to change within a day; others (shelters)
-   stay accurate for closer to a week; still others (water systems,
-   power in hard-hit rural or low-lying areas) can take weeks.
-2. For each tier, look for real historical recovery data from a past
-   event in your own region if you can find it — a coastal town's power
-   and water recovery curve after storm surge flooding looks very
-   different from an inland county's after wind damage, so don't assume
-   another area's numbers apply to yours.
-3. Write down your chosen window for each tier, and *why* you picked it
-   — future you, or your successor, will want to know the reasoning
-   later, not just the number.
-4. Treat these numbers as a first draft. Revisit them after your system
-   gets used in a real event or a serious exercise — real experience
-   beats an educated guess every time.
+   | Column | Type to choose | Notes |
+   |---|---|---|
+   | `ObjectName` | Choice List (dropdown) | Fill in your own category list from Part II, 2.1 |
+   | `Status` | Choice List (dropdown) | Your own status codes |
+   | `Specifier` | Choice List (dropdown) | Your own specifier codes |
+   | `Location` | Text | Free text |
+   | `Notes` | Text | Free text |
+   | `ReportedBy` | Text | Free text — agency names and callsigns both fit here |
+   | `DateTime` | Date/Time | Set your own display format |
+   | `Latitude` | Numeric | Plain decimal degrees |
+   | `Longitude` | Numeric | Plain decimal degrees |
+   | `Verified` | Toggle (checkbox) | Internal team reference only |
+   | `ReportCount` | Numeric | Internal corroboration bookkeeping only |
 
----
+8. To fill in a **Choice List's** actual options (e.g. your category
+   list), click the column header dropdown → **Column Options** →
+   find the **Choices** field → type each option on its own line,
+   matching your Part II category list exactly, including your own
+   prefix.
+9. To share access with your own team: click **Share** (top right),
+   enter each teammate's email, and choose their role — most
+   data-entry operators only need **Editor**, not **Owner**.
 
-## 3.4 Corroboration Distance
+### Option B: Google Sheets
 
-**What this is:** how close together two reports need to be before the
-system treats them as "the same real-world thing," rather than two
-separate locations.
-
-**Worth knowing first — how much precision a coordinate actually has.**
-GPS coordinates are just numbers with decimal places, and it's easy to
-assume more decimal places always means "more precise" without a sense
-of what that actually means in real distance on the ground:
-
-| Decimal places | Roughly this precise |
-|---|---|
-| 1 | ~11 km (about 7 miles) |
-| 2 | ~1.1 km (about ⅔ mile) |
-| 3 | ~110 meters (about a football field) |
-| 4 | ~11 meters (about a car length) |
-| 5 | ~1.1 meters |
-| 6 | ~11 centimeters |
-
-This matters directly for this section: if your data source only gives
-you coordinates to 3 decimal places, setting your corroboration distance
-tighter than about 110 meters doesn't actually gain you anything — you'd
-be asking for more precision than your own data can really deliver.
-
-**Steps:**
-1. Start somewhere in the range of 50–150 meters as a first guess — this
-   is roughly what similar crowd-reporting projects have landed on
-   before, so it's a reasonable starting point, not a rule.
-2. Think about your own area's geography — a dense small town might want
-   a tighter number, so two nearby-but-different locations don't get
-   collapsed into one pin by mistake; a spread-out rural area might
-   reasonably want a looser one.
-3. Adjust after real use, the same way as your staleness timing above —
-   this is a dial to tune, not a one-time decision.
+1. In your club's shared Google account, go to **sheets.google.com**
+   and click **Blank** to start a new sheet.
+2. Rename it matching your own project — click the title top-left
+   (e.g. `MGS-ResourceStatus`).
+3. In row 1, type one column header per piece of information a report
+   needs, matching your own field format (Part II, 2.2) — e.g.
+   `ObjectName`, `Status`, `Specifier`, `Location`, `Notes`,
+   `ReportedBy`, `DateTime`, `Latitude`, `Longitude`, `Verified`,
+   `ReportCount`.
+4. To make `ObjectName`, `Status`, and `Specifier` behave like
+   dropdowns: select the column (click its letter at the top), go to
+   **Data → Data validation**, choose **Dropdown** as the criteria,
+   and type each option from your Part II category/status/specifier
+   lists on its own line. (Google's exact menu wording shifts from
+   time to time — look for "Data validation" if this doesn't match
+   what you see.)
+5. To share access with your team: click **Share** (top right), enter
+   each teammate's email, and set their role to **Editor**, not
+   **Owner**.
+6. To let your map read this sheet as a live layer (needed for §46):
+   go to **File → Share → Publish to web**, choose the specific sheet
+   (not "Entire Document"), select **Comma-separated values (.csv)** as
+   the format, and click **Publish**. Copy the link this gives you —
+   you'll paste it into uMap in the next section. Anyone with this
+   link can view (not edit) this data — that's expected and fine for a
+   read-only map layer, not a security gap.
 
 ---
 
-## 3.5 Your Vetting Policy
+## 4.6 Setting Up Your Own Public Map (uMap)
 
-**What this is:** deciding who gets trusted automatically, and who needs
-a second confirmation first.
+**Step-by-step:**
 
-**Steps:**
-1. Decide, together with your local ARES/RACES leadership and EOC
-   contact, which channels count as automatically trusted. A common,
-   reasonable starting point: any licensed ham radio operator's report
-   through your radio system is trusted automatically, on the reasoning
-   that the license itself already verifies who they are (see Part I,
-   note 5).
-2. Decide which other channels — a public web form, a different radio
-   service, unsolicited tips — need a second person to confirm before
-   posting, rather than posting automatically.
-3. Write this policy down somewhere public-facing (your own version of
-   an operations FAQ page), so operators and the public both know how
-   it works, rather than leaving it as an internal assumption.
-
----
-
-## 3.6 Local Reference Resources
-
-**What this is:** a short list of official, already-existing sources of
-information — road conditions, power outages, shelters, and so on — that
-your operators and the public can check alongside your own map. This
-list is almost entirely local, and needs its own research for your area
-— state DOT road-condition sites, your state's power-outage tracking
-tools, your regional Red Cross or equivalent shelter listings, and any
-local water utility or boil-water advisory pages all vary by state and
-county. 🔧
-
-Build this list once, check that every link still works before an actual
-event, and revisit it occasionally — these resources tend to change more
-than you'd expect.
+1. Go to **umap.openstreetmap.fr** in your web browser.
+2. Click **Log in** (top right). If you don't already have an
+   OpenStreetMap account, click the option to create one — it's free
+   and separate from Grist/GitHub.
+3. Once logged in, click **+ Create a map**.
+4. Give your map a title matching your own project.
+5. Use the map's pan/zoom controls to center the default view on your
+   own coverage area, then click the **wrench/settings icon** →
+   **Save current view as default**.
+6. Add your layers — click the **layers icon** on the left side, then
+   **+ Add a layer**:
+   - One layer reading from your own automated pipeline's published
+     file — point it at your own fork's raw GeoJSON address, e.g.
+     `raw.githubusercontent.com/[your-username]/[your-repo-name]/main/[your-geojson-filename]`
+   - One layer reading from your own hand-entry database — for Grist,
+     follow Grist's own current instructions for sharing a table as a
+     live data source (this changes from time to time on their side —
+     check their current documentation for the exact steps); for
+     Google Sheets, use the published CSV link from 6.5's last step
+     above.
+7. For each layer, set styling rules matching your own category and
+   status list — click a layer → **Edit properties** → set colors and
+   icons per value. **Match spelling exactly** between this map, your
+   database columns (Grist or Google Sheets), and your codebase's
+   category list (Part II, note [4] — the same invisible-mismatch
+   trap applies here, just in a new system).
+8. Click **Save** (top left), then find your map's public sharing link
+   under the **Share** option to give to your own operators and the
+   public.
 
 ---
 
-# PART IV — Running It
+## 4.7 Setting Up Your Own Private Network (Tailscale)
+
+Follow Part III, 3.4, exactly as written — this step doesn't change at
+all between the original project and your own fork. Create your own
+account under your own group's shared email; don't reuse or request
+access to the original project's tailnet.
+
+---
+
+## 4.8 Generating Your Own GitHub Personal Access Token (P.A.T.)
+
+**Not to be confused with *Pat*, the separate Winlink client program —
+this is an unrelated credential issued by GitHub itself.**
+
+**Step-by-step:**
+
+1. Log into your own GitHub account (the one from 6.3).
+2. Click your **profile picture** (top right corner) → **Settings**.
+3. Scroll to the very bottom of the left sidebar and click
+   **Developer settings**.
+4. Click **Personal access tokens** → **Fine-grained tokens**.
+5. Click **Generate new token**.
+6. Under **Token name**, give it a name that identifies what it's for
+   — e.g. `MGS Removal Panel Token`.
+7. Under **Expiration**, choose a duration — one year is a reasonable
+   default. Whatever you pick, **put a calendar reminder a few weeks
+   before that date now**, while you're already here — this token
+   will eventually need to be regenerated, and there's currently no
+   easier path than doing this manually.[¹]
+8. Under **Repository access**, choose **Only select repositories**,
+   then pick your own forked repository from the list.
+9. Under **Permissions**, tap **Add permissions**. Check the boxes for
+   **Actions** and **Contents**. Once you do, a third item —
+   **Metadata (Required)** — "Search repositories, list collaborators,
+   and access repository metadata" — may appear automatically in the
+   Repositories box. Metadata's access level is greyed out and can't be
+   changed; leave it alone.
+   - Find **Actions** in the list and change its dropdown from the
+     default **Access: Read-only** to **Access: Read and write**.
+   - Find **Contents** in the list — its dropdown is active and could
+     be changed, but leave it at the default **Read-only** (may also
+     display as simply **Read**) — don't change this one, even though
+     you can.
+   - Leave every other permission at its default (**No access**).
+10. A confirmation popup titled **"New personal access token"** will
+    ask "Are you sure?" — write down or screenshot the token's name,
+    the date, and the three settings shown (Actions: Read and write,
+    Contents: Read-only, Metadata: Read-only or just Read) before continuing. This
+    becomes your own record if anything needs troubleshooting later —
+    the token itself is only ever shown once, but this confirmation
+    screen is a second, useful place to capture the same details.
+11. Scroll down and click **Generate token**.
+12. **Copy the token immediately** — GitHub shows it to you exactly
+    once. Paste it into your own credentials file (Part III, step 3)
+    as `GITHUB_PAT=` followed by the token, with no spaces around the
+    `=`. Never paste this token anywhere inside your actual repository
+    files — it belongs only in the separate, private credentials file.
+
+**Optional but recommended — validate it before trusting it:** run
+`setup_pat.py` (in the repo root) from your own computer, not the Pi.
+It's a standalone, stdlib-only script — no install step, nothing to
+set up — that checks your new token against the real repo and the
+three workflows the removal panel depends on
+(`aprsis-removal.yml`, `winlink-removal.yml`, `merge-and-publish.yml`)
+before you paste it anywhere. It does not write to your credentials
+file itself; it prints the `GITHUB_PAT=` line for you to paste by
+hand, same as step 12 above, just with the token already confirmed
+working.
+---
+
+## Notes for Part IV
+
+**[¹] Why token generation is still manual.**
+GitHub requires the token itself to be generated through your GitHub account. `setup_pat.py` doesn't generate or store the token for you. Instead, it lets you test a newly generated token against your repository and workflows before you put it into your credentials file. That removes some of the guesswork without giving the script access to your credentials file.
+
+**[²] On the naming examples used throughout this part.** `MGS-` and
+`SCGR-` are used here purely as worked examples, the same way Part II
+uses an inland-county and a Gulf-coast-town example side by side to
+teach a method, not to prescribe an answer. Nothing about adopting this
+system requires coordinating with any other group's naming — a single
+county forking this on its own, with its own prefix, is a complete and
+valid use of everything in this part.
+
+
+
+
+
+
+---
+
+## SECTION III — OPERATE IT
+
+# PART 5 — Running It
 
 Parts I through III got the system built and made it your own. This
 part is different — it's less about code and configuration, more about
@@ -837,7 +1255,7 @@ your categories are picked, your database and map are live.
 
 ---
 
-## 4.1 Filing a KCGR Report
+## 5.1 Filing a KCGR Report
 
 **Two channels reach the map automatically: APRS and Winlink.** Both
 skip the database entirely — a correctly formatted report on either
@@ -874,12 +1292,12 @@ silently lost:**
 - A missing or unrecognized `Status` auto-publishes as `UK -
   unknown` rather than being rejected.
 
-Same design principle as the APRS side (Part III, 3.2): built for the
+Same design principle as the APRS side (Part II, 2.2): built for the
 untrained sender, not just the trained one.
 
 ---
 
-## 4.2 Training Operators
+## 5.2 Training Operators
 
 **Two roles, and why they're trained differently.**
 
@@ -904,13 +1322,11 @@ just filling seats, it's a genuine on-ramp — someone doing this work
 firsthand is far more likely to get curious about the license itself
 than someone who's only heard about ham radio secondhand.
 
-**One rule every operator needs before their first shift:** report only
-businesses, organizations, and charitable/public services — never a
-private residence, regardless of category (full rationale in Part III).
+**One rule every operator needs before their first shift:** do not publish a private residence as the report location. If a health or welfare situation involves a private residence, report the situation through the appropriate channel, but use the reporting guidance for handling the location rather than putting the residence itself on the public map.
 
 **Steps:**
 1. Walk every new operator through your field-format grammar and your
-   own category list (Part III), using your own real worked examples —
+   own category list (Part II), using your own real worked examples —
    not the abstract rule alone.
 2. Have data-entry trainees enter one real (test) report into the live
    database, start to finish, before an actual event.
@@ -921,10 +1337,10 @@ private residence, regardless of category (full rationale in Part III).
    database — not a shared login (Part I, note 6). Field operators
    reporting over APRS or Winlink never touch the database directly, so
    they don't need an account at all — only people doing manual entry
-   or validation do.[⁵] 🔧
+   or validation do.[⁵]
 5. Add every new operator to your private network (Tailscale or
    equivalent) following your one-time device setup (see your Operator
-   Manual) 🔧.
+   Manual).
 ---
 
 ### GITHUB PERSONAL ACCESS TOKEN (P.A.T.) FOR THE ADMIN-PAGE REMOVAL PANEL
@@ -935,17 +1351,16 @@ by GitHub itself, spelled out here in full every time to avoid the
 mix-up.**
 
 The admin page's report-removal tool depends on a GitHub Personal
-Access Token (hereafter **P.A.T.**) that expires **8/14/2027**. If it
+Access Token (hereafter **P.A.T.**) that has an expiration date you should record in your permissions log. If it
 lapses, the toggle and status sections of the admin page keep working
 normally — ***only the removal tool breaks***, and it fails with an
 ***authentication error*** rather than anything visible elsewhere on
 the page.
 
-If a removal attempt fails after this date, or if you're checking in
-proactively around this date:
+If the removal tool fails because the token has expired, or if you're checking proactively around its recorded expiration date:
 1. Generate a new fine-grained GitHub Personal Access Token at
    `github.com/settings/personal-access-tokens/new` — repository
-   access: `kcgr-resource-feed` only; permissions: `Contents:
+   access: your repository only; permissions: `Contents:
    Read-only`, `Actions: Read and write`.
 2. Optionally validate it before trusting it: run `setup_pat.py` (in
    the repo root, from your own computer — not the Pi) to confirm the
@@ -962,7 +1377,7 @@ before.)
 
 ---
 
-## 4.3 Pre-Event Activation Checklist
+## 5.3 Pre-Event Activation Checklist
 
 **What "activation" means here.** Most of what you're activating
 already runs on its own, all the time — your independently-scheduled
@@ -988,14 +1403,14 @@ you want that extra layer running for this event.[²]
    around the same event, coordinate timing so KCGR can record live
    field reports as they come in — active and ready before other
    channels start generating them, not scrambling to catch up
-   afterward 🔧.
+   afterward.
 5. Start a fresh paper handoff log for this activation (see Appendix E).
 6. If your county EM office has agreed to help promote the map
-   publicly, let them know it's live 🔧.
+   publicly, let them know it's live.
 
 ---
 
-## 4.4 During-Event Operations & Monitoring
+## 5.4 During-Event Operations & Monitoring
 
 **Every operator confirms their own report reached the map — within one
 hour, every channel, no exceptions.**[³]
@@ -1024,19 +1439,17 @@ affected area to check the public map and relay status back to you over
 voice or Winlink. The map itself doesn't depend on your local
 connection — only your ability to check it does.
 
-**Significant reports also go to your EOC directly**, using an ICS-213
-General Message, per your relationship-building approach in Part I,
-note 9 🔧.
+**Significant reports also need to go directly to your EOC using an ICS-213 General Message, when that is the procedure your EOC uses. The KCGR report does not replace the ICS-213, and KCGR does not automatically pass the report to the EOC.**
 
 ---
 
-## 4.5 Post-Event Wind-Down
+## 5.5 Post-Event Wind-Down
 
 **What wind-down means here.** Your independently-scheduled channels
 don't need winding down at all — they keep running on their own
 schedule whether or not anything's actively happening, same as before
 the event. If you turned on your hardware-tied fallback channel for
-this event (4.3, step 1), wind-down includes turning it back off.
+this event (5.3, step 1), wind-down includes turning it back off.
 Beyond that one optional step, wind-down is already mostly about people
 and data, not infrastructure (see note 2).
 
@@ -1048,19 +1461,17 @@ and data, not infrastructure (see note 2).
    at all, skip this step.
 2. Fill out the post-event questions (Appendix E) while the event is
    still fresh — days later is fine, weeks later loses detail.
-3. Clear out reports that are now confirmed resolved; leave anything
-   uncertain marked unconfirmed rather than deleting it (Part I, note
-   4).
+3. Mark reports that are now confirmed resolved; leave anything uncertain marked unconfirmed rather than deleting it (Part I, note 4).
 4. Confirm your pipeline's automatic backup of the record store ran
    correctly before you consider the event fully closed.
 5. If KCGR was formally activated alongside your EOC or CERT, let them
    know you're standing down too — don't let the relationship go quiet
-   just because the event's over 🔧.
+   just because the event's over.
 6. Fold anything worth remembering into your changelog / lessons-learned
-   record (Part V) — especially anything that surprised you.
+   record (Part VI) — especially anything that surprised you.
 ---
 
-## Notes for Part IV
+## Notes for Part V
 
 **[¹] Why data-entry and validation are trained separately.**
 These are genuinely different skills, even when the same person ends up
@@ -1076,7 +1487,7 @@ Early on, "activation" meant turning the whole pipeline on — everything
 lived on a single Pi at home, and there was no reason to poll for
 reports around the clock if there was no active need. That's no longer
 true for most of the system: your independently-scheduled channels
-(2.2) already run continuously on infrastructure that isn't tied to
+(3.2) already run continuously on infrastructure that isn't tied to
 your home power or internet, so there's no real cost to leaving them
 running all the time — anyone reporting in already "activates" that
 part of the system just by sending a report, the same way a Skywarn
@@ -1129,26 +1540,19 @@ baked into a manual. Treat that policy as open until your club settles
 it on purpose.
 
 **[⁵] Why database accounts are scoped to roles, not everyone.**
-Grist's free tier raised its team-member cap from three to ten seats
-on 8/31/2026, confirmed working directly (a real invite went through
-past the old three-seat limit). Ten is a real ceiling, not unlimited
-seats. Handing every trained operator a login — including field
-operators who only ever report over APRS or Winlink and never open
-the database at all — would burn through those seats fast for no
-operational reason. Scoping accounts to the people who actually need
-direct access (data-entry operators, validators) keeps you within the
-free tier longer (and note — needing direct access is about the job,
-not a license; see Part IV's role definitions), and is Part I's
-smallest-necessary-access principle applied to seat count instead of
-permission level. If your roster ever outgrows even the higher seat
-cap, that's a real decision point for the club: pay for additional
-seats, or move to self-hosting (already confirmed technically workable
-— no hard cap there — though not obviously worth the added maintenance
-burden unless the free tier truly stops fitting) 🔧.
+Grist is purpose-built for this kind of work: dropdown columns, enforced
+data types, and relatively little manual setup for validation. But direct
+access should still go only to people who actually need it, such as
+data-entry operators and validators. Field operators who report through
+APRS or Winlink don't need a database account simply because they're part
+of the operation. The people using those accounts may or may not be
+licensed amateurs; the need for database access is based on the job, not
+the license. Check the current Grist plan limits before deciding how many
+people will need direct access.
 
 ---
 
-# PART V — Keeping It Alive
+# PART 6 — Keeping It Alive
 
 Parts I through IV got this system built, made it yours, and running.
 This part is different again — it's about what happens *after* that:
@@ -1159,48 +1563,37 @@ you) doesn't have to relearn it the hard way.
 
 ---
 
-## 5.1 Third-Party Permissions Log
+## 6.1 Third-Party Permissions Log
 
-**What this is:** a living table of every outside account this system
-depends on — who owns it, who can get into it, and how much they can
-do once they're in. Unlike most of this manual, this section is
-deliberately **not** meant to be reusable across clubs by design — it's
-your own operational reality, specific to your accounts, filled with
-your own real answers, not a generic template.
+**What this is:** a living table of every outside account this system depends on — who owns it, who can get into it, how much they can do, and when access was last reviewed. This is operational information for *your* implementation, not something to copy from another installation.
 
-**Why this matters:** the same "smallest necessary access" principle
-from Part I, applied at the level of *who can see this table at all*.
-A successor who inherits this project cold needs to know what accounts
-exist and who to ask before they need to know it in an emergency — not
-discover it by trial and error while something's actively broken.
+**Why this matters:** a successor who inherits the project cold needs to know what accounts exist and who to ask before an emergency exposes a gap. Keep the real version of this log somewhere access-controlled. Do not publish passwords, API keys, token values, recovery codes, or other secrets in the manual or repository.
 
 **Steps:**
-1. Keep one row per outside service this system touches — not per
-   credential, per *service* — so a reviewer can see the whole
-   footprint at a glance.
-2. Review this table on a fixed cadence (quarterly is reasonable), not
-   only when something breaks. A credential that's still valid but
-   nobody remembers exists is exactly as risky as one that's expired.
-3. Update the "Last reviewed" column every time you touch a row — even
-   if nothing changed. An untouched date tells you as much as a wrong
-   one.
+1. Keep one row per outside service this system touches — not per credential — so a reviewer can see the whole footprint at a glance.
+2. Review the table on a fixed cadence (quarterly is reasonable), not only when something breaks.
+3. Update the **Last reviewed** column every time you touch a row, even if nothing changed.
 
-**Real, filled example** (this project's own accounts, as of the last
-edit to this table — replace with your own):
+**A printable version of this permissions log is available in the project repository. Find it in the repository and print a copy for your own system. Fill it out with the accounts, owners, access levels, and review dates that apply to your organization.**
 
 | Service | Account owner | Who has access | Access level | Last reviewed |
 |---|---|---|---|---|
-| GitHub (`kcgr-resource-feed` repo) | Club GitHub org account, not a personal login | Hub Operator + each stand-in, via individual collaborator invites (see 5.2) | Repo write | 🔧 |
-| GitHub Personal Access Token (P.A.T.)[²] | Stored in `~/.kcgr_secrets/credentials.env` on the Pi | Whoever can reach the Pi's admin app or its credentials file | `Contents: Read-only`, `Actions: Read and write`, scoped to `kcgr-resource-feed` only — **expires 8/14/2027** | 🔧 |
-| Admin app (`kcgr-admin.service`) | `KCGR_ADMIN_PASSWORD`, one shared password | Anyone with the password and Tailscale access | Pipeline toggle + `/records` removal panel | 🔧 |
-| Grist | Club shared email | Team members added directly in Grist | Per-seat, capped by the current plan tier — check before adding a new operator | 🔧 |
-| uMap | Club shared email | Whoever needs to edit map layers or styling | Edit access is rare — most operators only ever need view | 🔧 |
-| Tailscale | `kc4rc.fd@gmail.com`, not a personal account | Every device that's joined the tailnet | Personal plan — 6 users, unlimited devices per user | 🔧 |
-| Gmail (`kc4rc.fd@gmail.com`) | Club shared account | Hub Operator, primary; forwarding rules also route copies elsewhere | 2FA via authenticator app + a scoped App Password ("KCGR Automation") powering the Winlink poller; 10 backup codes stored on paper and in a password manager | 🔧 |
+| GitHub repository | Organizational account | Hub Operator + approved stand-ins | Repository access appropriate to the role | |
+| GitHub P.A.T. | Approved credential store | Only operators who need it | Minimum repository/workflow scope required | |
+| Admin application | Organizational account | Approved operators | Pipeline controls and approved administrative functions | |
+| Database | Organizational account | Data-entry operators and validators | Role-based database access | |
+| Public map | Organizational account | Map administrators | Edit access; most operators only need view access | |
+| Mesh VPN | Organizational account | Approved devices/operators | Access limited to systems that need remote administration | |
+| Email / Winlink integration | Organizational account | Approved operators/services | Minimum mail and automation access required | |
+| Scheduling service | Organizational account | Administrators | Scheduling access only | |
+| Cloud service / worker | Organizational account | Administrators | Worker code and secret management as required | |
+| API keys / service credentials | Organizational account | Administrators or specific services | Minimum scope; record expiration/review date | |
+
+**Credential renewal:** record the expiration or review date for every credential that has one. Renew early enough to test the replacement, confirm the service works, and revoke the old credential only after the new one is verified.
 
 ---
 
-## 5.2 Access Control & Succession
+## 6.2 Access Control & Succession
 
 **What this is:** how a new stand-in Hub Operator actually gets set up
 — and the reasoning behind why access works the way it does, so a
@@ -1229,38 +1622,23 @@ this project already deliberately moved away from.
 4. Once accepted, confirm they can actually reach the admin app over
    Tailscale (see 2.4) — GitHub access and admin-app access are two
    separate things, and a new operator needs both.
-5. Log the new row in the permissions table (5.1) the same day —
+5. Log the new row in the permissions table (6.1) the same day —
    waiting "until things settle down" is exactly how a table like this
    goes stale.
 
-**Still open, not yet decided:**
-- A friendlier setup path for the `GITHUB_PAT` itself, for a future
-  Hub Operator who's never created one before. Three options have been
-  discussed — a proper GitHub App install/authorize flow, a setup
-  script that still uses a PAT but automates writing it to
-  `credentials.env`, or simply documenting the current manual process
-  well as a real worksheet. None of these is blocking today's use of
-  the removal panel; this is a real decision the club hasn't made yet,
-  not an oversight.
-- A second director's phone number as a backup 2-Step Verification
-  method on the shared Gmail account, in case the primary
-  authenticator device is unavailable.
-- Who actively checks the shared Gmail inbox, and how often — a
-  decision the club needs to make on purpose, not default into.
+**Local decisions you still need to make.**
+- Decide who is authorized to create and renew the credentials your implementation uses.
+- Decide where credentials are stored and who is allowed to access that location.
+- Decide how a successor receives access without sharing a personal login or exposing secrets.
 
-**Out of scope for this section:** someone outside your own area
-adapting this system for their own county or region should **fork**
-the repository rather than receive collaborator access to this one —
-that's a separate guide, not yet written, and belongs on its own
-rather than folded into succession planning for *this* project's own
-operators.
+The `setup_pat.py` script provides a way to test a newly generated GitHub token against your repository and workflows before you put it into your credentials file. It does not generate or store the token for you.
 
 ---
 
-## 5.3 Troubleshooting & Recovery
+## 6.3 Troubleshooting & Recovery
 
 **What this is:** not a list of every bug this project has ever hit —
-those live in the changelog (5.4) — but the *patterns* behind them,
+those live in the changelog (6.4) — but the *patterns* behind them,
 generalized so you recognize the shape of a new problem even if the
 specific cause is different. Every pattern below was learned from a
 real failure, not anticipated in the abstract.[¹]
@@ -1280,13 +1658,13 @@ wrong:**
    separate things that both need checking.
 2. Verify the fix with real evidence at every step it touches, not
    just the last one.
-3. Log it in the changelog (5.4) before moving on — even a fix that
+3. Log it in the changelog (6.4) before moving on — even a fix that
    feels obvious in the moment is easy to forget the reasoning behind
    later.
 
 ---
 
-## 5.4 Append-Only Changelog
+## 6.4 Append-Only Changelog
 
 **What this is, and how it's different from the rest of this
 manual.** Every other part of this document describes your system as
@@ -1308,34 +1686,75 @@ looks alarming on its own.
    The record of *being* wrong for a while is itself useful information
    for a future reader.
 
-**Seed entries** (real, to show the format — keep adding below these,
-don't replace them):
+**Example seed entries** (illustrative format — keep adding dated entries below these; the dated historical entry that follows is retained as part of the project record):
 
-- **[date]** — A single mis-indented line in a workflow's own trigger
+- **[example]** — A single mis-indented line in a workflow's own trigger
   configuration silently disabled every way that workflow could run —
   push, chained trigger, and manual click alike — for several hours,
   with no error visible anywhere an operator would naturally look.
   Fixed by re-indenting; confirmed via a real end-to-end test
   afterward, not just a clean-looking file.
-- **[date]** — A poller script was found holding a different, unrelated
+- **[example]** — A poller script was found holding a different, unrelated
   script's content after a multi-file upload session — every scheduled
   run crashed instantly for hours before this was caught. Restored
   from a known-good backup; confirmed with a real successful run
   afterward.
-- **[date]** — A wire format's fixed-width padding survived unstripped
+- **[example]** — A wire format's fixed-width padding survived unstripped
   into a lookup key, silently misclassifying several categories as
   "unknown" with no error anywhere. Caught only by reading the raw
   stored value directly. Fixed by explicitly stripping the value
   before using it as a key.
+- **9/13/2026** — Cloudflare Worker's Cron Trigger found unreliable —
+  configuration persists and is confirmed via direct API query, but
+  Worker execution silently stops after under an hour, no error logged
+  anywhere. Replaced as the active trigger mechanism by cron-job.org,
+  calling GitHub's `workflow_dispatch` directly every 5 minutes for
+  both pollers (offset 2 minutes apart). Along the way: a dedicated
+  GitHub token (`kcgr-cronjob-trigger`) failed to fully generate on
+  first attempt (never appeared in the token list, caused a "Bad
+  credentials" error); a second attempt succeeded but was pasted into
+  the Authorization header missing the required `Bearer ` prefix,
+  causing an identical-looking 401 until caught by direct comparison
+  against a working curl request. Cloudflare Worker left running, no
+  longer relied upon (see §6.5).
 
 ---
 
-## Notes for Part V
+## 6.5 Ongoing Maintenance
 
-**[¹] **Why this section teaches patterns** instead of listing every past
-bug.** A list of exactly what broke before is useful once, for
+**What this is:** the small, easy-to-forget checks that keep a working
+system working — separate from Troubleshooting (6.3), which is what to
+do once something's already visibly wrong. These are the checks that can
+catch a problem before it becomes visible at all.
+
+**Steps:**
+1. **Regularly** — confirm that the current code and configuration being
+   used by your implementation are actually the versions you expect. If
+your system has a local component that runs code separately from the
+repository, update that component according to its own maintenance
+procedure.
+2. **Monthly** — confirm that your scheduling mechanism actually fired
+   recently, using its real execution history — not just that its
+   configuration still exists. A schedule can be configured correctly and
+   still silently stop running. Configuration existing and configuration
+   executing are two different facts, and only the second one is what you
+   actually need to know.
+3. **Quarterly** — restore one of your backup files somewhere separate from
+   production and confirm that it opens and contains real data. A backup
+   being created on schedule is not automatically proof that it would work
+   if you needed it.
+
+These three intervals are a starting point, not a rule. Adjust them to
+match how often your own system changes, and how much it would cost you to
+find out about a silent failure late rather than early.
+
+---
+
+## Notes for Part VI
+
+**[¹] Why this section teaches patterns instead of listing every past bug.** A list of exactly what broke before is useful once, for
 recognizing the *same* problem again — but it doesn't help with the
-next, different problem. The changelog (5.4) is where the specific
+next, different problem. The changelog (6.4) is where the specific
 history lives; this section exists to make that history transferable,
 so a future maintainer facing a new symptom still recognizes
 the shape of it from a pattern they've seen described here.
@@ -1348,399 +1767,28 @@ Token" on first use in any section, and using the punctuated "P.A.T."
 as shorthand after that, is a small, deliberate habit meant to keep the
 two from ever getting confused by a reader skimming quickly.
 
----
+**[³] Why keep a permissions log even when nothing seems to change.**
+Access tends to change quietly: someone takes on a new role, a credential
+is replaced, an account is no longer needed, or a new service gets added.
+The log turns that scattered knowledge into one place a successor can
+check. It is especially useful during an emergency, when discovering an
+unknown account or expired credential is about the worst possible time to
+learn that the documentation is incomplete.
 
-# PART VI — Adapting This System For Your Own Area
-
-Everything built in Parts I–V belongs to one club, in one county. This
-part is for someone else entirely — a different county, a regional ARES
-group, or a statewide effort — who wants their own, fully independent
-version of this system: their own repository, their own database, their
-own map, sharing none of the original project's actual data or
-accounts.
-
-**This part is deliberately hypothetical in one specific way.** The
-naming examples used throughout — swapping `KCGR-` for something like
-`MGS-` (a regional Midlands group) or `SCGR-` (a statewide effort) — are
-illustrative possibilities, not an announced plan. They exist here in
-the hope that more of the state gets involved, not as a commitment any
-group has made. Treat them as a worked example to learn the method
-from, exactly the same way Part III treats its own category-list
-example.
+**[⁴] Why succession belongs in the operating plan.**
+A system that only one person knows how to access is not really an
+organizational system yet. Writing down who owns the accounts, who can
+stand in, and how access is transferred gives the project a way to survive
+changes in club leadership, availability, or interest. It also makes the
+system less intimidating for the next person who has to pick it up.
 
 ---
 
-## 6.1 Why Fork, Not Ask for Access
 
-**The short version:** you're building your own separate copy of this
-system, not borrowing a seat in someone else's. On GitHub, that's called
-**forking** — it makes you a complete, independent copy of the code,
-under your own account, that you can change freely without touching the
-original project at all.
-
-This matters for two real reasons:
-- **Your data stays yours.** A fork never shares reports, credentials,
-  or map data with the original project — it's a separate system from
-  the moment it's created.
-- **Nothing you do can break the original.** You're free to rename
-  things, experiment, and make mistakes in your own copy without any
-  risk to the project you copied it from.
-
-**The original project's own documentation already anticipated this.**
-Its format was built around a deliberate three-step "prefix ladder,"
-designed in from the start rather than added later:
-
-| Prefix | Covers | Length |
-|---|---|---|
-| `KCGR-` | Kershaw County | 5 characters |
-| `MGS-` | Midlands (regional) | 4 characters |
-| `SCGR-` | South Carolina (statewide) | 5 characters |
-
-**Why the lengths matter, not just the names.** Every character inside
-an APRS object beacon's comment field is scarce — the whole format was
-built around a hard 43-character limit. `MGS-` is one character
-*shorter* than `KCGR-`, which actually gains you one character of room
-elsewhere in the message. `SCGR-` is the same length as `KCGR-`, so a
-statewide adoption ports over with no restructuring needed at all.
-
-**The prefix is deliberately the *only* thing meant to change at a
-larger scale.** Per the original project's own documentation: field
-order and specifier codes are load-bearing — they're what keeps the
-format self-describing and readable under stress, without a lookup
-table. If your own group ever proposes changes beyond a renamed prefix,
-the original author's stated guidance is to shorten or replace the
-prefix further before touching field order or eliminating codes, not
-the other way around.
-
-**Worth knowing, in the original author's own words:** this format was
-"developed June 2026 by AA4TE, Camden SC, EM94, KC4RC / Kershaw County
-ARES... not a final standard — for review by Kershaw County ARES EC,
-Midlands Section 3, and SC ARES." In other words: exactly as hypothetical
-as it sounds when you first hear about it. Forking today doesn't require
-waiting on any of that review to happen — a single county adopting this
-independently, with its own prefix, is a complete and valid use of
-everything in this part, with or without a larger regional or state
-effort ever materializing.
----
-
-## 6.2 Before You Start: What You'll Need
-
-- [ ] Your own group's shared email address (not anyone's personal
-      email — see the reasoning in Part I, note 7, which applies here
-      just as much as it did to the original project)
-- [ ] Someone comfortable clicking through unfamiliar websites and
-      following instructions closely — you do **not** need a
-      programmer for anything in this part
-- [ ] Your own small always-on computer (Part II, 2.1) — this is not
-      shared with the original project either
-- [ ] About an hour of uninterrupted time for the account-creation
-      steps below — they go faster if you're not stopping and starting
-
----
-
-## 6.3 Creating Your Own Copy of the Code (Forking on GitHub)
-
-**Step-by-step, starting from nothing:**
-
-1. Go to **github.com** in your web browser.
-2. If you don't already have a GitHub account:
-   - Click **Sign up** (top right corner).
-   - Enter your group's shared email address, choose a password, and
-     choose a username — pick something that identifies your group
-     clearly (e.g. `mgs-groundreport`), since this becomes part of your
-     project's public web address.
-   - Follow GitHub's verification steps (usually a code sent to your
-     email).
-3. Once logged in, go to the original project's repository page: 🔧
-	**https://github.com/taco40sauce/kcgr-resource-feed**
-
-*(fill in the real address — ask whoever shared this manual with
-   you if you don't have it)*
-4. Near the top right of that page, click the **Fork** button.
-5. On the screen that appears:
-   - **Owner**: leave this as your own account/organization.
-   - **Repository name**: replace `kcgr-resource-feed` with your own —
-     e.g. `mgs-resource-feed` or `scgr-resource-feed`.
-   - Leave "Copy the main branch only" checked (the default).
-6. Click **Create fork**.
-
-**You now have your own, completely independent copy of the code**,
-at your own web address (`github.com/[your-username]/[your-repo-name]`).
-Nothing you do to it from here affects the original project at all.
-
----
-
-## 6.4 Choosing and Renaming Your Own Prefix
-
-**What this is:** every category, file, and workflow in the original
-project uses the prefix `KCGR-` (short for the original project's own
-name). Your copy needs its own prefix, consistently applied everywhere
-— the same exact-spelling principle from Part II, note [4], applies
-here at a larger scale: a computer treats `KCGR-` and `MGS-` as
-completely unrelated text, so every occurrence needs to be found and
-changed, not just the obvious ones.
-
-**Before you rename anything**, do the character math for your own
-prefix** (see 6.1) — a shorter prefix than `KCGR-` gains you room in
-the 43-character field; a same-length prefix (like `SCGR-`) needs no
-adjustment; a longer prefix costs you room elsewhere and may force
-trimming your location or comment fields shorter than the original
-project's own examples.
-
-**Steps:**
-1. Pick your own short prefix (Part III, 3.2, step 1 covers how) —
-   for this walkthrough, we'll use `MGS-` as the worked example.
-2. In your forked repository's page on GitHub, click the **magnifying
-   glass search icon** near the top of the page (or press `/` on your
-   keyboard while viewing the repo).
-3. Type `KCGR-` and press Enter. This searches every file in your
-   repository for that exact text.
-4. GitHub shows you a list of every file containing a match. Click
-   into each one, one at a time.
-5. Inside a file, click the **pencil (edit) icon** near the top right
-   of the file view.
-6. Use your browser's own find function (`Ctrl+F` on Windows/Linux,
-   `Cmd+F` on Mac) to jump to each occurrence of `KCGR-` inside that
-   file, and manually type your own prefix in its place.
-7. Once you've replaced every occurrence in that file, scroll down and
-   click **Commit changes** (a short description like "Rename prefix
-   to MGS-" is fine).
-8. Repeat steps 4–7 for every file in the search results from step 3.
-9. **Re-run the search from step 2 and 3 again after finishing** — a
-   fresh search for `KCGR-` should now return zero results across your
-   whole repository. If it doesn't, you've missed one — go fix it
-   before moving on.
-
-**Places this prefix shows up that are easy to miss:** workflow *names*
-(not just file names) inside `.github/workflows/` files, category names
-inside any parser code, and any text on your web pages (`kcgr-start.html`
-and `kcgr-ops.html` equivalents) — not just the technical files. Treat
-the search in step 9 as your real check, not a mental list of "the
-obvious spots."
-
----
-
-## 6.5 Setting Up Your Own Database
-
-Two options work well here — pick based on what your team already
-knows:
-
-- **Grist** — purpose-built for this: dropdown columns, enforced data
-  types, no manual setup needed for validation. Its free tier currently
-  caps a team at ten members (raised from three, 8/31/2026) — plenty
-  for most clubs, worth checking only if yours is unusually large.
-- **Google Sheets** — most people already know it, and there's no
-  per-seat cap under one Google account's sharing — but dropdown-style
-  validation has to be set up manually per column, and it takes one
-  extra step to make a live layer for your map (below).
-
-Steps for each are below — follow whichever one you picked.
-
-### Option A: Grist
-
-1. Go to **getgrist.com** in your web browser.
-2. Click **Sign up** (top right).
-3. Enter your group's shared email address and create a password.
-   Follow the verification steps.
-4. Once logged in, you'll land on your **team site** home page. Click
-   **Create empty document** (or **+ New**, then **Document**,
-   depending on the current Grist interface).
-5. Give the document a name matching your own project — e.g.
-   `MGS-ResourceStatus`.
-6. Grist opens a blank document with one empty table. Rename it by
-   clicking the table's current name (usually "Table1") at the top and
-   typing your own name — e.g. `Reports`.
-7. Build your columns to match your own field format (Part III, 3.2).
-   For each column, click the **+** at the far right of the column
-   headers to add a new one, then click the column's **dropdown arrow**
-   → **Column Options** to set its type:
-
-   | Column | Type to choose | Notes |
-   |---|---|---|
-   | `ObjectName` | Choice List (dropdown) | Fill in your own category list from Part III, 3.1 |
-   | `Status` | Choice List (dropdown) | Your own status codes |
-   | `Specifier` | Choice List (dropdown) | Your own specifier codes |
-   | `Location` | Text | Free text |
-   | `Notes` | Text | Free text |
-   | `ReportedBy` | Text | Free text — agency names and callsigns both fit here |
-   | `DateTime` | Date/Time | Set your own display format |
-   | `Latitude` | Numeric | Plain decimal degrees |
-   | `Longitude` | Numeric | Plain decimal degrees |
-   | `Verified` | Toggle (checkbox) | Internal team reference only |
-   | `ReportCount` | Numeric | Internal corroboration bookkeeping only |
-
-8. To fill in a **Choice List's** actual options (e.g. your category
-   list), click the column header dropdown → **Column Options** →
-   find the **Choices** field → type each option on its own line,
-   matching your Part III category list exactly, including your own
-   prefix.
-9. To share access with your own team: click **Share** (top right),
-   enter each teammate's email, and choose their role — most
-   data-entry operators only need **Editor**, not **Owner**.
-
-### Option B: Google Sheets
-
-1. In your club's shared Google account, go to **sheets.google.com**
-   and click **Blank** to start a new sheet.
-2. Rename it matching your own project — click the title top-left
-   (e.g. `MGS-ResourceStatus`).
-3. In row 1, type one column header per piece of information a report
-   needs, matching your own field format (Part III, 3.2) — e.g.
-   `ObjectName`, `Status`, `Specifier`, `Location`, `Notes`,
-   `ReportedBy`, `DateTime`, `Latitude`, `Longitude`, `Verified`,
-   `ReportCount`.
-4. To make `ObjectName`, `Status`, and `Specifier` behave like
-   dropdowns: select the column (click its letter at the top), go to
-   **Data → Data validation**, choose **Dropdown** as the criteria,
-   and type each option from your Part III category/status/specifier
-   lists on its own line. 🔧 (Google's exact menu wording shifts from
-   time to time — look for "Data validation" if this doesn't match
-   what you see.)
-5. To share access with your team: click **Share** (top right), enter
-   each teammate's email, and set their role to **Editor**, not
-   **Owner**.
-6. To let your map read this sheet as a live layer (needed for §6.6):
-   go to **File → Share → Publish to web**, choose the specific sheet
-   (not "Entire Document"), select **Comma-separated values (.csv)** as
-   the format, and click **Publish**. Copy the link this gives you —
-   you'll paste it into uMap in the next section. 🔧 Anyone with this
-   link can view (not edit) this data — that's expected and fine for a
-   read-only map layer, not a security gap.
-
----
-
-## 6.6 Setting Up Your Own Public Map (uMap)
-
-**Step-by-step:**
-
-1. Go to **umap.openstreetmap.fr** in your web browser.
-2. Click **Log in** (top right). If you don't already have an
-   OpenStreetMap account, click the option to create one — it's free
-   and separate from Grist/GitHub.
-3. Once logged in, click **+ Create a map**.
-4. Give your map a title matching your own project.
-5. Use the map's pan/zoom controls to center the default view on your
-   own coverage area, then click the **wrench/settings icon** →
-   **Save current view as default**.
-6. Add your layers — click the **layers icon** on the left side, then
-   **+ Add a layer**:
-   - One layer reading from your own automated pipeline's published
-     file — point it at your own fork's raw GeoJSON address, e.g.
-     `raw.githubusercontent.com/[your-username]/[your-repo-name]/main/[your-geojson-filename]`
-   - One layer reading from your own hand-entry database — for Grist,
-     follow Grist's own current instructions for sharing a table as a
-     live data source (this changes from time to time on their side —
-     check their current documentation for the exact steps 🔧); for
-     Google Sheets, use the published CSV link from 6.5's last step
-     above.
-7. For each layer, set styling rules matching your own category and
-   status list — click a layer → **Edit properties** → set colors and
-   icons per value. **Match spelling exactly** between this map, your
-   database columns (Grist or Google Sheets), and your codebase's
-   category list (Part II, note [4] — the same invisible-mismatch
-   trap applies here, just in a new system).
-8. Click **Save** (top left), then find your map's public sharing link
-   under the **Share** option to give to your own operators and the
-   public.
-
----
-
-## 6.7 Setting Up Your Own Private Network (Tailscale)
-
-Follow Part II, 2.4, exactly as written — this step doesn't change at
-all between the original project and your own fork. Create your own
-account under your own group's shared email; don't reuse or request
-access to the original project's tailnet.
-
----
-
-## 6.8 Generating Your Own GitHub Personal Access Token (P.A.T.)
-
-**Not to be confused with *Pat*, the separate Winlink client program —
-this is an unrelated credential issued by GitHub itself.**
-
-**Step-by-step:**
-
-1. Log into your own GitHub account (the one from 6.3).
-2. Click your **profile picture** (top right corner) → **Settings**.
-3. Scroll to the very bottom of the left sidebar and click
-   **Developer settings**.
-4. Click **Personal access tokens** → **Fine-grained tokens**.
-5. Click **Generate new token**.
-6. Under **Token name**, give it a name that identifies what it's for
-   — e.g. `MGS Removal Panel Token`.
-7. Under **Expiration**, choose a duration — one year is a reasonable
-   default. Whatever you pick, **put a calendar reminder a few weeks
-   before that date now**, while you're already here — this token
-   will eventually need to be regenerated, and there's currently no
-   easier path than doing this manually.[¹]
-8. Under **Repository access**, choose **Only select repositories**,
-   then pick your own forked repository from the list.
-9. Under **Permissions**, tap **Add permissions**. Check the boxes for
-   **Actions** and **Contents**. Once you do, a third item —
-   **Metadata (Required)** — "Search repositories, list collaborators,
-   and access repository metadata" — may appear automatically in the
-   Repositories box. Metadata's access level is greyed out and can't be
-   changed; leave it alone.
-   - Find **Actions** in the list and change its dropdown from the
-     default **Access: Read-only** to **Access: Read and write**.
-   - Find **Contents** in the list — its dropdown is active and could
-     be changed, but leave it at the default **Read-only** (may also
-     display as simply **Read**) — don't change this one, even though
-     you can.
-   - Leave every other permission at its default (**No access**).
-10. A confirmation popup titled **"New personal access token"** will
-    ask "Are you sure?" — write down or screenshot the token's name,
-    the date, and the three settings shown (Actions: Read and write,
-    Contents: Read-only, Metadata: Read-only or just Read) before continuing. This
-    becomes your own record if anything needs troubleshooting later —
-    the token itself is only ever shown once, but this confirmation
-    screen is a second, useful place to capture the same details.
-11. Scroll down and click **Generate token**.
-12. **Copy the token immediately** — GitHub shows it to you exactly
-    once. Paste it into your own credentials file (Part II, step 3)
-    as `GITHUB_PAT=` followed by the token, with no spaces around the
-    `=`. Never paste this token anywhere inside your actual repository
-    files — it belongs only in the separate, private credentials file.
-
-**Optional but recommended — validate it before trusting it:** run
-`setup_pat.py` (in the repo root) from your own computer, not the Pi.
-It's a standalone, stdlib-only script — no install step, nothing to
-set up — that checks your new token against the real repo and the
-three workflows the removal panel depends on
-(`aprsis-removal.yml`, `winlink-removal.yml`, `merge-and-publish.yml`)
-before you paste it anywhere. It does not write to your credentials
-file itself; it prints the `GITHUB_PAT=` line for you to paste by
-hand, same as step 12 above, just with the token already confirmed
-working.
----
-
-## Notes for Part VI
-
-**[¹] Why this manual still says "regenerate it manually," rather than
-something friendlier.** A friendlier setup path for this token was an
-open question for a while — options considered were a proper GitHub
-App install flow, a script that automates writing it to your
-credentials file, or just documenting the manual process well.
-**Decided:** a validation script (`setup_pat.py`, referenced in step 12
-above) — not a GitHub App, and not documentation-only. It confirms a
-newly generated token actually works against your repo and workflows
-before you trust it, but deliberately doesn't write to your
-credentials file for you; you still paste that line by hand.
-Generating and *rotating* the token itself is still a manual process —
-this script only removes the guesswork of whether a freshly generated
-token is actually valid.
-
-**[²] On the naming examples used throughout this part.** `MGS-` and
-`SCGR-` are used here purely as worked examples, the same way Part III
-uses an inland-county and a Gulf-coast-town example side by side to
-teach a method, not to prescribe an answer. Nothing about adopting this
-system requires coordinating with any other group's naming — a single
-county forking this on its own, with its own prefix, is a complete and
-valid use of everything in this part.
 
 
 
+---
 
 # APPENDIX A — Quick Command Reference (Start to Finish)
 
@@ -1765,11 +1813,11 @@ Here's every command you'd need for that, in order.
 ### 1. Connect to the Pi
 
 ```
-ssh dave@graywolf
+ssh [your-username]@[your-hostname]
 ```
-🔧 *(replace `dave` and `graywolf` with your own username and hostname —
+ *(replace `dave` and `graywolf` with your own username and hostname —
 or use your Tailscale address instead if connecting remotely, e.g.
-`ssh dave@100.68.180.65`)*
+`ssh [your-username]@[your-Tailscale-address]`)*
 
 ---
 
@@ -1782,28 +1830,9 @@ sudo systemctl start kcgr-pipeline
 
 **Or from a web browser** (any device on your Tailscale network):
 ```
-http://100.68.180.65:5050
+http://[your-Tailscale-address]:5050
 ```
-Log in with the admin password, click **Turn ON**. 🔧
-
-### 2  Alternative Turn the automated pipeline ON
-
-**From the terminal:**
-
-```
-sudo systemctl start kcgr-pipeline
-```
-
-
-**Or from a web browser** (any device on your Tailscale network):
-http://100.68.180.65:5050
-
-
-**If the page doesn't load:** the admin panel itself
-(`kcgr-admin.service`) is a separate service from the pipeline this
-page controls, and may not be running. Check and start it from the
-Pi's terminal:
----
+Log in with the admin password, click **Turn ON**.
 
 ### 3. Check whether it's actually running
 
@@ -1849,12 +1878,12 @@ the terminal:**
 
 1. From any device on your Tailscale network, log into the admin page:
    ```
-   http://100.68.180.65:5050
+   http://[your-Tailscale-address]:5050
    ```
-   🔧 *(use your own Tailscale address)*
+   *(use your own Tailscale address)*
 2. Click **View/remove active records**, or go directly to:
    ```
-   http://100.68.180.65:5050/records
+   http://[your-Tailscale-address]:5050/records
    ```
 3. Find the report in the list — labeled by source, category, status,
    location, and callsign — click **Remove**, then confirm on the next
@@ -1880,7 +1909,7 @@ Look for the entry you want gone — it's labeled something like
 cd ~/kcgr-pipeline
 python3 remove_record.py "AA4TE-10:KCGR-FUEL"
 ```
-🔧 *(use the real identity string from the file above — copy it exactly,
+ *(use the real identity string from the file above — copy it exactly,
 including the colon)*
 
 This also updates the public map automatically — same underlying
@@ -1918,25 +1947,32 @@ why this matters.
 
 # APPENDIX B — Opening Your Web-Based Tools
 
-Appendix A covers the automated pipeline, which mostly lives in a
-terminal. This appendix is for the tools most operators will actually
-spend their time in — entering a report by hand, or checking the public
-map itself. No terminal needed for anything below.
+Appendix A covers the Pi-based side of the system. This appendix is for
+the web-based tools an operator is more likely to use during normal
+operations — entering a report by hand in the database, or checking the
+public map.
+
+No terminal is needed for anything below.
+
+The important distinction is simple: **the database holds the data; uMap
+displays it.** When you need to add or change a report, work in the place
+where that report actually lives rather than trying to edit the map
+directly.
 
 ---
 
 ### Entering a report by hand (your database)
 
-1. Go to your database site (this system uses **Grist**): 🔧
+1. Go to your database site (this system uses **Grist**):
    ```
    https://getgrist.com
    ```
 2. Log in with your account.
 3. Open your team site, then your resource-status document (e.g.
-   `KCGR-ResourceStatus`). 🔧
-4. Click into the table, and add a new row — one row per report, filling
-   in status, category, location, and so on, matching your own field
-   format from Part III.
+   `KCGR-ResourceStatus`).
+4. Click into the table and add a new row — one row per report. Fill in
+   the fields required by your implementation, using the field definitions
+   from Part III.
 5. If you're marking something as officially checked/confirmed, use the
    `Verified` column (a simple checkbox) — this is for your team's own
    reference and does not change how it looks on the public map.
@@ -1945,7 +1981,7 @@ map itself. No terminal needed for anything below.
 
 ### Checking or editing the public map
 
-1. Go to your map site (this system uses **uMap**): 🔧
+1. Go to your map site (this system uses **uMap**):
    ```
    https://umap.openstreetmap.fr
    ```
@@ -1956,27 +1992,23 @@ map itself. No terminal needed for anything below.
    something most operators will need day to day — log in and open the
    map in edit mode.
 4. **Important reminder:** don't use uMap's own delete/trash tool to
-   remove a report from the automated feed layer — it doesn't actually
-   stick (see Appendix A, Step 6, for the real way to remove a report).
-   Deleting a hand-entered report from the manual-entry layer, though,
-   should be done by deleting the actual row in your database instead,
-   for the same reason — the map is just a display of data that lives
-   somewhere else.
+   remove a report from an automated feed layer. The map is displaying
+   data that comes from somewhere else, so deleting the feature in uMap
+   doesn't remove it from the underlying source — and the report can
+   simply come back the next time the layer refreshes. Use the appropriate
+   removal tool described in Appendix A, Step 6.
+
+   The same principle applies to hand-entered reports: delete or correct
+   the actual row in your database rather than trying to remove the pin
+   from the map.
 
 ---
 
-### County / partner agency spreadsheet (in progress)
+---
 
-🔧 *This section is being written as this integration is actually built —
-placeholder for now.* Once a county or partner agency's spreadsheet is
-connected as its own feed (see the note on this in Part I, section on
-building an EOC relationship), this section will cover:
-- Where to find their spreadsheet
-- Who has permission to view or edit it
-- How its data appears on the public map (as its own clearly-labeled
-  layer, separate from ham radio reports and manual entries)
 
 ---
+
 # APPENDIX C — Winlink Tactical Address Format Reference
 
 This appendix covers the actual formatting rules for a Winlink tactical
@@ -2013,7 +2045,7 @@ one or more real amateur callsigns for sending and receiving.
 **This project's own tactical address, `KCGR-OPS`, is fully compliant**
 — worth confirming explicitly here rather than assuming, since nothing
 about the format rules was checked against the real standard until now.
-If you're building a renamed version for your own area (Part VI), the
+If you're building a renamed version for your own area (Part IV), the
 same rule applies to whatever prefix you choose: `MGS-OPS` and
 `SCGR-OPS` are both valid under this same rule, since both prefixes are
 3+ letters.
@@ -2053,7 +2085,7 @@ tactical address won't work if your operators are using one of those.
 Per Winlink's own FAQ documentation, a tactical address's registration
 lapses after **6 months without use** — worth knowing if this project's
 own `KCGR-OPS` address, or any address a forking group sets up under
-Part VI, ever goes silent for an extended stretch between activations.
+Part IV, ever goes silent for an extended stretch between activations.
 
 ---
 
@@ -2090,14 +2122,14 @@ through every value you'll substitute for KCGR's own throughout Parts
 III and VI (your prefix, coverage area, account names, category lists,
 and so on) — fill it out once before you start building, so you're
 copying from one page instead of hunting through several sections
-mid-build. See Part VI for where these values actually get used.
+mid-build. See Part IV for where these values actually get used.
 
 **Quick Start**
 (`companion-docs/quick_start.pdf`)
 A one-page, crisis-speed reference for field operators and validators —
 sending a report, status codes, object types and specifiers, worked
 examples. Built to be printed and kept on hand, not read start to
-finish. See Part IV, 4.1 for the full report-filing walkthrough this
+finish. See Part V, 5.1 for the full report-filing walkthrough this
 reference summarizes.
 
 **Quick Start — Large Print**
@@ -2116,8 +2148,15 @@ THREE TOOLS for running an activation day to day:
 - a log to handoff between operators, 
 - questions to answer at each shift change, and
 - questions to answer once the event is over. 
-None of this needsanything beyond paper and a pen — this is
+None of this needs anything beyond paper and a pen — this is
 meant to work even if every piece of technology in this system is down.
+
+**[⁵] Why keep a human handoff log.**
+The paper log is deliberately independent of the software. During an
+outage, shift change, or confusing event, a short human record can carry
+forward information that no automated system can guarantee will be seen.
+It also gives the next operator a quick picture of what happened without
+requiring them to reconstruct the shift from scattered logs.
 
 ### Paper Handoff Log
 
@@ -2138,7 +2177,7 @@ leave it for them to find.
 Answer these before handing the paper log to the next operator — out
 loud if they're already there, written down if they're not:
 
-1. Is the hardware-tied fallback channel (Pi/Graywolf, §2.1) currently
+1. Is the hardware-tied fallback channel (hardware-tied fallback channel) currently
    on or off? If on, does the next operator know it's their
    responsibility to turn it off later?
 2. Any reports you pulled with the removal tool this shift? Note what
@@ -2149,13 +2188,13 @@ loud if they're already there, written down if they're not:
    (DMR, Meshtastic, Facebook, Skywarn, phone)? The next operator
    can't watch for gaps they don't know exist.
 4. Did every report you personally sent or handled this shift get
-   confirmed on the live map? (Part IV, note 3 — every operator
+   confirmed on the live map? (Part V, note 3 — every operator
    confirms their own report within the hour, no exceptions.) If
    anything's still unconfirmed, say so now, not later.
 5. Anything unusual — a channel acting slow, a tool behaving
    strangely, a report that took extra digging to place — worth
    flagging even if you already handled it? (This is exactly the kind
-   of thing Part V's changelog wants captured before it's forgotten.)
+   of thing Part VI's changelog wants captured before it's forgotten.)
 6. What's the single most important thing the next operator should
    look at first?
 
@@ -2170,7 +2209,7 @@ loses detail:
    and if so, was that caught during the event or only afterward?
 3. Was the on/off timing for the hardware-tied fallback channel right,
    or should it have gone on sooner / come off later next time?
-4. Anything from the handoff log worth folding into Part V's
+4. Anything from the handoff log worth folding into Part VI's
    changelog, so the next person doesn't relearn it the hard way?
 5. Did your category list, staleness timing, or vetting policy (Part
    III) hold up as written, or does anything need revisiting before
@@ -2179,7 +2218,3 @@ loses detail:
    doesn't currently provide?
 
 ---
-
-
-
-
