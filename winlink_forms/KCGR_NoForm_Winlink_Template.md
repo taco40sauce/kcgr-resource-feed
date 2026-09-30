@@ -20,14 +20,14 @@ exactly the same as a message sent from the real form.
   (e.g. `KCGR-RS - AA4TE - 2026-08-18`) — the subject must contain
   `KCGR-RS` or it won't be picked up.
 
-## 2. Message body — copy everything below this line
+## 2. Message body — 
 
 **Everything marked with asterisks (`**`) or `*****` is a
 placeholder — replace it completely with your own information before
 sending.** Do not send the placeholder text itself; it isn't a valid
 value.
+Copy everything below this sentence ⬇.
 
-```
 KERSHAW COUNTY GROUND REPORT -- RESOURCE STATUS (KCGR-RS)
 ==========================================================
 
@@ -46,15 +46,14 @@ Time:
 Notes: 
 Latitude: 34.******
 Longitude: -80.******
-```
 
+Copy the 19 lines above this sentence 🢁
 ---
 
 ## 3. Worked example
 
-Here's the same block filled in for the shorthand you asked about
-earlier — `KCGR-FUEL OP PP Elgin BP Hwy1 181033` — translated into
-this labeled format:
+Here's the same block filled in the sample shorthand — `KCGR-FUEL OP PP Elgin BP Hwy1 181033` 
+— translated into this labeled format:
 
 ```
 KERSHAW COUNTY GROUND REPORT -- RESOURCE STATUS (KCGR-RS)
@@ -92,8 +91,9 @@ Longitude:
   published as `UK - unknown` rather than being rejected. Better to
   fill it in correctly, but a mistake here won't lose the report.
 - **`Specifier`, `Location`, `Date`, `Time`, `Notes`,
-  `Latitude`/`Longitude`** — all optional. Blank is fine; the report
-  still gets published. If you do have coordinates, use real decimal
+  `Latitude`/`Longitude`** — all optional. Blank will work indirectly; the report
+  still gets published by manually being entered into a database.
+  If you do have coordinates, use real decimal
   degrees (look them up if needed) — that's what actually places the
   report accurately on the map rather than relying on `Location`'s
   free text alone.
