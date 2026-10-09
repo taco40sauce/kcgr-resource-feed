@@ -77,10 +77,11 @@
   <a class="guide-nav-link" href="#first-message">③ First Message</a>
   <a class="guide-nav-link" href="#file-report">④ File a KCGR Report</a>
   <a class="guide-nav-link" href="#regional">⑤ Regional Nets</a>
-  <a class="guide-nav-link" href="#national">⑥ National Nets</a>
-  <a class="guide-nav-link" href="#exercises">⑦ Annual Exercises</a>
-  <a class="guide-nav-link" href="#pat-notes">⑧ PAT Notes</a>
-  <a class="guide-nav-link" href="#field-tips">⑨ Field Tips</a>
+  <a class="guide-nav-link" href="#winlink-wednesday">⑥ Winlink Wednesday Check-In</a>
+  <a class="guide-nav-link" href="#national">⑦ National Nets</a>
+  <a class="guide-nav-link" href="#exercises">⑧ Annual Exercises</a>
+  <a class="guide-nav-link" href="#pat-notes">⑨ PAT Notes</a>
+  <a class="guide-nav-link" href="#field-tips">⑩ Field Tips</a>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -524,7 +525,7 @@ Longitude: -80.790513</pre>
 
 
           <div class="activity-card-body">
-            Participation in Original Winlink Wednesday, coordinated by<strong>David Ellis, KN4LQN</strong>. Uses the standard Winlink Wednesday check-in format-ICS213. <strong>Note:</strong> Learning to use Winlink with Telnet is acceptable. The current Original Winlink Wednesday instructions ask for RF. Learn to use the program, then make it a point to use RF.
+            Participation in Original Winlink Wednesday, coordinated by <strong>David M. Elkins, KN4LQN</strong>. Uses the standard Winlink Wednesday check-in format-ICS213. <strong>Note:</strong> Learning to use Winlink with Telnet is acceptable. The current Original Winlink Wednesday instructions ask for RF. Learn to use the program, then make it a point to use RF.
           </div>
           <div class="activity-card-footer">
             <span class="activity-card-tactical">Send to: <strong>WW-SC</strong></span>
@@ -591,12 +592,107 @@ Longitude: -80.790513</pre>
   </div>
 
   <!-- ─────────────────────────────────────────
-       SECTION 6 — NATIONAL NETS
+       SECTION 6 — WINLINK WEDNESDAY CHECK-IN
+  ────────────────────────────────────────── -->
+  <div class="acc-section" id="winlink-wednesday">
+    <button class="acc-section-trigger" data-acc="winlink-wednesday" aria-expanded="false">
+      <span class="acc-section-label">
+        <span class="section-number">6</span>
+        Send a Winlink Wednesday Check-In (Telnet)
+      </span>
+      <span class="acc-section-chevron">▼</span>
+    </button>
+    <div class="acc-section-body" id="acc-body-winlink-wednesday">
+
+      <p>This is the monthly ICS-213 check-in for the <strong>Original Winlink Wednesday</strong> net (third Wednesday of each month — see <a href="#national">National Nets</a>), run by <strong>David M. Elkins, KN4LQN</strong>. This walkthrough uses Telnet, consistent with "Telnet first" from <a href="#get-started">Get Started</a> — once it's working, the same message type works just as well over RF when you're ready to move there (see <a href="#get-started">Step 5, Move to RF</a>).</p>
+
+      <div class="tip-box">
+        <strong>Which software are you running?</strong> Both Winlink Express and PAT ship the same standard ICS213 General Message form — same folder, same form name, same fields. Find yours below.
+      </div>
+
+      <div class="software-compare">
+
+        <div class="software-card">
+          <div class="software-card-header">
+            <div class="software-card-name">Winlink Express</div>
+          </div>
+          <div class="software-card-body">
+            <div class="step-block">
+              <h3>Step 1 — Start a new message</h3>
+              <p>Message → New Message. Don't enter anything yet — click <strong>Select Template</strong> to open the Template Manager.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 2 — Pick the form</h3>
+              <p>Navigate to <strong>Standard Templates → ICS USA Forms</strong> and select <strong>ICS213 General Message.txt</strong>. Click Select (or double-click it) — the blank ICS-213 form opens in a browser tab.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 3 — Fill it out</h3>
+              <p>Fill in fields 1–4 and your date/time, then put your one-line check-in in <strong>field 7, Message</strong> — that's the field the net actually reads. See the worked example below for the exact format.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 4 — Submit</h3>
+              <p>Click <strong>Submit</strong> at the bottom of the form, click OK on the pop-up, then close the blank browser tab. Back in the compose window: Subject is now pre-filled, there's a .xml attachment, the form's text is in the body, and your cursor is sitting in the blank To: field.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 5 — Address and send as Telnet</h3>
+              <p>Type <strong>KN4LQN</strong> in the To: field. Then — and only after the form is attached, or Winlink Express will silently revert this — open the <strong>Send as:</strong> dropdown above the To: field and pick <strong>Telnet</strong>.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 6 — Post and send</h3>
+              <p>Post the message to the Outbox, open a Telnet session, and send normally.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="software-card pat">
+          <div class="software-card-header">
+            <div class="software-card-name">PAT</div>
+          </div>
+          <div class="software-card-body">
+            <div class="step-block">
+              <h3>Step 1 — Start a new message</h3>
+              <p>Action → Compose... Don't fill anything in yet — click <strong>Template…</strong>.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 2 — Pick the form</h3>
+              <p>Navigate to <strong>Standard Forms → ICS USA Forms</strong> and select <strong>ICS213 General Message</strong> — same folder and form name as Winlink Express. The blank ICS-213 form opens in your browser.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 3 — Fill it out</h3>
+              <p>Same fields as Express: 1–4, date/time, and your one-line check-in in <strong>field 7, Message</strong>. See the worked example below.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 4 — Submit</h3>
+              <p>Click <strong>Submit</strong>. It returns to PAT's compose window with the Subject, .xml attachment, and form text already in the body.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 5 — Address and send</h3>
+              <p>To: <strong>KN4LQN</strong>. Connect via Telnet and send.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <p><strong>Worked example</strong> — field 7, Message, formatted the way the net expects (callsign, first name, city, county, state):</p>
+      <pre style="background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:4px;padding:.8rem 1rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.5;">KC4GR, Bob, Elgin, Kershaw County, SC</pre>
+
+      <div class="obs-box">
+        <strong>AA4TE field note:</strong> The "Send as:" step is the one first-timers lose. Winlink Express resets that dropdown back to its default the moment you attach or re-attach a form — so set Send as: <em>after</em> Step 4, not before, or your Telnet-addressed message quietly tries to go out as a normal Winlink message instead.
+      </div>
+
+      <p><a href="https://winlinkwednesday.net/docs/Winlink_Wednesday_ICS-213_Check-In.pdf" target="_blank" rel="noopener">Official Winlink Wednesday ICS-213 Check-In instructions (PDF) →</a></p>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 7 — NATIONAL NETS
   ────────────────────────────────────────── -->
   <div class="acc-section" id="national">
     <button class="acc-section-trigger" data-acc="national" aria-expanded="false">
       <span class="acc-section-label">
-        <span class="section-number">6</span>
+        <span class="section-number">7</span>
         National &amp; Open Nets
       </span>
       <span class="acc-section-chevron">▼</span>
@@ -617,7 +713,7 @@ Longitude: -80.790513</pre>
             </div>
           </div>
           <div class="activity-card-body">
-            Started by <strong>Greg Butler, KW6GB</strong> in August 2016 — the original and most widely participated recurring Winlink net. Current operations handled by <strong>David Elkins, KN4LQN</strong>; mapping by <strong>KW4SHP</strong>. First Wednesday of the month: weather snapshot. Third Wednesday: ICS-213. HF peer-to-peer sessions also available. Century Club certificate after 100 consecutive weeks.
+            Started by <strong>Greg Butler, KW6GB</strong> in August 2016 — the original and most widely participated recurring Winlink net. Current operations handled by <strong>David M. Elkins, KN4LQN</strong>; mapping by <strong>KW4SHP</strong>. First Wednesday of the month: weather snapshot. Third Wednesday: ICS-213. HF peer-to-peer sessions also available. Century Club certificate after 100 consecutive weeks.
             <br><br>
             <strong>RF is expected</strong> — the net's current instructions explicitly ask that messages leave your station over the air, not Telnet. Good motivation to get your RF path working before you need it.
           </div>
@@ -859,12 +955,12 @@ Longitude: -80.790513</pre>
   </div>
 
   <!-- ─────────────────────────────────────────
-       SECTION 7 — ANNUAL EXERCISES
+       SECTION 8 — ANNUAL EXERCISES
   ────────────────────────────────────────── -->
   <div class="acc-section" id="exercises">
     <button class="acc-section-trigger" data-acc="exercises" aria-expanded="false">
       <span class="acc-section-label">
-        <span class="section-number">7</span>
+        <span class="section-number">8</span>
         Annual Exercises
       </span>
       <span class="acc-section-chevron">▼</span>
@@ -917,12 +1013,12 @@ Longitude: -80.790513</pre>
   </div>
 
   <!-- ─────────────────────────────────────────
-       SECTION 8 — PAT NOTES
+       SECTION 9 — PAT NOTES
   ────────────────────────────────────────── -->
   <div class="acc-section" id="pat-notes">
     <button class="acc-section-trigger" data-acc="pat-notes" aria-expanded="false">
       <span class="acc-section-label">
-        <span class="section-number">8</span>
+        <span class="section-number">9</span>
         PAT Compatibility Notes
       </span>
       <span class="acc-section-chevron">▼</span>
@@ -974,12 +1070,12 @@ Longitude: -80.790513</pre>
   </div>
 
   <!-- ─────────────────────────────────────────
-       SECTION 9 — FIELD TIPS
+       SECTION 10 — FIELD TIPS
   ────────────────────────────────────────── -->
   <div class="acc-section" id="field-tips">
     <button class="acc-section-trigger" data-acc="field-tips" aria-expanded="false">
       <span class="acc-section-label">
-        <span class="section-number">9</span>
+        <span class="section-number">10</span>
         Field Tips
       </span>
       <span class="acc-section-chevron">▼</span>
