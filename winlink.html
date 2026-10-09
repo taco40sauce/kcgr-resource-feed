@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winlink &amp; PAT — Emergency Digital Messaging | routersandrepeaters.net</title>
+<meta name="description" content="A field guide to Winlink and PAT emergency digital messaging for ham radio operators. Get started, pick your software, and find recurring nets and exercises to build real readiness.">
+<link rel="canonical" href="https://routersandrepeaters.net/winlink.html">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oxanium:wght@400;600;700;800;900&family=Mulish:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<link rel="stylesheet" href="css/styles-shared.css">
+<link rel="stylesheet" href="css/styles-fieldguide.css">
+<style>
+/* ── Page-specific overrides ── */
+.main-header{display:flex;align-items:center;gap:.6rem;padding:.5rem 1.5rem;background:rgba(6,9,15,.96);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(8px);flex-wrap:nowrap;}
+.header-logo{font-family:var(--font-hd);font-size:.88rem;font-weight:800;color:var(--text);letter-spacing:.04em;white-space:nowrap;flex-shrink:0;}
+.header-logo em{color:var(--accent);font-style:normal;}
+.header-logo span{color:var(--muted);}
+.utc-clock{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);letter-spacing:.1em;white-space:nowrap;flex-shrink:0;}
+.utc-clock span{margin-left:.2rem;color:var(--border2);font-size:.52rem;letter-spacing:.15em;}
+.header-links{display:flex;align-items:center;gap:.15rem;flex-wrap:nowrap;margin-left:auto;overflow:hidden;}
+.hdr-link{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.06em;color:var(--muted);padding:.28rem .6rem;border-radius:3px;border:1px solid transparent;transition:all .15s;white-space:nowrap;text-decoration:none;}
+.hdr-link:hover{color:var(--text);border-color:var(--border2);background:rgba(255,255,255,.04);}
+.hdr-link.active{color:#fff;border-color:var(--accent);border-bottom:2px solid var(--accent);background:rgba(0,212,240,.08);font-weight:700;cursor:default;pointer-events:none;}
+.hamburger{display:none;background:transparent;border:1px solid var(--border2);color:var(--muted);font-size:1rem;padding:.2rem .5rem;border-radius:3px;cursor:pointer;margin-left:auto;flex-shrink:0;}
+@media(max-width:860px){
+  .hamburger{display:block;}
+  .header-links{display:none;position:absolute;top:100%;right:0;left:0;background:rgba(6,9,15,.98);border-bottom:1px solid var(--border);padding:.6rem 1rem;flex-direction:column;align-items:flex-start;gap:.3rem;z-index:200;}
+  .header-links.open{display:flex;}
+  .hdr-link{font-size:.72rem;padding:.4rem .6rem;width:100%;}
+  .main-header{position:relative;flex-wrap:wrap;}
+}
+.kcgr-shot{max-width:100%;border:1px solid var(--border2);border-radius:4px;display:block;margin:.6rem 0;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════════════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════════════════ -->
+<header class="main-header">
+  <div class="header-logo">
+    <em>Routers &amp; Repeaters</em>
+    <span> · Field Guide</span>
+  </div>
+  <div class="utc-clock" id="utcClock">--:--:-- <span>UTC</span></div>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Toggle navigation">☰</button>
+  <nav class="header-links" id="headerLinks">
+    <a class="hdr-link" href="index.html">Home</a>
+    <a class="hdr-link" href="hamfests.html">Hamfests</a>
+    <a class="hdr-link" href="radio-ref.html">Radio Ref</a>
+    <a class="hdr-link" href="blue-ridge-pkwy.html">Blue Ridge Pkwy</a>
+    <a class="hdr-link" href="tdh9.html">TD-H9 Guide</a>
+    <a class="hdr-link active" href="winlink.html">Winlink &amp; PAT</a>
+    <a class="hdr-link" href="about.html">About</a>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════ -->
+<div class="page-hero" style="background-image:url('images/pnw_light.jpg');">
+  <div class="hero-content">
+    <div class="hero-eyebrow">📖 Field Guide · AA4TE</div>
+    <div class="hero-title"><em>Winlink &amp; PAT</em> — Emergency Digital Messaging</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     GUIDE NAV
+════════════════════════════════════════════════════════ -->
+<div class="guide-nav">
+  <span class="guide-nav-label">Jump to:</span>
+  <a class="guide-nav-link" href="#get-started">① Get Started</a>
+  <a class="guide-nav-link" href="#software">② Pick Your Software</a>
+  <a class="guide-nav-link" href="#first-message">③ First Message</a>
+  <a class="guide-nav-link" href="#file-report">④ File a KCGR Report</a>
+  <a class="guide-nav-link" href="#regional">⑤ Regional Nets</a>
+  <a class="guide-nav-link" href="#national">⑥ National Nets</a>
+  <a class="guide-nav-link" href="#exercises">⑦ Annual Exercises</a>
+  <a class="guide-nav-link" href="#pat-notes">⑧ PAT Notes</a>
+  <a class="guide-nav-link" href="#field-tips">⑨ Field Tips</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════════════ -->
+<div class="guide-content">
+
+  <div class="guide-intro">
+    When normal communications fail, Winlink keeps working. It moves standard ICS forms, welfare messages, and situation reports over RF — no internet required at the field end. This guide gets you from zero to your first check-in, then gives you a directory of recurring nets and exercises to build real readiness. Both <strong>Winlink Express</strong> (Windows) and <strong>PAT</strong> (Linux, Mac, Windows) are treated as first-class options throughout.
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 1 — GET STARTED
+  ────────────────────────────────────────── -->
+  <div class="acc-section" id="get-started">
+    <button class="acc-section-trigger" data-acc="get-started" aria-expanded="true">
+      <span class="acc-section-label">
+        <span class="section-number">1</span>
+        What Is Winlink?
+      </span>
+      <span class="acc-section-chevron">▼</span>
+    </button>
+    <div class="acc-section-body is-open" id="acc-body-get-started">
+
+      <p>Winlink is a worldwide radio messaging system that moves email-style messages and ICS forms over amateur radio frequencies — without requiring the internet at the sending station. A network of gateway stations (RMS nodes) bridges your RF message to the Winlink servers, which forward it to its destination.</p>
+
+      <p>In an emergency, this means a net control station, an EOC, or a served agency can receive structured ICS traffic from field operators even when cell service and the internet are down — as long as someone on each end has a radio and the right software.</p>
+
+      <h3>What you need to get started</h3>
+      <ul>
+        <li>A valid amateur radio license (any class — Technician gives you VHF/UHF access)</li>
+        <li>A radio capable of FM or HF operation</li>
+        <li>A sound-card interface (SignaLink, Digirig, or similar) <em>or</em> a radio with built-in USB audio (IC-7100, IC-7300, many Yaesu mobiles)</li>
+        <li>Winlink Express <em>or</em> PAT installed on your computer</li>
+        <li>A free Winlink account — register at <a href="https://www.winlink.org" target="_blank" rel="noopener">winlink.org</a></li>
+      </ul>
+
+      <div class="tip-box">
+        <strong>Telnet first.</strong> Both Winlink Express and PAT support Telnet mode — messages route over the internet, not RF. It is not a substitute for RF readiness, but it is the fastest way to verify your account, learn the software, and send your first message without needing a sound-card interface.
+      </div>
+
+      <div class="obs-box">
+        <strong>AA4TE field note:</strong> The IC-7100's built-in USB audio and CI-V control make it one of the cleaner setups for Winlink on Linux. No separate sound-card interface, no driver headaches — PAT sees it as a standard audio device. Six years in, still the radio I reach for first.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 2 — SOFTWARE
+  ────────────────────────────────────────── -->
+  <div class="acc-section" id="software">
+    <button class="acc-section-trigger" data-acc="software" aria-expanded="false">
+      <span class="acc-section-label">
+        <span class="section-number">2</span>
+        Pick Your Software
+      </span>
+      <span class="acc-section-chevron">▼</span>
+    </button>
+    <div class="acc-section-body" id="acc-body-software">
+
+      <p>Two mature clients handle the vast majority of Winlink traffic. They use the same network and the same account — your callsign works in either one.</p>
+
+      <div class="software-compare">
+
+        <div class="software-card">
+          <div class="software-card-header">
+            <div class="software-card-name">Winlink Express</div>
+            <div class="software-card-sub">Windows · Free · Most widely deployed</div>
+          </div>
+          <div class="software-card-body">
+            <ul>
+              <li>Native Windows application — well-supported, widely documented</li>
+              <li>Full ICS form library built in</li>
+              <li>Supports VARA FM, VARA HF, PACTOR, Packet, Telnet</li>
+              <li>Required by some nets for specific exercise forms</li>
+              <li>Runs on Wine on Linux (mixed results)</li>
+            </ul>
+          </div>
+          <div class="software-card-footer">
+            <a href="https://www.winlink.org/WinlinkExpress" target="_blank" rel="noopener">Download Winlink Express →</a>
+          </div>
+        </div>
+
+        <div class="software-card pat">
+          <div class="software-card-header">
+            <div class="software-card-name">PAT</div>
+            <div class="software-card-sub">Linux · Mac · Windows · Open source</div>
+          </div>
+          <div class="software-card-body">
+            <ul>
+              <li>Cross-platform — native Linux and Mac support, no Wine needed</li>
+              <li>Browser-based UI — works headless, works over SSH</li>
+              <li>Supports VARA, ARDOP, AX.25 Packet, PACTOR, Telnet</li>
+              <li>Position reporting and P2P listening built in</li>
+              <li>Forms/templates engine in recent releases</li>
+              <li>Some exercise forms require manual construction — see <a href="#pat-notes">PAT Notes</a></li>
+            </ul>
+          </div>
+          <div class="software-card-footer">
+            <a href="https://getpat.io" target="_blank" rel="noopener">getpat.io →</a>
+            &nbsp;·&nbsp;
+            <a href="https://github.com/la5nta/pat/releases" target="_blank" rel="noopener">Releases →</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="warning-box">
+        <strong>Not sure which to start with?</strong> If you run Windows and your ARES group uses Winlink Express, start there — fewer compatibility questions during exercises. If you run Linux or Mac, PAT is the right choice and handles the overwhelming majority of nets and exercises without issue.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 3 — FIRST MESSAGE
+  ────────────────────────────────────────── -->
+  <div class="acc-section" id="first-message">
+    <button class="acc-section-trigger" data-acc="first-message" aria-expanded="false">
+      <span class="acc-section-label">
+        <span class="section-number">3</span>
+        Send Your First Message
+      </span>
+      <span class="acc-section-chevron">▼</span>
+    </button>
+    <div class="acc-section-body" id="acc-body-first-message">
+
+      <p>The fastest path to a first successful message is Telnet — internet-connected, no RF hardware required. Once you have that working, move to VARA FM or Packet over RF.</p>
+
+      <div class="step-block">
+        <h3>Step 1 — Register your callsign</h3>
+        <p>Go to <a href="https://www.winlink.org/user" target="_blank" rel="noopener">winlink.org/user</a> and create a free account using your callsign as the username. Password recovery requires a working email address — use one you check.</p>
+      </div>
+
+      <div class="step-block">
+        <h3>Step 2 — Install your client</h3>
+        <p><strong>Winlink Express:</strong> Download from winlink.org, run the installer, enter your callsign and password on first launch.</p>
+        <p><strong>PAT:</strong> Download the latest release from <a href="https://github.com/la5nta/pat/releases" target="_blank" rel="noopener">github.com/la5nta/pat/releases</a> for your platform. On Linux, extract and run <code>pat configure</code> to set your callsign, password, and locator.</p>
+      </div>
+
+      <div class="step-block">
+        <h3>Step 3 — Send a Telnet check-in</h3>
+        <p>In Winlink Express: Open Message → New Message. Address it to <strong>WINLINK</strong>. Subject: <em>Test</em>. Body: your callsign and grid square. Send via Telnet.</p>
+        <p>In PAT: Open the browser UI at <code>http://localhost:8080</code>. Compose → To: <strong>WINLINK</strong>. Connect via Telnet. Watch the transfer log — a successful session shows sent and received counts.</p>
+      </div>
+
+      <div class="step-block">
+        <h3>Step 4 — Verify delivery</h3>
+        <p>Log in to <a href="https://www.winlink.org" target="_blank" rel="noopener">winlink.org</a> and check your account's message history. A sent message that shows up there means your credentials and network path are working correctly.</p>
+      </div>
+
+      <div class="step-block">
+        <h3>Step 5 — Move to RF</h3>
+        <p>Find a local RMS gateway using the <a href="https://www.winlink.org/RMSChannels" target="_blank" rel="noopener">Winlink channel list</a> or the map at winlink.org. Program the frequency into your radio, configure your sound-card interface or USB audio, and attempt a VARA FM or Packet session. This is where the real readiness lives — Telnet is practice, RF is the mission.</p>
+      </div>
+
+      <div class="obs-box">
+        <strong>AA4TE field note:</strong> Don't wait for an activation to discover your gateway is down or your audio levels are wrong. Run a weekly RF check-in — Original Winlink Wednesday or SC Winlink are both good habits. The first time you need it in the field should not be the first time it works.
+      </div>
+
+      <div class="tip-box">
+        <strong>Ready to put this to work?</strong> If you'd rather practice first without touching the public map, use one of the practice nets in <a href="#field-tips">Field Tips</a> — Original Winlink Wednesday is a good weekly habit and doesn't go anywhere near KCGR-OPS. If you're ready for the real thing, skip straight to <a href="#file-report">Filing a KCGR Report</a> below — a correctly addressed message to KCGR-OPS posts to the live map, no test flag needed.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HUMOR LINE -->
+  <div class="winlink-humor" id="winlinkHumor">
+    The first time Winlink works over RF in the field, you'll understand why you practiced.
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 4 — FILE A KCGR REPORT
+  ────────────────────────────────────────── -->
+  <div class="acc-section" id="file-report">
+    <button class="acc-section-trigger" data-acc="file-report" aria-expanded="false">
+      <span class="acc-section-label">
+        <span class="section-number">4</span>
+        File a KCGR Report
+      </span>
+      <span class="acc-section-chevron">▼</span>
+    </button>
+    <div class="acc-section-body" id="acc-body-file-report">
+
+      <p>Sections ①–③ get you Winlink-capable in general. This section is the local, specific part: filing a real Kershaw County Ground Report (KCGR-RS) over Winlink, addressed to the tactical station <strong>KCGR-OPS</strong>. Everything here works the same whether you're on Telnet or RF — KCGR-OPS doesn't care how the message reached it.</p>
+
+      <div class="tip-box">
+        <strong>Which path do I need?</strong>
+        <ul style="margin:.4rem 0 0;">
+          <li>Have the KCGR form set installed already? → <a href="#kcgr-form-path">Filing with the form</a>, below.</li>
+          <li>First time, in a hurry, or never installed the form? → <a href="#kcgr-noform-path">The no-form / cut-paste path</a> — just as valid, nothing about it is second-best. See the note at the end of this section on why.</li>
+        </ul>
+        <p style="margin:.6rem 0 0;">Both paths work in both Winlink Express and PAT — pick your path first, then find your software inside it.</p>
+      </div>
+
+      <!-- ═══ FORM PATH ═══ -->
+      <h2 id="kcgr-form-path">The Form Path</h2>
+      <p>The KCGR Resource Status form is a real Winlink custom form set — it fills in the same message a no-form report would, just with dropdowns and validation instead of typing labels by hand. It supports up to 3 observations per message.</p>
+
+      <div class="software-compare">
+
+        <div class="software-card">
+          <div class="software-card-header">
+            <div class="software-card-name">Winlink Express</div>
+          </div>
+          <div class="software-card-body">
+            <div class="step-block">
+              <h3>Step 1 — Install the form</h3>
+              <p>Download all the files from <a href="https://github.com/taco40sauce/kcgr-resource-feed/tree/main/winlink_forms" target="_blank" rel="noopener">the KCGR repo's winlink_forms folder</a> and copy them into:</p>
+              <p><code>C:\RMS Express\Global Folders\Templates\KCGR\</code></p>
+            </div>
+            <div class="step-block">
+              <h3>Step 2 — Start a new message</h3>
+              <p>Message → New Message → Select Template, then pick <strong>KCGR Resource Status</strong> from the KCGR folder.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 3 — Fill it out and send</h3>
+              <p>Address it to <strong>KCGR-OPS</strong> yourself — the form's own "Send To" field is a reminder, not the real address. Fill in what you actually observed (see field guide below), leave the rest blank, and send.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="software-card pat">
+          <div class="software-card-header">
+            <div class="software-card-name">PAT</div>
+          </div>
+          <div class="software-card-body">
+            <div class="step-block">
+              <h3>Step 1 — Install the form</h3>
+              <p>Download all the files from <a href="https://github.com/taco40sauce/kcgr-resource-feed/tree/main/winlink_forms" target="_blank" rel="noopener">the KCGR repo's winlink_forms folder</a> and copy them into:</p>
+              <p><code>~/.local/share/pat/Standard_Forms/kcgr_forms/</code></p>
+              <p>(Create the <code>kcgr_forms</code> folder if it doesn't already exist.)</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 2 — Start a new message</h3>
+              <p>Action → Compose..., then <strong>Template…</strong> in the compose window.</p>
+              <img class="kcgr-shot" src="win_images/pat-compose-blank.png" alt="PAT's blank New Message window with To, Cc, Subject fields and a Template… button">
+              <p>Open the <code>kcgr_forms</code> folder and select <strong>KCGR_ResourceStatus</strong>.</p>
+              <img class="kcgr-shot" src="win_images/pat-template-picker.png" alt="PAT's template picker showing the KCGR_ResourceStatus form inside the kcgr_forms folder">
+            </div>
+            <div class="step-block">
+              <h3>Step 3 — Fill it out</h3>
+              <p>The form opens in your browser, pre-filled with your callsign and the current time. Fill in what you observed, leave the rest blank.</p>
+              <img class="kcgr-shot" src="win_images/pat-entryform-blank.png" alt="The real KCGR Resource Status entry form rendered in a browser via PAT, showing all fields blank">
+            </div>
+            <div class="step-block">
+              <h3>Step 4 — Submit and send</h3>
+              <p>Click <strong>Submit</strong> at the bottom of the form. It closes the browser tab and drops the filled-in report into PAT's compose window as the message body. Check that <strong>To:</strong> shows <strong>KCGR-OPS</strong> — add it yourself if the field is empty — then click <strong>Post</strong> to send.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="obs-box">
+        <strong>AA4TE field note:</strong> Here's Report 1 filled out for a real scenario — the Elgin BP on Hwy 1 has fuel, pumps running, but there's a line. Category, Status, and a 2-letter Specifier are the fields that matter most; Notes is free text.
+        <img class="kcgr-shot" src="win_images/pat-entryform-filled.png" alt="KCGR entry form Report 1 block filled out: Category KCGR-FUEL, Status OP, Specifier PP, Location Elgin BP Hwy1, with notes about pumps running">
+      </div>
+
+      <p><strong>Category codes:</strong> KCGR-SHLT (shelter) · KCGR-MED (medical) · KCGR-ROAD (road/bridge) · KCGR-H2O (potable water) · KCGR-FOOD (food/grocery) · KCGR-FUEL (fuel) · KCGR-PWR (power/charging) · KCGR-CELL (cell signal) · KCGR-ATM (financial access) · KCGR-HW (health &amp; welfare relay)</p>
+      <p><strong>Status codes:</strong> OP (open/operational) · CL (closed) · LM (limited) · CA (caution — accessible but hazardous) · UK (unknown/not directly observed)</p>
+      <p>Specifier is a 2-letter code specific to your category — keep your KCGR Quick Reference card handy for that list rather than memorizing it here.</p>
+
+      <!-- ═══ NO-FORM PATH ═══ -->
+      <h2 id="kcgr-noform-path">The No-Form / Cut-Paste Path</h2>
+      <p>No form installed? No problem — the parser reads the message by its section headers and field labels, not by which software sent it. Get those two things typed exactly right and it works identically to a message sent from the real form.</p>
+
+      <div class="software-compare">
+
+        <div class="software-card">
+          <div class="software-card-header">
+            <div class="software-card-name">Winlink Express</div>
+          </div>
+          <div class="software-card-body">
+            <div class="step-block">
+              <h3>Step 1 — New plain message</h3>
+              <p>Message → New Message. <strong>Do not</strong> select a template.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 2 — Address it</h3>
+              <p>To: <strong>KCGR-OPS</strong>. Subject must contain <strong>KCGR-RS</strong> — e.g. <code>KCGR-RS - YOURCALL - 2026-09-26</code>.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 3 — Paste and fill</h3>
+              <p>Copy the template below into the message body, fill in the blanks, send.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="software-card pat">
+          <div class="software-card-header">
+            <div class="software-card-name">PAT</div>
+          </div>
+          <div class="software-card-body">
+            <div class="step-block">
+              <h3>Step 1 — New plain message</h3>
+              <p>Action → Compose... <strong>Skip</strong> the Template… button entirely.</p>
+            </div>
+            <div class="step-block">
+              <h3>Step 2 — Address it and paste</h3>
+              <p>To: <strong>KCGR-OPS</strong>. Subject must contain <strong>KCGR-RS</strong>. Paste the template below into the body and fill in the blanks.</p>
+              <img class="kcgr-shot" src="win_images/pat-noform-composed.png" alt="PAT compose window addressed to KCGR-OPS, subject KCGR-RS - AA4TE - 2026-09-16, with the plain-text KCGR report template pasted into the body">
+            </div>
+            <div class="step-block">
+              <h3>Step 3 — Send it</h3>
+              <p>Click <strong>Post</strong> in the compose window toolbar.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <p><strong>Copy this block and fill in the blanks:</strong></p>
+      <pre style="background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:4px;padding:.8rem 1rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.5;">KERSHAW COUNTY GROUND REPORT -- RESOURCE STATUS (KCGR-RS)
+==========================================================
+
+--- REPORTER INFO ---
+Reporter Callsign: YOUR_CALLSIGN
+Date of Observation: YYYY-MM-DD
+Time of Observation: HHMM
+
+--- REPORT 1 ---
+Category: KCGR-___
+Status: __
+Specifier: __
+Location:
+Date:
+Time:
+Notes:
+Latitude:
+Longitude: </pre>
+
+      <p><strong>Worked example</strong> — the same Elgin BP fuel report from above, written by hand:</p>
+      <pre style="background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:4px;padding:.8rem 1rem;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.5;">KERSHAW COUNTY GROUND REPORT -- RESOURCE STATUS (KCGR-RS)
+==========================================================
+
+--- REPORTER INFO ---
+Reporter Callsign: AA4TE
+Date of Observation: 2026-09-16
+Time of Observation: 1430
+
+--- REPORT 1 ---
+Category: KCGR-FUEL
+Status: OP
+Specifier: PP
+Location: Elgin BP Hwy1
+Date: 16
+Time: 1430
+Notes: Pumps running, cash only, line out to the road.
+Latitude: 34.171358
+Longitude: -80.790513</pre>
+
+      <p>Reporting more than one thing? Copy a second <code>--- REPORT 2 ---</code> block underneath (same field labels), up to REPORT 3. Skip blocks you're not using — no empty placeholders needed.</p>
+
+      <div class="obs-box">
+        <strong>AA4TE field note — if you get this wrong, it still makes it to an operator via email.</strong> Missing something in this format won't make a report vanish silently:
+        <ul style="margin:.4rem 0 0;">
+          <li>Getting <strong>everything correct</strong> puts the information <strong>on the map automatically</strong>.</li>
+          <li>Leave <strong>Category</strong> blank, and that report block is just skipped — not an error, as if it wasn't sent.</li>
+          <li>Fill in a <strong>Category</strong> that isn't a real code, and it still publishes — flagged for a human to clean up, never dropped.</li>
+          <li>Leave <strong>Status</strong> blank or get it wrong, and it auto-publishes as <code>UK - unknown</code> instead of being rejected.</li>
+          <li>Everything else — Specifier, Location, Date, Time, Notes, coordinates — is optional. Blank is fine.</li>
+          <li><strong>Latitude and Longitude</strong> — is optional. However, it's preferred <strong>so an operator can more easily pinpoint the location on the map</strong>.'.</li>
+        </ul>
+        <p style="margin:.6rem 0 0;">This isn't a loophole in the system — it's the design. KCGR-RS is built for the operator who's never been trained on the format, not just the one who has. An imperfect report that gets through beats a perfect one that never gets sent.</p>
+      </div>
+
+      <h3>Quick FAQ</h3>
+      <div class="acc-setting">
+        <button class="acc-setting-trigger" data-acc="kcgr-faq-case" aria-expanded="false">
+          <span class="acc-setting-label">Does capitalization matter?</span>
+          <span class="acc-setting-chevron">▼</span>
+        </button>
+        <div class="acc-setting-body" id="acc-setting-body-kcgr-faq-case">
+          <p>No — the parser doesn't care about upper or lower case. That said, typing in ALL CAPS is a long-standing ham radio traffic-handling habit worth keeping: easier to read at a glance, especially copying by hand or squinting at a screen under stress. Not required, no downside either.</p>
+        </div>
+      </div>
+      <div class="acc-setting">
+        <button class="acc-setting-trigger" data-acc="kcgr-faq-headers" aria-expanded="false">
+          <span class="acc-setting-label">Can I reword the section headers or field labels?</span>
+          <span class="acc-setting-chevron">▼</span>
+        </button>
+        <div class="acc-setting-body" id="acc-setting-body-kcgr-faq-headers">
+          <p>No — <code>--- REPORTER INFO ---</code>, <code>--- REPORT 1 ---</code>, and labels like <code>Category:</code> are the literal text the automated parser searches for. Everything after the colon is yours to write freely. Everything before it has to match exactly.</p>
+        </div>
+      </div>
+      <div class="acc-setting">
+        <button class="acc-setting-trigger" data-acc="kcgr-faq-coords" aria-expanded="false">
+          <span class="acc-setting-label">I don't have exact coordinates — is that a problem?</span>
+          <span class="acc-setting-chevron">▼</span>
+        </button>
+        <div class="acc-setting-body" id="acc-setting-body-kcgr-faq-coords">
+          <p>Not a problem — Latitude/Longitude are optional. Leave them blank and the report still publishes, placed by the Location free text instead. If you do have real decimal-degree coordinates, they place the pin more precisely on the map.</p>
+        </div>
+      </div>
+      <div class="acc-setting">
+        <button class="acc-setting-trigger" data-acc="kcgr-faq-many" aria-expanded="false">
+          <span class="acc-setting-label">I have more than 3 things to report — what do I do?</span>
+          <span class="acc-setting-chevron">▼</span>
+        </button>
+        <div class="acc-setting-body" id="acc-setting-body-kcgr-faq-many">
+          <p>Send a second message rather than waiting to cram everything into one. Three report blocks per message is the limit either way.</p>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <strong>KC4RC Tier 1 operators:</strong> this section doubles as the walkthrough for the club's Tier 1 qualification — orientation plus one real filed test report. (That's a separate thing from the form's own "Reporter Tier" field, which is about how much a given report is trusted, not club status — worth keeping those two straight.)
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 5 — REGIONAL NETS
+  ────────────────────────────────────────── -->
+  <div class="acc-section" id="regional">
+    <button class="acc-section-trigger" data-acc="regional" aria-expanded="false">
+      <span class="acc-section-label">
+        <span class="section-number">5</span>
+        Regional Nets — SC &amp; Southeast
+      </span>
+      <span class="acc-section-chevron">▼</span>
+    </button>
+    <div class="acc-section-body" id="acc-body-regional">
+
+      <p>Start here if you're in the Carolinas or Georgia. These nets are close enough to have RF path relevance and local ARES coordination value.</p>
+
+      <div class="activity-grid">
+
+        <div class="activity-card regional">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">South Carolina · ARES</div>
+            <div class="activity-card-name">Winlink Wednesday</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Weekly · Wednesday</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+
+
+          <div class="activity-card-body">
+            Participation in Original Winlink Wednesday, coordinated by<strong>David Ellis, KN4LQN</strong>. Uses the standard Winlink Wednesday check-in format-ICS213. <strong>Note:</strong> Learning to use Winlink with Telnet is acceptable. The current Original Winlink Wednesday instructions ask for RF. Learn to use the program, then make it a point to use RF.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Send to: <strong>WW-SC</strong></span>
+            <a class="activity-card-link" href="https://winlinkwednesday.net" target="_blank" rel="noopener">WinlinkWednesday.net →</a>
+          </div>
+        </div>
+
+        <div class="activity-card regional">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">Georgia · ARES</div>
+            <div class="activity-card-name">Georgia ARES Weekly Winlink Net</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Weekly · statewide map updated through Aug 2026</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Active statewide net using the standard Winlink Check-In form. Map is updated weekly — good signal that the net is actively managed. Open to operators across the Southeast.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">See current net notice for tactical address</span>
+            <a class="activity-card-link" href="https://www.gaares.org/" target="_blank" rel="noopener">GA ARES →</a>
+          </div>
+        </div>
+
+        <div class="activity-card regional">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">Georgia · DeKalb County ARES</div>
+            <div class="activity-card-name">DeKalb County Sunday Winlink Net</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Weekly · Sunday</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            One of the few recurring nets that explicitly accepts <strong>APRSLink</strong> check-ins alongside standard Winlink and VarAC VMAIL. Makes it directly relevant if you run APRS alongside your Winlink setup — the two skills reinforce each other here in a way most nets don't accommodate.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">See net page for current tactical address</span>
+            <a class="activity-card-link" href="https://dekalbares.org/nets/" target="_blank" rel="noopener">DeKalb ARES →</a>
+          </div>
+        </div>
+
+        <div class="activity-card regional">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">North Carolina · Brunswick County EmComm</div>
+            <div class="activity-card-name">Brunswick County EmComm Exercises</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Numbered exercises — self-paced</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Self-contained numbered training assignments, each covering a specific skill. Recent exercises include Field Day ICS-213 traffic and finding alternative RMS gateways when your normal gateway fails. That last topic is one most operators never practice until they need it.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Exercises are standalone — no tactical address</span>
+            <a class="activity-card-link" href="https://n4gm.org/emergency-comms/winlink/exercise-020/" target="_blank" rel="noopener">Example: Exercise 020 →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 6 — NATIONAL NETS
+  ────────────────────────────────────────── -->
+  <div class="acc-section" id="national">
+    <button class="acc-section-trigger" data-acc="national" aria-expanded="false">
+      <span class="acc-section-label">
+        <span class="section-number">6</span>
+        National &amp; Open Nets
+      </span>
+      <span class="acc-section-chevron">▼</span>
+    </button>
+    <div class="acc-section-body" id="acc-body-national">
+
+      <p>All of the following nets are open to any licensed amateur regardless of location. No ARES affiliation required unless noted.</p>
+
+      <div class="activity-grid">
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">National · Flagship</div>
+            <div class="activity-card-name">Original Winlink Wednesday</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Weekly · Wednesday</span>
+              <span class="pat-badge caution">⚠ PAT — RF required</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Started by <strong>Greg Butler, KW6GB</strong> in August 2016 — the original and most widely participated recurring Winlink net. Current operations handled by <strong>David Elkins, KN4LQN</strong>; mapping by <strong>KW4SHP</strong>. First Wednesday of the month: weather snapshot. Third Wednesday: ICS-213. HF peer-to-peer sessions also available. Century Club certificate after 100 consecutive weeks.
+            <br><br>
+            <strong>RF is expected</strong> — the net's current instructions explicitly ask that messages leave your station over the air, not Telnet. Good motivation to get your RF path working before you need it.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">See net page for current tactical address</span>
+            <a class="activity-card-link" href="https://winlinkwednesday.net/" target="_blank" rel="noopener">winlinkwednesday.net →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">National · Structured Training</div>
+            <div class="activity-card-name">ETO Winlink Thursdays</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Weekly · Thursday</span>
+              <span class="pat-badge caution">⚠ PAT — some exercises Express-only</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            The most structured national training program. In 2026 the rotation runs: 1st Thursday — ICS-213, 2nd — ICS-213 Resource Request, 3rd — custom skill exercise, 4th — ICS-205, 5th — Field Situation Report. Entries receive <strong>field-by-field feedback</strong> and appear on published maps. Open to operators with no ARES affiliation.
+            <br><br>
+            ETO explicitly warns that PAT users are "on their own" for certain import-and-reply exercises — Winlink Express is recommended for those assignments. For standard ICS forms, PAT works fine.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Address varies by week — see net page</span>
+            <a class="activity-card-link" href="https://emcomm-training.org/Winlink_Thursdays.html" target="_blank" rel="noopener">ETO Winlink Thursdays →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">National · Scored · Multi-mode</div>
+            <div class="activity-card-name">Weekly WinLink With KE7ADD</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Mon–Sat · closes 5 PM Pacific</span>
+              <span class="pat-badge caution">⚠ PAT — confirm scoring with KE7ADD</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Launched August 2026. The most elaborate scoring structure of any recurring net: Telnet earns 1 point, VARA FM 2–3, Packet 3, APRSLink 4, HF Winlink 5. Portable/mobile and emergency-power operation earn bonuses. First-time mode bonus available. Monthly <strong>Mode Bingo</strong> includes P2P, packet, ICS forms, portable operation, and emergency power.
+            <br><br>
+            Scores appear on a public leaderboard. PAT users should contact <strong>Chip, KE7ADD</strong> to confirm whether a manually constructed message receives full scoring credit — custom form installations are currently documented for Winlink Express and RadioMail only.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Send to: <strong>KE7ADD</strong></span>
+            <a class="activity-card-link" href="https://ke7add.us/weekly-winlink-with-ke7add/" target="_blank" rel="noopener">KE7ADD Net Rules →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">National · Word Game</div>
+            <div class="activity-card-name">HAMWORD</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Daily · resets 0000 UTC Monday</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Created by <strong>Mark Kleine, N5HZR</strong>. Send a five-letter guess to the tactical address <strong>HAMWORD</strong> — the automated system responds within 15 minutes with the Wordle-equivalent result (correct letter, wrong position, not in word). Six guesses per week. The word changes every Monday at 0000 UTC.
+            <br><br>
+            Low stakes, quick turnaround, works perfectly in PAT. An easy way to keep your RF path exercised between more structured nets.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Send to: <strong>HAMWORD</strong></span>
+            <a class="activity-card-link" href="https://winlink.org/content/play_hamword" target="_blank" rel="noopener">HAMWORD Instructions →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">National · EmComm Training</div>
+            <div class="activity-card-name">Iowa ARES Winlink Weekend</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Every Saturday &amp; Sunday · open to all</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Rotates through forms and realistic scenarios. Accepts RMS, P2P, and beginner Telnet submissions — one of the few nets that explicitly welcomes Telnet as a stepping stone rather than discouraging it. Recent exercises included Field Day planning with an ICS-213.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Send to: <strong>WB0GAG</strong></span>
+            <a class="activity-card-link" href="https://iowawinlink.net/Saturday.php" target="_blank" rel="noopener">Iowa Winlink Weekend →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">Maryland–DC · Multi-mode EmComm</div>
+            <div class="activity-card-name">Maryland–DC Digital EMCOMM Challenge</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Monthly · Thu–Sun before 2nd Tuesday</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Run by <strong>Bill Smith, N3XL</strong>. Internet-down simulations using Winlink, VarAC, and fldigi — not Winlink-only, which makes it more realistic for actual activations. Activities include P2P relays, image reduction, weather reports, and message forwarding. Participants from outside Maryland–DC have been accepted, including operators from Alabama, Florida, NC, Canada, and Paraguay. Send a Winlink request to <strong>MDCWINLINK-1</strong> to join its distribution.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Request via: <strong>MDCWINLINK-1</strong></span>
+            <a class="activity-card-link" href="https://k3jsj.net/MdcEmcomm/" target="_blank" rel="noopener">MDC EMCOMM Challenge →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">Kentucky · Weekly</div>
+            <div class="activity-card-name">Kentucky Winlink Net</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Weekly · notices current through Aug 2026</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Combines RMS and HF P2P, a detailed check-in form, portable or backup-power experiments, JS8Call signal checks, and an amateur-radio trivia question. Instructions change weekly — use the current net notice rather than a cached version.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">See current notice for tactical address</span>
+            <a class="activity-card-link" href="https://groups.google.com/g/kentucky-winlink-net" target="_blank" rel="noopener">Kentucky Winlink Net →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">Great Lakes · NTS-Affiliated</div>
+            <div class="activity-card-name">Great Lakes Area Winlink Net — GLAWN</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Weekly · outside Great Lakes welcomed</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            An NTS-affiliated net that accepts a required plain-text record inside an ordinary message or nearly any Winlink form. Sometimes adds optional exercises on top of the standard check-in. The plain-text acceptance makes it one of the most PAT-friendly nets available.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Send to: <strong>GLAWN</strong></span>
+            <a class="activity-card-link" href="https://mi-arpsc.org/net/glawn/" target="_blank" rel="noopener">GLAWN →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">Florida · Multi-mode</div>
+            <div class="activity-card-name">Florida Winlink Net — W4AKH</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Check-ins all week · reports close Tuesday AM</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Emphasizes experimenting with different modes, daily P2P opportunities, mapping, and reporting whether a station used battery, generator, or solar power. That power-source reporting makes it particularly useful for testing emergency power setups — relevant if you run the IC-7100 on battery or solar.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">See net page for current tactical address</span>
+            <a class="activity-card-link" href="https://w4akh.net/" target="_blank" rel="noopener">Florida Winlink Net →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">North Texas · Wednesday</div>
+            <div class="activity-card-name">North Texas Winlink Wednesday</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">1st &amp; 3rd Wednesdays · any licensed amateur</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Explicitly supports programs other than Winlink Express. Publishes the tab-delimited message format so PAT users can compose the required data manually — one of the most PAT-friendly nets that uses structured data. The published format makes it easy to build a template.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">See net page for current tactical address</span>
+            <a class="activity-card-link" href="https://sites.google.com/view/winlink-wednesday-ntx/home" target="_blank" rel="noopener">NTX Winlink Wednesday →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">National · Weekly</div>
+            <div class="activity-card-name">W0NE Weekly Winlink Net</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Weekly</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            A simple one-line check-in is always accepted. Several weeks each month add exercises covering other Winlink features. Good beginner-to-intermediate progression — the low floor makes it accessible, the optional exercises give it longevity.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">See net page for current tactical address</span>
+            <a class="activity-card-link" href="https://w0ne.org/weekly-w0ne-winlink-net/" target="_blank" rel="noopener">W0NE Winlink Net →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">National · East Coast</div>
+            <div class="activity-card-name">East Coast Winlink Net</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Week-long check-in windows</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Accepts either a simple message or a form, with changing weekly tasks. Was appearing in 2026 regional exercise notices. The published instruction sheet is older — confirm current format before participating.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Send to: <strong>EAST-COAST</strong></span>
+            <a class="activity-card-link" href="https://w4akh.net/docs/44.D.txt" target="_blank" rel="noopener">East Coast Net Info →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">American Legion Post 42</div>
+            <div class="activity-card-name">AMLEGNELCO Post 42 Net</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Tuesday through Sunday</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            American Legion Post 42's net changes its requested task from week to week. Longer check-in window than most nets — six days gives operators flexibility to find RF path time. The linked net directory carries the current basic format.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Send to: <strong>AMLEGNELCO</strong></span>
+            <a class="activity-card-link" href="https://kb9orn.org/winlink-nets/" target="_blank" rel="noopener">Net Directory →</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="tip-box">
+        <strong>Best maintained directory:</strong> The <a href="https://kb9orn.org/winlink-nets/" target="_blank" rel="noopener">Dane and Iowa County ARES Winlink-net list</a> is the closest thing to a maintained central directory. It includes HAMWORD, Florida, AMLEGNELCO, Original Winlink Wednesday, Ohio, Wisconsin, GLAWN, and others.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 7 — ANNUAL EXERCISES
+  ────────────────────────────────────────── -->
+  <div class="acc-section" id="exercises">
+    <button class="acc-section-trigger" data-acc="exercises" aria-expanded="false">
+      <span class="acc-section-label">
+        <span class="section-number">7</span>
+        Annual Exercises
+      </span>
+      <span class="acc-section-chevron">▼</span>
+    </button>
+    <div class="acc-section-body" id="acc-body-exercises">
+
+      <p>Two exercises are considerably more ambitious than a weekly net. Both involve realistic ground-report scenarios and are worth calendaring well in advance.</p>
+
+      <div class="exercise-grid">
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">Annual · October · Worldwide</div>
+            <div class="activity-card-name">Great ShakeOut Winlink Exercise</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Oct 10–19, 2026 · centered on Oct 15</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            Operators submit a simulated USGS "Did You Feel It?" report through Winlink, complete a preparedness survey, and answer a quiz. Genuine ground-report practice tied to the international ShakeOut earthquake drill. The scenario has direct parallels with KCGR-type deployments — you're reporting field conditions through a digital channel, same as an activation.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Instructions published on net page before event</span>
+            <a class="activity-card-link" href="https://www.laxnortheast.org/exercises/shakeout" target="_blank" rel="noopener">2026 ShakeOut Exercise →</a>
+          </div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-card-header">
+            <div class="activity-card-eyebrow">Annual · Worldwide</div>
+            <div class="activity-card-name">Amateur Radio Tsunami Exercise</div>
+            <div class="activity-card-meta">
+              <span class="activity-card-schedule">Ran 2025 &amp; 2026 · watch for 2027 announcement</span>
+              <span class="pat-badge ok">✅ PAT OK</span>
+            </div>
+          </div>
+          <div class="activity-card-body">
+            The 2026 version involved eight tasks and seven Winlink messages: ICS-214 logging, check-in and check-out, USGS reporting, welfare traffic, and general-message work. Included public mapping and participation from American, Austrian, and German Winlink groups. The most internationally coordinated recurring Winlink exercise available.
+          </div>
+          <div class="activity-card-footer">
+            <span class="activity-card-tactical">Watch laxnortheast.org for 2027 announcement</span>
+            <a class="activity-card-link" href="https://www.laxnortheast.org/exercises/tsunami" target="_blank" rel="noopener">2026 Tsunami Exercise →</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 8 — PAT NOTES
+  ────────────────────────────────────────── -->
+  <div class="acc-section" id="pat-notes">
+    <button class="acc-section-trigger" data-acc="pat-notes" aria-expanded="false">
+      <span class="acc-section-label">
+        <span class="section-number">8</span>
+        PAT Compatibility Notes
+      </span>
+      <span class="acc-section-chevron">▼</span>
+    </button>
+    <div class="acc-section-body" id="acc-body-pat-notes">
+
+      <div class="pat-notice">
+        <div class="pat-notice-label">📡 PAT on Linux &amp; Mac</div>
+        <div class="pat-notice-text">
+          Modern PAT is more capable than a good deal of older internet advice suggests. It supports VARA, ARDOP, AX.25, PACTOR, Telnet, position reporting, simultaneous P2P listening, a forms/templates engine, form catalog, attachments, and a text-template editor. The advice to "just use Winlink Express" often dates from 2018–2020 and doesn't reflect current PAT capability.
+        </div>
+      </div>
+
+      <h3>Works cleanly in PAT</h3>
+      <ul>
+        <li>HAMWORD — plain text message, immediate response</li>
+        <li>Standard Original Winlink Wednesday check-ins</li>
+        <li>GLAWN plain-text check-ins</li>
+        <li>East Coast simple messages</li>
+        <li>W0NE standard check-ins</li>
+        <li>North Texas — use the published tab-delimited format</li>
+        <li>Any exercise requesting ordinary text or an ordinary attachment</li>
+        <li>Iowa ARES Winlink Weekend — Telnet explicitly accepted</li>
+        <li>ShakeOut and Tsunami exercises — standard Winlink message format</li>
+      </ul>
+
+      <h3>Use with caution — test before the deadline</h3>
+
+      <div class="warning-box">
+        <strong>ETO Winlink Thursdays</strong> explicitly warns that alternative-client users are "on their own" for certain import-and-reply exercises. Winlink Express is recommended for those specific assignments. Standard ICS-213 and ICS-205 submission works fine in PAT.
+      </div>
+
+      <div class="warning-box">
+        <strong>KE7ADD Weekly WinLink</strong> publishes custom-form installation instructions for Winlink Express and RadioMail. The pipe-delimited text record is shown on the net page — contact <strong>Chip, KE7ADD</strong> directly to confirm whether a manually constructed PAT message receives full scoring credit before your first submission.
+      </div>
+
+      <div class="tip-box">
+        <strong>Standard ICS forms in PAT</strong> generally work, but a locally modified form or an exercise requiring an exact XML attachment should be tested before the deadline. PAT's form catalog has grown substantially — check current release notes before assuming a form isn't available.
+      </div>
+
+      <h3>Telnet policy varies</h3>
+      <p>Some nets accept Telnet specifically to help beginners. Original Winlink Wednesday currently wants the message to leave your station by RF. Check the current week's net notice — don't assume last month's policy still applies.</p>
+
+      <div class="obs-box">
+        <strong>AA4TE on the IC-7100 + PAT:</strong> The combination works well on Linux. USB audio and CI-V control both route through the same cable. PAT sees the radio as a standard audio device — no separate SignaLink, no FTDI driver issues. VARA FM through the IC-7100's built-in soundcard is stable and fast. If you're setting this up for the first time, start with PAT's Telnet mode, then add VARA FM once the account and software are confirmed working.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 9 — FIELD TIPS
+  ────────────────────────────────────────── -->
+  <div class="acc-section" id="field-tips">
+    <button class="acc-section-trigger" data-acc="field-tips" aria-expanded="false">
+      <span class="acc-section-label">
+        <span class="section-number">9</span>
+        Field Tips
+      </span>
+      <span class="acc-section-chevron">▼</span>
+    </button>
+    <div class="acc-section-body" id="acc-body-field-tips">
+
+      <div class="acc-setting">
+        <button class="acc-setting-trigger" data-acc="tip-rf" aria-expanded="false">
+          <span class="acc-setting-label">Use Telnet to learn. Use RF to prepare.</span>
+          <span class="acc-setting-chevron">▼</span>
+        </button>
+        <div class="acc-setting-body" id="acc-setting-body-tip-rf">
+          <p>Telnet is the right place to learn the software, verify your account, and understand how Winlink messaging works. It is not emergency communications practice. When the internet is down, Telnet is down. Build your RF path — VARA FM, Packet, or HF — and exercise it regularly. Your local RMS gateway, your audio levels, and your antenna are the things that matter in an activation.</p>
+        </div>
+      </div>
+
+      <div class="acc-setting">
+        <button class="acc-setting-trigger" data-acc="tip-gateway" aria-expanded="false">
+          <span class="acc-setting-label">Know your backup gateway before you need it.</span>
+          <span class="acc-setting-chevron">▼</span>
+        </button>
+        <div class="acc-setting-body" id="acc-setting-body-tip-gateway">
+          <p>Most operators use one RMS gateway and have never tried another. Gateways go offline — hardware fails, operators relocate, power goes out. Know at least two gateways you can reach from your normal operating position, on different bands if possible. The Brunswick County EmComm exercises include a specific drill on finding an alternative gateway when your normal one fails. It's worth practicing.</p>
+        </div>
+      </div>
+
+      <div class="acc-setting">
+        <button class="acc-setting-trigger" data-acc="tip-forms" aria-expanded="false">
+          <span class="acc-setting-label">Learn the forms your served agency actually uses.</span>
+          <span class="acc-setting-chevron">▼</span>
+        </button>
+        <div class="acc-setting-body" id="acc-setting-body-tip-forms">
+          <p>ICS-213 is the workhorse, but your county ARES or served agency may require ICS-214, ICS-205, or a custom form. Find out which forms matter in your jurisdiction and practice them under the ETO Thursdays rotation — ETO covers ICS-213, ICS-213 Resource Request, ICS-205, and Field Situation Reports in a four-week cycle. Field-by-field feedback from ETO will show you errors you didn't know you were making.</p>
+        </div>
+      </div>
+
+      <div class="acc-setting">
+        <button class="acc-setting-trigger" data-acc="tip-power" aria-expanded="false">
+          <span class="acc-setting-label">Test your emergency power setup before an activation.</span>
+          <span class="acc-setting-chevron">▼</span>
+        </button>
+        <div class="acc-setting-body" id="acc-setting-body-tip-power">
+          <p>The Florida Winlink Net tracks power source in check-in reports — battery, generator, or solar. That field exists because power source matters in emergency ops. Run at least one Winlink session per month from battery power. Know how long your battery lasts at your normal transmit duty cycle. If you run solar, know what happens when the cloud cover drops your panel output mid-session.</p>
+        </div>
+      </div>
+
+      <div class="acc-setting">
+        <button class="acc-setting-trigger" data-acc="tip-priority" aria-expanded="false">
+          <span class="acc-setting-label">Recommended priority for SC-area operators.</span>
+          <span class="acc-setting-chevron">▼</span>
+        </button>
+        <div class="acc-setting-body" id="acc-setting-body-tip-priority">
+          <p>If you're in South Carolina and building a Winlink practice routine from scratch, this order works well:</p>
+          <ol>
+            <li><strong>Original Winlink Wednesday</strong> over RF — baseline weekly RF readiness.</li>
+            <li><strong>HAMWORD</strong> — easy PAT test, quick feedback, keeps the RF path exercised between bigger nets.</li>
+            <li><strong>KE7ADD Weekly WinLink</strong> — rewards APRSLink, different modes, portable operation, and emergency power. Aligns well with KCGR-type deployments.</li>
+            <li><strong>ETO Winlink Thursdays</strong> — structured form accuracy with feedback. Use Winlink Express for the import-and-reply exercises if you run PAT.</li>
+            <li><strong>October ShakeOut</strong> — realistic ground-report practice, international participation, direct parallel with KCGR field operations.</li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /.guide-content -->
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER — v6.1.2 block — update version stamp per page
+════════════════════════════════════════════════════════ -->
+<footer>
+
+  <div class="footer-nav-row">
+    <div class="footer-left"><em>Routers &amp; Repeaters</em> &middot; routersandrepeaters.net</div>
+    <div class="footer-links">
+      <a class="footer-link" href="index.html">Home</a>
+      <a class="footer-link" href="hamfests.html">Hamfests</a>
+      <a class="footer-link" href="radio-ref.html">Radio Ref</a>
+      <a class="footer-link" href="blue-ridge-pkwy.html">Blue Ridge Pkwy</a>
+      <a class="footer-link" href="tdh9.html">TD-H9 Guide</a>
+      <a class="footer-link" href="winlink.html">Winlink &amp; PAT</a>
+      <a class="footer-link" href="about.html">About</a>
+      <a class="footer-link" href="https://www.arrl.org/hamfests-and-conventions-calendar" target="_blank" rel="noopener">Hamfest Search</a>
+      <a class="footer-link" href="about.html#contact">&#128236; Contact</a>
+    </div>
+  </div>
+
+  <div class="footer-attr-row">
+    <span>Operator: <a href="https://www.qrz.com/db/AA4TE" target="_blank" rel="noopener">AA4TE &middot; QRZ</a></span>
+    <span>&middot;</span>
+    <span><a href="https://cascade.flights" target="_blank" rel="noopener">cascade.flights</a></span>
+    <span>&middot;</span>
+    <span>Free ham hosting: <a href="https://www.qsl.net" target="_blank" rel="noopener">QSL.net</a></span>
+    <span style="margin-left:auto;display:flex;gap:1rem;flex-wrap:wrap;">
+      <a class="footer-util" href="privacy.html">Your Privacy</a>
+      <a class="footer-util" href="advertise.html">Advertise</a>
+    </span>
+  </div>
+
+  <div class="footer-search-row">
+    Also findable on &nbsp;
+    <a href="https://duckduckgo.com/?q=routersandrepeaters.net" target="_blank" rel="noopener">DuckDuckGo</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://freespoke.com/search?q=routersandrepeaters.net" target="_blank" rel="noopener">Freespoke</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://kagi.com/search?q=routersandrepeaters.net" target="_blank" rel="noopener">Kagi&nbsp;($)</a>
+    &nbsp;&mdash;&nbsp;search engines that don&rsquo;t track you.
+  </div>
+
+  <div class="footer-humor" id="footerHumor">73 de AA4TE &middot; Keep the rubber side down and the SWR low.</div>
+
+  <div class="footer-version">winlink.html · v1.0.0 · AA4TE</div>
+
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════════════════ -->
+<script src="js/site.js" defer></script>
+<script src="js/taglines.js" defer></script>
+<script src="js/fieldguide.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  /* ── Footer humor: cycles from TAGLINES every 18 seconds ── */
+  var footerEl = document.getElementById('footerHumor');
+  if (footerEl && typeof TAGLINES !== 'undefined' && TAGLINES.length) {
+    var idx = Math.floor(Math.random() * TAGLINES.length);
+    footerEl.textContent = TAGLINES[idx];
+    setInterval(function () {
+      idx = (idx + 1) % TAGLINES.length;
+      footerEl.style.opacity = '0';
+      setTimeout(function () {
+        footerEl.textContent = TAGLINES[idx];
+        footerEl.style.transition = 'opacity 1s';
+        footerEl.style.opacity = '1';
+      }, 600);
+    }, 18000);
+  }
+
+  /* ── Winlink humor: picks one line from GEAR_TAGLINES on load ── */
+  /* Using GEAR_TAGLINES as a temporary pool — replace with a
+     WINLINK_TAGLINES array in taglines.js when that list is ready */
+  var humorEl = document.getElementById('winlinkHumor');
+  if (humorEl && typeof GEAR_TAGLINES !== 'undefined' && GEAR_TAGLINES.length) {
+    humorEl.textContent = GEAR_TAGLINES[Math.floor(Math.random() * GEAR_TAGLINES.length)];
+  }
+
+});
+
+/* ── Nav hamburger ── */
+function toggleMenu() {
+  document.getElementById('headerLinks').classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
