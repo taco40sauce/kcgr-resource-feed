@@ -32,5 +32,22 @@
     "timestamp_field": "11 1245",
     "parsed_cleanly": true,
     "source_channel": "winlink"
+  },
+  "KB1ND:KCGR-ROAD:1": {
+    "identity": "KB1ND:KCGR-ROAD:1",
+    "callsign": "KB1ND",
+    "category_wire": "KCGR-ROAD",
+    "category_mapped": "KCGR-ROAD-road/bridge",
+    "lat": 34.225815,
+    "lon": -80.7030381,
+    "received_time": "2026-10-09T10:35:11.962373+00:00",
+    "raw_comment": "Trees down at intersection of State 34 and Pine Grove Road. Lanes blocked. Need chainsaw.",
+    "status_wire": "LM",
+    "status_mapped": "LM-limited",
+    "specifier": "OP",
+    "location": "State 34 West",
+    "timestamp_field": "2226-10-09 0630",
+    "parsed_cleanly": true,
+    "source_channel": "winlink"
   }
 }
