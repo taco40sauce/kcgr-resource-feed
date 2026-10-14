@@ -15,5 +15,22 @@
     "timestamp_field": "Sept 9 2030",
     "parsed_cleanly": true,
     "source_channel": "winlink"
+  },
+  "AA4TE:KCGR-H2O:1": {
+    "identity": "AA4TE:KCGR-H2O:1",
+    "callsign": "AA4TE",
+    "category_wire": "KCGR-H2O",
+    "category_mapped": "KCGR-H2O-water",
+    "lat": 34.275214,
+    "lon": -80.60441,
+    "received_time": "2026-10-14T22:50:13.717798+00:00",
+    "raw_comment": "Limit 3 gal. Per person",
+    "status_wire": "LM",
+    "status_mapped": "LM-limited",
+    "specifier": "DP",
+    "location": "Kirkwood Park",
+    "timestamp_field": "Oct 4-8 0700-1400",
+    "parsed_cleanly": true,
+    "source_channel": "winlink"
   }
 }
