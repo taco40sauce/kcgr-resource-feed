@@ -1,7 +1,37 @@
 {
   "type": "FeatureCollection",
-  "generated_at": "2026-10-14T22:46:42.952239+00:00",
+  "generated_at": "2026-10-14T22:50:26.587109+00:00",
   "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.60441,
+          34.275214
+        ]
+      },
+      "properties": {
+        "ObjectName": "KCGR-H2O-water",
+        "Status": "LM-limited",
+        "Specifier": "DP-distribution point",
+        "DateTime": "Oct 4-8 0700-1400",
+        "ReportedBy": "AA4TE",
+        "ReportCount": 1,
+        "Location": "Kirkwood Park",
+        "Comment": "Limit 3 gal. Per person",
+        "name": "KCGR-H2O-water \u2014 Kirkwood Park",
+        "description": "LM-limited | DP-distribution point | Reported: Oct 4-8 0700-1400 | By: AA4TE",
+        "Contributors": [
+          {
+            "callsign": "AA4TE",
+            "received_time": "2026-10-14T22:50:13.717798+00:00",
+            "status_mapped": "LM-limited",
+            "location": "Kirkwood Park"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "geometry": {
