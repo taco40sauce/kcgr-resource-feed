@@ -32,6 +32,8 @@ KERSHAW COUNTY GROUND REPORT -- RESOURCE STATUS (KCGR-RS)
 ==========================================================
 
 --- REPORTER INFO ---
+Exercise: ***** EXERCISE or REAL EVENT
+
 Reporter Callsign: ***** YOUR_CALLSIGN
 Date of Observation: YYYY-MM-DD
 Time of Observation: HHMM
