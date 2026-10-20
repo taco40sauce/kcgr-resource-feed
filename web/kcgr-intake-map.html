@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>KCGR Intake Map</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: toolbar over a pan/zoom canvas with the inspector docked right (bottom on phones).
+   Color: hub teal, automated paths cobalt, hand-entry path amber, neutral grey-teal ground. */
+:root {
+  --bg: #E9EFF1;
+  --surface: #FFFFFF;
+  --surface-2: #F3F7F8;
+  --ink: #13232B;
+  --muted: #587079;
+  --line: #C6D3D8;
+  --hub: #0D4B5C;
+  --hub-ink: #FFFFFF;
+  --auto: #2457A6;
+  --auto-tint: #E4ECF8;
+  --manual: #A4600F;
+  --manual-tint: #FAEEDA;
+  --sel: #C2255C;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0C171C;
+    --surface: #16252C;
+    --surface-2: #1B2E36;
+    --ink: #E3EDF0;
+    --muted: #97ABB4;
+    --line: #2E444D;
+    --hub: #12667E;
+    --hub-ink: #FFFFFF;
+    --auto: #7FA9F2;
+    --auto-tint: #1A2A45;
+    --manual: #EAA24B;
+    --manual-tint: #3A2B12;
+    --sel: #FF7AA5;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0C171C;
+  --surface: #16252C;
+  --surface-2: #1B2E36;
+  --ink: #E3EDF0;
+  --muted: #97ABB4;
+  --line: #2E444D;
+  --hub: #12667E;
+  --hub-ink: #FFFFFF;
+  --auto: #7FA9F2;
+  --auto-tint: #1A2A45;
+  --manual: #EAA24B;
+  --manual-tint: #3A2B12;
+  --sel: #FF7AA5;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.45 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 10px;
+}
+:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
+
+.app { height: 100%; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.bar h1 { margin: 0; font: 600 21px/1.15 var(--font-display); letter-spacing: .01em; text-wrap: balance; }
+.bar .sub { color: var(--muted); font-size: 12.5px; }
+.tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.status { font-size: 12px; color: var(--muted); min-width: 12ch; padding-left: 4px; }
+
+.btn {
+  font: inherit; font-size: 13px; padding: 6px 11px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 6px;
+}
+.btn:hover { border-color: var(--muted); }
+.btn[disabled] { opacity: .45; cursor: default; }
+.btn.primary { background: var(--hub); border-color: var(--hub); color: var(--hub-ink); }
+.btn.danger { color: var(--sel); border-color: var(--sel); }
+.btn.sq { width: 34px; padding: 6px 0; text-align: center; font-weight: 600; }
+
+.work { flex: 1; min-height: 0; display: flex; gap: 12px; }
+.stage {
+  position: relative; flex: 1; min-width: 0; min-height: 240px; overflow: hidden;
+  border: 1px solid var(--line); border-radius: 8px; cursor: grab; touch-action: none;
+  background-color: var(--surface-2);
+  background-image: radial-gradient(var(--line) 1px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+.stage.panning { cursor: grabbing; }
+.world { position: absolute; left: 0; top: 0; width: 2440px; height: 1450px; transform-origin: 0 0; }
+.world svg { position: absolute; left: 0; top: 0; width: 2440px; height: 1450px; overflow: visible; pointer-events: none; }
+#nodes { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+
+.edge { fill: none; stroke-width: 2; stroke-linecap: round; opacity: .85; }
+.tone-auto { stroke: var(--auto); }
+.tone-manual { stroke: var(--manual); }
+.tone-ink { stroke: var(--muted); }
+.edge.dashed { stroke-dasharray: 7 6; }
+.edge.hl { stroke-width: 3.5; opacity: 1; }
+.has-sel .edge:not(.hl) { opacity: .35; }
+.mk-auto { fill: var(--auto); }
+.mk-manual { fill: var(--manual); }
+.mk-ink { fill: var(--muted); }
+
+.node {
+  position: absolute; transform: translate(-50%, -50%); width: 196px; padding: 8px 10px 9px;
+  background: var(--surface); color: var(--ink); border: 1.5px solid var(--line); border-radius: 6px;
+  font-size: 13px; line-height: 1.3; cursor: grab; user-select: none; -webkit-user-select: none; touch-action: none;
+}
+.node .lbl { display: block; font-weight: 500; overflow-wrap: anywhere; }
+.node .tag { display: block; margin-top: 3px; font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.node .tag:empty { display: none; }
+.node .cs { font-family: var(--font-mono); font-size: .92em; font-weight: 500; }
+.node[data-kind="source"] { width: 220px; }
+.node[data-kind="group"] { width: 190px; background: var(--surface-2); border-color: var(--muted); }
+.node[data-kind="group"] .lbl { font-family: var(--font-display); font-weight: 600; font-size: 14.5px; }
+.node[data-kind="auto"] { background: var(--auto-tint); border-left: 5px solid var(--auto); }
+.node[data-kind="manual"] { background: var(--manual-tint); border-left: 5px solid var(--manual); }
+.node[data-kind="hub"] {
+  width: 240px; padding: 14px 12px; text-align: center; background: var(--hub); border-color: var(--hub); color: var(--hub-ink);
+}
+.node[data-kind="hub"] .lbl { font-family: var(--font-display); font-weight: 600; font-size: 21px; }
+.node[data-kind="hub"] .tag { color: var(--hub-ink); opacity: .8; }
+.node[data-src="idea"] { border-style: dashed; }
+.node.sel { outline: 3px solid var(--sel); outline-offset: 2px; }
+.node.link-src { outline: 3px dashed var(--sel); outline-offset: 2px; }
+body.linking .stage { cursor: crosshair; }
+body.linking .node { cursor: crosshair; }
+body.linking .node:hover { outline: 2px solid var(--sel); outline-offset: 2px; }
+
+.overlay { cursor: default; }
+.banner {
+  position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 3;
+  display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 12px; max-width: calc(100% - 20px);
+  background: var(--surface); border: 1px solid var(--sel); border-radius: 8px; font-size: 13px;
+}
+.zoomctl { position: absolute; left: 10px; bottom: 10px; z-index: 2; display: flex; gap: 6px; }
+.outline {
+  position: absolute; right: 10px; top: 10px; z-index: 4; width: min(460px, calc(100% - 20px)); max-height: calc(100% - 20px);
+  display: flex; flex-direction: column; gap: 8px; padding: 10px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+}
+.outline h2 { margin: 0; font: 600 15px/1.2 var(--font-display); }
+.outline textarea { min-height: 220px; flex: 1; font: 12px/1.5 var(--font-mono); }
+.outline .row { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.inspector {
+  width: 300px; flex: none; overflow: auto; padding: 12px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 8px; display: flex; flex-direction: column; gap: 12px;
+}
+.inspector h2 { margin: 0 0 4px; font: 600 15px/1.2 var(--font-display); }
+.muted { color: var(--muted); font-size: 12.5px; margin: 0; }
+.field { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; min-width: 0; }
+.field label, .lab { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+input[type="text"], textarea, select {
+  width: 100%; font: inherit; padding: 6px 8px; color: var(--ink); background: var(--surface-2);
+  border: 1px solid var(--line); border-radius: 6px;
+}
+textarea { resize: vertical; }
+.btns { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.linkrow { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-top: 1px solid var(--line); }
+.linkrow .linktxt { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: 12.5px; }
+.linkrow .dash { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 3px; white-space: nowrap; }
+.linkrow .btn { padding: 3px 8px; font-size: 12px; }
+
+.legend { font-size: 12.5px; border-top: 1px solid var(--line); padding-top: 10px; }
+.legend summary { cursor: pointer; font-weight: 600; font-family: var(--font-display); font-size: 14px; }
+.legend ul { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.legend li { display: flex; align-items: center; gap: 8px; }
+.sw { flex: none; width: 22px; height: 14px; border-radius: 3px; border: 1.5px solid var(--line); background: var(--surface); }
+.sw-hub { background: var(--hub); border-color: var(--hub); }
+.sw-auto { background: var(--auto-tint); border-left: 5px solid var(--auto); }
+.sw-manual { background: var(--manual-tint); border-left: 5px solid var(--manual); }
+.sw-idea { border-style: dashed; }
+.ln { flex: none; width: 22px; height: 0; border-top: 2px dashed var(--muted); }
+
+.rlabel { position: absolute; font: 600 30px/1.1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; pointer-events: none; }
+.rlabel.auto { color: var(--auto); }
+.rlabel.manual { color: var(--manual); }
+.rlabel.hub { color: var(--hub); }
+.rlabel small { display: block; margin-top: 4px; font: 500 22px/1.2 var(--font-body); letter-spacing: 0; text-transform: none; color: var(--muted); }
+
+.keybox {
+  position: absolute; left: 10px; bottom: 56px; z-index: 2; max-width: min(300px, calc(100% - 20px));
+  padding: 8px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; font-size: 12.5px; cursor: default;
+}
+.keybox summary { cursor: pointer; font: 600 14px/1.2 var(--font-display); }
+.keybox ul { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.keybox li { display: flex; align-items: center; gap: 8px; line-height: 1.25; }
+.sw-wide { width: 26px; }
+
+.intro {
+  position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 14px;
+  background: color-mix(in srgb, var(--bg) 78%, transparent); cursor: default;
+}
+.intro .card {
+  width: min(560px, 100%); max-height: 100%; overflow: auto; padding: 18px 20px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,.18);
+}
+.intro h2 { margin: 0 0 8px; font: 600 20px/1.2 var(--font-display); text-wrap: balance; }
+.intro h3 { margin: 14px 0 6px; font: 600 14px/1.2 var(--font-display); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.intro p { margin: 0 0 8px; }
+.intro ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.intro li { display: flex; align-items: flex-start; gap: 10px; }
+.intro li .sw { margin-top: 3px; }
+.intro .go { margin-top: 16px; }
+
+body.view #btnAdd, body.view #btnUndo, body.view #btnOutline, body.view #btnReset, body.view #status { display: none; }
+
+@media (max-width: 760px) {
+  .work { flex-direction: column; }
+  .inspector { width: auto; max-height: 44%; }
+  .stage { min-height: 260px; }
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <div>
+      <h1>KCGR Intake Map</h1>
+      <div class="sub">How reports reach the hub map. Drag to rearrange, click a node to edit.</div>
+    </div>
+    <div class="tools">
+      <button class="btn primary" id="btnAdd" type="button">Add node</button>
+      <button class="btn" id="btnUndo" type="button" disabled>Undo</button>
+      <button class="btn" id="btnHelp" type="button">How to read this</button>
+      <button class="btn" id="btnOutline" type="button">Copy outline</button>
+      <button class="btn" id="btnReset" type="button">Reset map</button>
+      <span class="status" id="status" role="status">Loading…</span>
+    </div>
+  </header>
+
+  <div class="work">
+    <div class="stage" id="stage">
+      <div class="world" id="world">
+        <svg id="edges" aria-hidden="true">
+          <defs>
+            <marker id="ah-auto" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto"><path class="mk-auto" d="M0 0L10 5L0 10z"/></marker>
+            <marker id="ah-manual" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto"><path class="mk-manual" d="M0 0L10 5L0 10z"/></marker>
+            <marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto"><path class="mk-ink" d="M0 0L10 5L0 10z"/></marker>
+          </defs>
+          <g id="edgeLayer"></g>
+        </svg>
+        <div class="rlabel auto" style="left:30px;top:356px">Winlink or PAT<small>Message to KCGR-OPS. Automatic.</small></div>
+        <div class="rlabel auto" style="left:30px;top:690px">APRS<small>Message to a KCGR tactical call sign. Automatic.</small></div>
+        <div class="rlabel manual" style="left:1130px;top:650px">Hand entry through Grist<small>A team member types it in.</small></div>
+        <div class="rlabel manual" style="left:1420px;top:830px;font-size:24px">The team listens, then enters it</div>
+        <div class="rlabel hub" style="left:1760px;top:6px">&larr; Sources the team listens to</div>
+        <div id="nodes"></div>
+      </div>
+
+      <div class="banner overlay" id="banner" hidden>
+        <span id="bannerTxt"></span>
+        <button class="btn" id="bannerCancel" type="button">Cancel</button>
+      </div>
+
+      <div class="zoomctl overlay">
+        <button class="btn sq" id="zOut" type="button" aria-label="Zoom out">−</button>
+        <button class="btn sq" id="zIn" type="button" aria-label="Zoom in">+</button>
+        <button class="btn" id="zFit" type="button">Fit all</button>
+      </div>
+
+      <details class="keybox overlay" id="keybox" open>
+        <summary>Key</summary>
+        <ul>
+          <li><i class="sw sw-wide sw-auto"></i> Automatic: reaches the map with no one typing</li>
+          <li><i class="sw sw-wide sw-manual"></i> Hand entry: a team member types it into Grist</li>
+          <li><i class="sw sw-wide sw-hub"></i> The public hub map</li>
+          <li><i class="sw sw-wide"></i> A source, or a group of sources</li>
+          <li><i class="sw sw-wide sw-idea"></i> Dashed outline: suggested, not yet confirmed</li>
+          <li><i class="ln sw-wide"></i> Dashed line: timer, backup, or the team also watching</li>
+        </ul>
+      </details>
+
+      <div class="intro overlay" id="intro" role="dialog" aria-modal="true" aria-labelledby="introT" hidden>
+        <div class="card">
+          <h2 id="introT">How reports reach the KCGR hub map</h2>
+          <p>This map shows every way a report can end up on the public KCGR hub map during an emergency. Two ways are automatic. One is typed in by a volunteer team.</p>
+          <ul>
+            <li><i class="sw sw-auto"></i><span><strong>Winlink, PAT and APRS are automatic.</strong> A message sent to a KCGR address or tactical call sign is read by a program every 5 minutes and added to the map.</span></li>
+            <li><i class="sw sw-manual"></i><span><strong>Everything else is hand entry.</strong> Team members listen to radio, mesh networks, nets, social media, agencies and community sites. They type each report into the Grist database, and Grist updates the map.</span></li>
+          </ul>
+          <h3>Getting around</h3>
+          <ul>
+            <li><span><strong>Click a box</strong> to read its note in the panel beside the map (below it on a phone).</span></li>
+            <li><span><strong>Drag the background</strong> to move around. Scroll, or use + and &minus;, to zoom. &ldquo;Fit all&rdquo; shows the whole map.</span></li>
+            <li><span><strong>Drag a box</strong> to rearrange it. <span id="introSave">Changes are saved only in your own browser.</span></span></li>
+          </ul>
+          <button class="btn primary go" id="introGo" type="button">Show the map</button>
+        </div>
+      </div>
+
+      <div class="outline overlay" id="outlineWrap" hidden>
+        <h2>Outline</h2>
+        <p class="muted">Indented list that most mind-map and outliner apps accept when pasted.</p>
+        <textarea id="outlineTxt" readonly></textarea>
+        <div class="row">
+          <button class="btn primary" id="outlineCopy" type="button">Copy</button>
+          <button class="btn" id="outlineClose" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="inspector" id="inspector">
+      <div id="insEmpty">
+        <h2>Nothing selected</h2>
+        <p class="muted">Click a node to rename it, add a note, or change its links. Drag the background to pan. Scroll or use + and − to zoom.</p>
+      </div>
+
+      <div id="insForm" hidden>
+        <h2>Edit node</h2>
+        <div class="field">
+          <label for="f-label">Name</label>
+          <input type="text" id="f-label" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f-note">Note</label>
+          <textarea id="f-note" rows="8"></textarea>
+        </div>
+        <div class="field">
+          <label for="f-kind">Type</label>
+          <select id="f-kind">
+            <option value="hub">Hub map</option>
+            <option value="auto">Automated path</option>
+            <option value="manual">Manual entry path</option>
+            <option value="group">Group</option>
+            <option value="source">Source</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-src">Origin</label>
+          <select id="f-src">
+            <option value="you">Your list</option>
+            <option value="project">From project docs</option>
+            <option value="idea">Suggested</option>
+          </select>
+        </div>
+        <div class="btns">
+          <button class="btn" id="btnIn" type="button">Add input</button>
+          <button class="btn" id="btnOut" type="button">Add output</button>
+          <button class="btn" id="btnLink" type="button">Connect to…</button>
+          <button class="btn danger" id="btnDelete" type="button">Delete node</button>
+        </div>
+        <div class="lab">Connections</div>
+        <div id="f-links"></div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var NS = 'http://www.w3.org/2000/svg';
+  var LS = 'kcgr-intake-map-v1';
+
+  function N(id, label, kind, src, x, y, note) { return { id: id, label: label, kind: kind, src: src, x: x, y: y, note: note || '' }; }
+  function E(f, t, d, b) { return { f: f, t: t, d: !!d, b: b || 0 }; }
+
+  var DEFAULT = {"nodes": [{"id": "hub", "kind": "hub", "label": "KCGR Hub Map", "note": "The public map at qsl.net/kc4rc/kcgr.html. A GitHub merge step combines the Winlink, APRS-IS and Pi files into one map file. Grist entries also appear on the map within moments.", "src": "you", "x": 970, "y": 781}, 
+{"id": "w1", "kind": "auto", "label": "Winlink (Windows) or PAT (Linux, Mac)", "note": "Winlink Express on Windows, or PAT on Linux and Mac. Use the KCGR_ResourceStatus form, or the plain-text no-form template.", "src": "you", "x": 130, "y": 470}, 
+{"id": "w2", "kind": "auto", "label": "To KCGR-OPS, subject line KCGR-RS", "note": "KCGR-OPS is a Winlink tactical address. KCGR-RS in the subject line marks the message as a report that is automatically placed on the hub map. All Messages sent to KCGR, but have omissions still land in the shared Gmail inbox.", "src": "you", "x": 400, "y": 470}, 
+{"id": "w3", "kind": "auto", "label": "Winlink poller (Python), every 5 min", "note": "Reads the shared inbox, parses each report and updates winlink/records.json on GitHub. A report that does not fully match is still published via the Grist database, flagged for review.", "src": "you", "x": 670, "y": 470}, 
+{"id": "cron", "kind": "auto", "label": "cron-job.org timer, every 5 min", "note": "cron-job.org is a free external scheduler that starts both pollers by calling GitHub's workflow_dispatch API.", "src": "you", "x": 400, "y": 635}, 
+{"id": "a1", "kind": "auto", "label": "APRS to one of ten tactical call signs", "note": "Object beacons named KCGR-SHLT, KCGR-PWR, KCGR-FOOD and so on. Status, location and notes go in the comment.", "src": "you", "x": 130, "y": 800}, 
+{"id": "a2", "kind": "auto", "label": "APRS-IS (shared internet feed)", "note": "Shared internet relay of APRS traffic. Any iGate (APRS gateway to the Internet)that hears the beacon counts, not just this club's station.", "src": "you", "x": 400, "y": 800}, 
+{"id": "a3", "kind": "auto", "label": "APRS-IS poller (Python), every 5 min", "note": "Listens to APRS-IS for about 75 seconds per run, filtered to the local area, parses KCGR objects and updates backups/records_backup_aprsis.json.", "src": "you", "x": 670, "y": 800}, 
+{"id": "apj", "kind": "auto", "label": "Raspberry Pi pipeline (RF capture, fallback)", "note": "AA4TE's' Pi running Graywolf reads the radio (IC-7100) and a Pi service started by hand writes the Pi's records. Intended as redundant fallback, because the pollers, stored on GitHub. run without the Pi.", "src": "you", "x": 400, "y": 1010}, 
+{"id": "grist", "kind": "manual", "label": "Grist database (getgrist.com)", "note": "A row in the table appears on the public map within moments. Delete the row and the pin goes. The free tier allows ten team seats since 8/31/2026.", "src": "you", "x": 1280, "y": 770}, 
+{"id": "team", "kind": "manual", "label": "Ten team members (entry + validation)", "note": "Ten Grist seats, two jobs. Data-entry operators type in reports the automation cannot catch. Validators check what is already on the map. No ham license is needed for either job. The dashed lines from Winlink and APRS mean the team also watches those channels.", "src": "you", "x": 1560, "y": 770}, 
+{"id": "g1", "kind": "group", "label": "Radio & mesh", "note": "Voice and data channels the automation does not read. A team member listens, then types the report into Grist.", "src": "you", "x": 1900, "y": 235}, {"id": "g2", "kind": "group", "label": "Amateur radio nets", "note": "Net traffic is heard live. A team member enters reports as they come. Team members without an amateur radio license MAY LISTEN to amateur radio frequencies and use those reports as entry sources.", "src": "you", "x": 1900, "y": 483}, 
+{"id": "g3", "kind": "group", "label": "People & public", "note": "Reports from the public and other non-radio sources are entered on the map to preserve potentially useful information. Additional focused follow-up to verify details after posting is strongly suggested on the part of the Hub Director and volunteers.", "src": "you", "x": 1892, "y": 715}, 
+{"id": "g4", "kind": "group", "label": "Agencies & county", "note": "Reports from agencies and partner organizations, by phone, spreadsheet or feed.", "src": "you", "x": 1900, "y": 1072}, {"id": "s01", "kind": "source", "label": "Meshtastic", "note": "Decentralized communication system that utilizes long-range radio frequencies for secure text messaging over an ad hoc mesh network. Every node rebroadcasts messages within its configured hop limit. Built for broad accessibility", "src": "you", "x": 2270, "y": 80}, 
+{"id": "s02", "kind": "source", "label": "MeshCore", "note": "Decentralized communication system supporting encrypted messages similar to Meshtastic, but offers more precise control over message delivery and status. Designed for building networks with fixed repeater nodes to improve coverage and establish predictable paths.", "src": "you", "x": 2270, "y": 142}, 
+{"id": "s03", "kind": "source", "label": "HF reports", "note": "Direct messages over amateur radio HF frequencies.", "src": "you", "x": 2270, "y": 204}, 
+{"id": "s04", "kind": "source", "label": "VHF/UHF simplex and repeaters", "note": "Direct messages over amateur radio 2m and 70cm repeaters and simplex frequencies.", "src": "you", "x": 2270, "y": 266}, {"id": "s05", "kind": "source", "label": "DMR", "note": "Digital Mobile Radio which combines Radio Frequency (RF) with access to Internet for long distance access. Acts as a link between various communication systems.", "src": "you", "x": 2270, "y": 328}, 
+{"id": "s06", "kind": "source", "label": "Scanner traffic", "note": "Listening to a scanner needs no license, so non-hams can fill this role. As long as an non-ham does not transmit, this is similar to LISTENING to any amateur band radio", "src": "you", "x": 2270, "y": 390}, 
+{"id": "s07", "kind": "source", "label": "Hurricane Watch Net", "note": "Activates whenever a tropical cyclone has achieved Hurricane status in the Atlantic. Frequencies used: on or about 14.325 MHz by day and 7.268 MHz at night. see also hwn.org", "src": "you", "x": 2270, "y": 452}, 
+{"id": "s08", "kind": "source", "label": "Skywarn nets", "note": "Trained Volunteer Weather Observers send reports directly to NWS. Most are radio amateurs, but Skywarn training (free) and participation is open to all. Listen to local amateur radio repeaters when severe weather warrants. See also weather.gov/skywarn/.", "src": "you", "x": 2270, "y": 514}, 
+{"id": "s09", "kind": "source", "label": "Eyewitness, word of mouth", "note": "The project uses in-person reports as a hand-entry source applied to the Grist database.", "src": "you", "x": 2270, "y": 576}, 
+{"id": "s10", "kind": "source", "label": "In-person and radio-voice reports", "note": "Listed alongside phone reports as hand-entry intake similar to Eyewitness/word-of-mouth field.", "src": "you", "x": 2270, "y": 638}, 
+{"id":"s11","kind":"source","label":"Social media monitoring","note":"Volunteers monitor Facebook, X, and other social media sources and enter relevant information into the Grist database for the KCGR public resource map.","src":"you","x":2270,"y":700}, 
+{"id":"s12","kind":"source","label":"Neighbor networks and local group posts","note":"Volunteers gather information shared through neighborhood networks and local online groups and enter relevant details into Grist.","src":"you","x":2270,"y":762},
+{"id": "s13", "kind": "source", "label": "Phone calls from agencies", "note": "Example of direct human entry: an EOC staff member receives a report from the fire department about a tree down on US Hwy 1 and enters it into Grist.", "src": "you", "x": 2270, "y": 824}, 
+{"id":"s14","kind":"source","label":"SCDOT","note":"SCDOT appears as a Reported-By-value in the Grist sourced Flood Warning Embedded map on the hub page. This may be gathered at 511sc.org or from County EmComm","src":"you","x":2270,"y":886},
+
+{"id":"s15","kind":"source","label":"KCEMD (Kershaw Co Em Mgmt)","note":"KCEMD appears as a Reported-By-value in the Grist table. Information from the agency may also be gathered and entered by volunteers.","src":"you","x":2270,"y":948},
+
+{"id":"s16","kind":"source","label":"NWSChat 2.0","note":"Weather related information from NWS/Skywarn Spotter Net Control  reports can be monitored by Amateur Radio operators with Net Control Credentials along with EmComm representatives.","src":"you","x":2270,"y":1258},
+
+{"id":"s17","kind":"source","label":"County EOC Spreadsheets","note":"Potential information source which may be attached at the pleasure of the KCEMD.","src":"you","x":2270,"y":1072},
+
+{"id":"s18","kind":"source","label":"Utility outage information","note":"Volunteers may use available utility outage maps or reports as reference sources for relevant resource-status information. Hub page includes embedded power outages at a glance.","src":"you","x":2270,"y":1134},
+
+{"id":"s19","kind":"source","label":"Red Cross and CERT","note":"Potential sources of information about shelters, emergency assistance, and community resources. Information can be relayed to volunteers for entry into Grist.","src":"you","x":2270,"y":1196},
+{"id":"s20","kind":"source","label":"NWS and Skywarn reports","note":"Weather information from National Weather Service sources and Skywarn spotter reports may help volunteers understand local conditions.","src":"you","x":2270,"y":1258},
+{"id":"s21","kind":"source","label":"SCDOT 511 road conditions","note":"A potential reference for road closures and travel conditions. Volunteers can use relevant information to supplement reports from local sources. See also 511sc.org","src":"you","x":2270,"y":1320},
+
+{"id":"g5","kind":"group","label":"Community resource operators","note":"People who operate community resource sites can report their status directly to the team by phone, radio, message, or in person.","src":"you","x":1900,"y":1524},
+
+{"id":"s22","kind":"source","label":"Shelter operators","note":"Shelter operators can report whether a shelter is open or closed, along with its current capacity and resource needs. Entered by Grist Database volunteers.","src":"you","x":2270,"y":1400},
+
+{"id":"s23","kind":"source","label":"Churches and faith groups","note":"Churches and faith groups may provide information about shelters, meal services, supply distribution, and other community assistance. Entered by Grist Database volunteers.","src":"you","x":2270,"y":1462},
+{"id":"s24","kind":"source","label":"Food distribution points","note":"Food banks, community kitchens, and meal sites can report operating status, hours, and available supplies. Entered by Grist Database volunteers.","src":"you","x":2270,"y":1524}, 
+{"id": "s25", "kind": "source", "label": "Cooling and warming centers", "note": "Operators can supply Grist voluneers with Open or closed, hours and capacity status.", "src": "you", "x": 2270, "y": 1586}, 
+{"id": "s26", "kind": "source", "label": "Other community sites (charging, water)", "note": "Phone charging stations, water distribution and similar community resources can be located and posted to aid the public information. Goal: making someone's' bad day a little less so.", "src": "you", "x": 2270, "y": 1648}], "edges": [{"b": 0, "d": false, "f": "w3", "t": "hub"}, {"b": 0, "d": false, "f": "w2", "t": "w3"}, {"b": 0, "d": false, "f": "w1", "t": "w2"}, {"b": 0, "d": true, "f": "cron", "t": "w3"}, {"b": 0, "d": true, "f": "cron", "t": "a3"}, {"b": 0, "d": false, "f": "a3", "t": "hub"}, {"b": 0, "d": false, "f": "a2", "t": "a3"}, {"b": 0, "d": false, "f": "a1", "t": "a2"}, {"b": 0, "d": false, "f": "a1", "t": "apj"}, {"b": 0, "d": false, "f": "apj", "t": "hub"}, {"b": 0, "d": false, "f": "grist", "t": "hub"}, {"b": 0, "d": false, "f": "team", "t": "grist"}, {"b": 600, "d": true, "f": "w1", "t": "team"}, {"b": -900, "d": true, "f": "a1", "t": "team"}, {"b": 0, "d": false, "f": "g1", "t": "team"}, {"b": 0, "d": false, "f": "g2", "t": "team"}, {"b": 0, "d": false, "f": "g3", "t": "team"}, {"b": 0, "d": false, "f": "g4", "t": "team"}, {"b": 0, "d": false, "f": "s01", "t": "g1"}, {"b": 0, "d": false, "f": "s02", "t": "g1"}, {"b": 0, "d": false, "f": "s03", "t": "g1"}, {"b": 0, "d": false, "f": "s04", "t": "g1"}, {"b": 0, "d": false, "f": "s05", "t": "g1"}, {"b": 0, "d": false, "f": "s06", "t": "g1"}, {"b": 0, "d": false, "f": "s07", "t": "g2"}, {"b": 0, "d": false, "f": "s08", "t": "g2"}, {"b": 0, "d": false, "f": "s09", "t": "g3"}, {"b": 0, "d": false, "f": "s10", "t": "g3"}, {"b": 0, "d": false, "f": "s11", "t": "g3"}, {"b": 0, "d": false, "f": "s12", "t": "g3"}, {"b": 0, "d": false, "f": "s13", "t": "g4"}, {"b": 0, "d": false, "f": "s14", "t": "g4"}, {"b": 0, "d": false, "f": "s15", "t": "g4"}, {"b": 0, "d": false, "f": "s16", "t": "g4"}, {"b": 0, "d": false, "f": "s17", "t": "g4"}, {"b": 0, "d": false, "f": "s18", "t": "g4"}, {"b": 0, "d": false, "f": "s19", "t": "g4"}, {"b": 0, "d": false, "f": "s20", "t": "g4"}, {"b": 0, "d": false, "f": "s21", "t": "g4"}, {"b": 0, "d": false, "f": "g5", "t": "team"}, {"b": 0, "d": false, "f": "s22", "t": "g5"}, {"b": 0, "d": false, "f": "s23", "t": "g5"}, {"b": 0, "d": false, "f": "s24", "t": "g5"}, {"b": 0, "d": false, "f": "s25", "t": "g5"}, {"b": 0, "d": false, "f": "s26", "t": "g5"}]};
+
+  function $(id) { return document.getElementById(id); }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+
+  var stage = $('stage'), world = $('world'), nodesEl = $('nodes'), edgeLayer = $('edgeLayer');
+  var state = clone(DEFAULT);
+  var nodeEls = {};
+  var EDIT = /(^|[#&])edit(&|$)/.test(location.hash);
+  document.body.classList.toggle('view', !EDIT);
+  window.addEventListener('hashchange', function () { location.reload(); });
+  var sel = null, linkFrom = null, ready = false;
+  var view = { x: 20, y: 20, k: 1 };
+  var undoStack = [];
+  var db = null, dbOk = true, saveTimer = null, saving = false, dirty = false;
+
+  function nb(id) { for (var i = 0; i < state.nodes.length; i++) { if (state.nodes[i].id === id) return state.nodes[i]; } return null; }
+  function uid() { return 'n' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36); }
+  function setStatus(t) { $('status').textContent = t; }
+
+  /* ---------- view ---------- */
+  function applyView() {
+    world.style.transform = 'translate(' + view.x + 'px,' + view.y + 'px) scale(' + view.k + ')';
+    var s = Math.max(8, 24 * view.k);
+    stage.style.backgroundSize = s + 'px ' + s + 'px';
+    stage.style.backgroundPosition = view.x + 'px ' + view.y + 'px';
+  }
+  function zoomAt(f, cx, cy) {
+    var nk = clamp(view.k * f, 0.2, 2);
+    var r = nk / view.k;
+    view.x = cx - (cx - view.x) * r;
+    view.y = cy - (cy - view.y) * r;
+    view.k = nk;
+    applyView();
+  }
+  function fit() {
+    var r = stage.getBoundingClientRect();
+    if (!state.nodes.length || r.width < 50) return;
+    var x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    state.nodes.forEach(function (n) {
+      var el = nodeEls[n.id], w = el ? el.offsetWidth : 190, h = el ? el.offsetHeight : 50;
+      x0 = Math.min(x0, n.x - w / 2); x1 = Math.max(x1, n.x + w / 2);
+      y0 = Math.min(y0, n.y - h / 2); y1 = Math.max(y1, n.y + h / 2);
+    });
+    var pad = 30;
+    var k = clamp(Math.min((r.width - pad * 2) / (x1 - x0), (r.height - pad * 2) / (y1 - y0)), 0.2, 1.2);
+    view.k = k;
+    view.x = (r.width - (x1 - x0) * k) / 2 - x0 * k;
+    view.y = (r.height - (y1 - y0) * k) / 2 - y0 * k;
+    applyView();
+  }
+
+  /* ---------- rendering ---------- */
+  function setLabel(el, text) {
+    el.textContent = '';
+    String(text).split(/(KCGR-[A-Z0-9]+)/g).forEach(function (part, i) {
+      if (!part) return;
+      if (i % 2 === 1) {
+        var s = document.createElement('span'); s.className = 'cs'; s.textContent = part; el.appendChild(s);
+      } else {
+        el.appendChild(document.createTextNode(part));
+      }
+    });
+  }
+  function paintNode(n) {
+    var el = nodeEls[n.id]; if (!el) return;
+    el.dataset.kind = n.kind; el.dataset.src = n.src;
+    setLabel(el.firstChild, n.label);
+    el.lastChild.textContent = n.src === 'project' ? 'From project docs' : (n.src === 'idea' ? 'Suggested' : '');
+    if (n.note) el.title = n.note; else el.removeAttribute('title');
+  }
+  function placeNode(n) {
+    var el = nodeEls[n.id]; if (!el) return;
+    el.style.left = n.x + 'px'; el.style.top = n.y + 'px';
+  }
+  function makeNode(n) {
+    var el = document.createElement('div');
+    el.className = 'node'; el.tabIndex = 0; el.setAttribute('role', 'button'); el.dataset.id = n.id;
+    var l = document.createElement('span'); l.className = 'lbl';
+    var t = document.createElement('span'); t.className = 'tag';
+    el.appendChild(l); el.appendChild(t);
+    el.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); clickNode(n.id); }
+    });
+    nodeEls[n.id] = el; nodesEl.appendChild(el);
+    paintNode(n); placeNode(n);
+  }
+  function tone(a, b) {
+    if (a.kind === 'auto') return 'auto';
+    if (a.kind === 'manual' || b.kind === 'manual' || a.kind === 'group' || b.kind === 'group') return 'manual';
+    return 'ink';
+  }
+  function rectOf(n) {
+    var el = nodeEls[n.id];
+    return { cx: n.x, cy: n.y, hw: (el ? el.offsetWidth : 190) / 2 + 3, hh: (el ? el.offsetHeight : 48) / 2 + 3 };
+  }
+  function clip(r, dx, dy) {
+    var ax = Math.abs(dx), ay = Math.abs(dy);
+    if (!ax && !ay) return { x: r.cx, y: r.cy };
+    var t = Math.min(ax ? r.hw / ax : Infinity, ay ? r.hh / ay : Infinity);
+    return { x: r.cx + dx * t, y: r.cy + dy * t };
+  }
+  function edgePath(e, a, b) {
+    var ra = rectOf(a), rb = rectOf(b);
+    var mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, cx = mx, cy = my;
+    if (e.b) {
+      var dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
+      cx = mx + (dy / len) * e.b; cy = my - (dx / len) * e.b;
+    }
+    var p1 = clip(ra, cx - a.x, cy - a.y), p2 = clip(rb, cx - b.x, cy - b.y);
+    return e.b
+      ? 'M' + p1.x + ',' + p1.y + ' Q' + cx + ',' + cy + ' ' + p2.x + ',' + p2.y
+      : 'M' + p1.x + ',' + p1.y + ' L' + p2.x + ',' + p2.y;
+  }
+  function renderEdges() {
+    edgeLayer.textContent = '';
+    state.edges.forEach(function (e) {
+      var a = nb(e.f), b = nb(e.t); if (!a || !b) return;
+      var tn = tone(a, b);
+      var p = document.createElementNS(NS, 'path');
+      p.setAttribute('class', 'edge tone-' + tn + (e.d ? ' dashed' : '') + (sel && (e.f === sel || e.t === sel) ? ' hl' : ''));
+      p.setAttribute('marker-end', 'url(#ah-' + tn + ')');
+      edgeLayer.appendChild(p);
+    });
+    updateEdges();
+  }
+  function updateEdges() {
+    var ps = edgeLayer.children, k = 0;
+    state.edges.forEach(function (e) {
+      var a = nb(e.f), b = nb(e.t); if (!a || !b) return;
+      var p = ps[k++]; if (p) p.setAttribute('d', edgePath(e, a, b));
+    });
+  }
+  function paintSelection() {
+    Object.keys(nodeEls).forEach(function (id) {
+      nodeEls[id].classList.toggle('sel', id === sel);
+      nodeEls[id].classList.toggle('link-src', id === linkFrom);
+    });
+    stage.classList.toggle('has-sel', !!sel);
+  }
+  function render() {
+    nodesEl.textContent = ''; nodeEls = {};
+    state.nodes.forEach(makeNode);
+    paintSelection(); renderEdges(); renderInspector();
+  }
+
+  /* ---------- inspector ---------- */
+  var delTimer = null, resetTimer = null;
+  function disarmDelete() { var b = $('btnDelete'); delete b.dataset.arm; b.textContent = 'Delete node'; clearTimeout(delTimer); }
+  function disarmReset() { var b = $('btnReset'); delete b.dataset.arm; b.textContent = 'Reset map'; clearTimeout(resetTimer); }
+  function button(text, cls, fn) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'btn' + (cls ? ' ' + cls : ''); b.textContent = text;
+    b.addEventListener('click', fn); return b;
+  }
+  function renderInspector() {
+    var n = sel ? nb(sel) : null;
+    $('insEmpty').hidden = !!n; $('insForm').hidden = !n;
+    disarmDelete();
+    if (!n) return;
+    $('f-label').value = n.label; $('f-note').value = n.note || '';
+    $('f-kind').value = n.kind; $('f-src').value = n.src;
+    var box = $('f-links'); box.textContent = '';
+    var rows = state.edges.filter(function (e) { return e.f === n.id || e.t === n.id; });
+    if (!rows.length) {
+      var p = document.createElement('p'); p.className = 'muted'; p.textContent = 'No connections yet.'; box.appendChild(p);
+    }
+    rows.forEach(function (e, idx) {
+      var out = e.f === n.id, other = nb(out ? e.t : e.f); if (!other) return;
+      var row = document.createElement('div'); row.className = 'linkrow';
+      var txt = document.createElement('span'); txt.className = 'linktxt'; txt.textContent = (out ? 'Feeds ' : 'Fed by ') + other.label;
+      var dl = document.createElement('label'); dl.className = 'dash';
+      var cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'dash-' + idx; cb.checked = !!e.d;
+      dl.appendChild(cb); dl.appendChild(document.createTextNode('dashed'));
+      cb.addEventListener('change', function () { snapshot(); e.d = cb.checked; renderEdges(); saveSoon(); });
+      var rm = button('Remove', '', function () {
+        snapshot(); state.edges = state.edges.filter(function (x) { return x !== e; });
+        renderEdges(); renderInspector(); saveSoon();
+      });
+      row.appendChild(txt); row.appendChild(dl); row.appendChild(rm); box.appendChild(row);
+    });
+  }
+
+  /* ---------- state changes ---------- */
+  function pushSnap(s) { undoStack.push(s); if (undoStack.length > 40) undoStack.shift(); $('btnUndo').disabled = !undoStack.length; }
+  function snapshot() { pushSnap(JSON.stringify(state)); }
+  function select(id) { sel = id; paintSelection(); renderEdges(); renderInspector(); }
+  function endLink() {
+    linkFrom = null; document.body.classList.remove('linking'); $('banner').hidden = true; paintSelection();
+  }
+  function startLink() {
+    var n = sel ? nb(sel) : null; if (!n) return;
+    linkFrom = n.id; document.body.classList.add('linking');
+    $('bannerTxt').textContent = 'Click the node that "' + n.label + '" feeds into.';
+    $('banner').hidden = false; paintSelection();
+  }
+  function addEdge(f, t) {
+    if (f === t) { endLink(); return; }
+    if (state.edges.some(function (e) { return e.f === f && e.t === t; })) { setStatus('Already connected'); endLink(); return; }
+    snapshot(); state.edges.push(E(f, t)); endLink(); renderEdges(); renderInspector(); saveSoon();
+  }
+  function clickNode(id) {
+    if (!ready) return;
+    if (linkFrom) addEdge(linkFrom, id); else select(id);
+  }
+  function deleteNode(id) {
+    snapshot();
+    state.nodes = state.nodes.filter(function (n) { return n.id !== id; });
+    state.edges = state.edges.filter(function (e) { return e.f !== id && e.t !== id; });
+    sel = null; render(); saveSoon();
+  }
+  function addNode() {
+    if (!ready) return;
+    snapshot();
+    var r = stage.getBoundingClientRect();
+    var n = N(uid(), 'New node', 'source', 'you',
+      Math.round((r.width / 2 - view.x) / view.k + (Math.random() * 40 - 20)),
+      Math.round((r.height / 2 - view.y) / view.k + (Math.random() * 40 - 20)), '');
+    state.nodes.push(n); sel = n.id; render(); saveSoon();
+    var f = $('f-label'); f.focus(); f.select();
+  }
+  function addLinked(dir) {
+    var s = sel ? nb(sel) : null; if (!s) return;
+    snapshot();
+    var hub = state.nodes.filter(function (n) { return n.kind === 'hub'; })[0];
+    var away = s.x >= (hub ? hub.x : 1000) ? 1 : -1;
+    var count = state.edges.filter(function (e) { return dir === 'in' ? e.t === s.id : e.f === s.id; }).length;
+    var n = N(uid(), dir === 'in' ? 'New source' : 'New step',
+      dir === 'in' ? 'source' : (s.kind === 'hub' ? 'source' : s.kind), 'you',
+      s.x + (dir === 'in' ? away : -away) * 270, s.y + count * 60, '');
+    state.nodes.push(n);
+    state.edges.push(dir === 'in' ? E(n.id, s.id) : E(s.id, n.id));
+    sel = n.id; render(); saveSoon();
+    var f = $('f-label'); f.focus(); f.select();
+  }
+  function undo() {
+    if (!undoStack.length || !ready) return;
+    state = JSON.parse(undoStack.pop());
+    if (sel && !nb(sel)) sel = null;
+    endLink(); render(); saveSoon(); $('btnUndo').disabled = !undoStack.length;
+  }
+
+  function bindText(el, apply) {
+    var snap = null, pushed = false;
+    el.addEventListener('focus', function () { snap = JSON.stringify(state); pushed = false; });
+    el.addEventListener('input', function () {
+      var n = sel ? nb(sel) : null; if (!n || !ready) return;
+      if (!pushed) { pushSnap(snap || JSON.stringify(state)); pushed = true; }
+      apply(n, el.value); saveSoon();
+    });
+  }
+  bindText($('f-label'), function (n, v) { n.label = v; paintNode(n); updateEdges(); });
+  bindText($('f-note'), function (n, v) { n.note = v; paintNode(n); });
+  $('f-kind').addEventListener('change', function () {
+    var n = sel ? nb(sel) : null; if (!n) return;
+    snapshot(); n.kind = this.value; paintNode(n); renderEdges(); saveSoon();
+  });
+  $('f-src').addEventListener('change', function () {
+    var n = sel ? nb(sel) : null; if (!n) return;
+    snapshot(); n.src = this.value; paintNode(n); saveSoon();
+  });
+
+  /* ---------- pointer handling ---------- */
+  nodesEl.addEventListener('pointerdown', function (ev) {
+    var el = ev.target.closest('.node'); if (!el || !ready) return;
+    ev.stopPropagation();
+    var n = nb(el.dataset.id); if (!n) return;
+    var sx = ev.clientX, sy = ev.clientY, ox = n.x, oy = n.y, moved = false, snap = JSON.stringify(state), pid = ev.pointerId;
+    try { el.setPointerCapture(pid); } catch (_) {}
+    function mv(e) {
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!moved && Math.hypot(dx, dy) < 4) return;
+      if (!moved) { moved = true; pushSnap(snap); }
+      n.x = Math.round(ox + dx / view.k); n.y = Math.round(oy + dy / view.k);
+      placeNode(n); updateEdges();
+    }
+    function up() {
+      el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
+      try { el.releasePointerCapture(pid); } catch (_) {}
+      if (moved) saveSoon(); else clickNode(n.id);
+    }
+    el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  });
+  stage.addEventListener('pointerdown', function (ev) {
+    if (ev.target.closest('.node, .overlay')) return;
+    var sx = ev.clientX, sy = ev.clientY, ox = view.x, oy = view.y, moved = false, pid = ev.pointerId;
+    try { stage.setPointerCapture(pid); } catch (_) {}
+    stage.classList.add('panning');
+    function mv(e) {
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!moved && Math.hypot(dx, dy) < 4) return;
+      moved = true; view.x = ox + dx; view.y = oy + dy; applyView();
+    }
+    function up() {
+      stage.removeEventListener('pointermove', mv); stage.removeEventListener('pointerup', up); stage.removeEventListener('pointercancel', up);
+      try { stage.releasePointerCapture(pid); } catch (_) {}
+      stage.classList.remove('panning');
+      if (!moved && !linkFrom) select(null);
+    }
+    stage.addEventListener('pointermove', mv); stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', up);
+  });
+  stage.addEventListener('wheel', function (ev) {
+    if (ev.target.closest('.overlay')) return;
+    ev.preventDefault();
+    var r = stage.getBoundingClientRect();
+    zoomAt(ev.deltaY < 0 ? 1.12 : 1 / 1.12, ev.clientX - r.left, ev.clientY - r.top);
+  }, { passive: false });
+
+  /* ---------- buttons ---------- */
+  function stageCenterZoom(f) { var r = stage.getBoundingClientRect(); zoomAt(f, r.width / 2, r.height / 2); }
+  $('zIn').addEventListener('click', function () { stageCenterZoom(1.25); });
+  $('zOut').addEventListener('click', function () { stageCenterZoom(1 / 1.25); });
+  $('zFit').addEventListener('click', fit);
+  $('btnAdd').addEventListener('click', addNode);
+  $('btnUndo').addEventListener('click', undo);
+  $('btnIn').addEventListener('click', function () { addLinked('in'); });
+  $('btnOut').addEventListener('click', function () { addLinked('out'); });
+  $('btnLink').addEventListener('click', startLink);
+  $('bannerCancel').addEventListener('click', endLink);
+  $('btnDelete').addEventListener('click', function () {
+    if (!sel || !ready) return;
+    if (this.dataset.arm) { var id = sel; disarmDelete(); deleteNode(id); }
+    else { this.dataset.arm = '1'; this.textContent = 'Click again to delete'; delTimer = setTimeout(disarmDelete, 4000); }
+  });
+  $('btnReset').addEventListener('click', function () {
+    if (!ready) return;
+    if (this.dataset.arm) {
+      disarmReset(); snapshot(); state = clone(DEFAULT); sel = null; endLink(); render(); fit(); saveSoon();
+    } else {
+      this.dataset.arm = '1'; this.textContent = 'Click again to reset'; resetTimer = setTimeout(disarmReset, 4000);
+    }
+  });
+  document.addEventListener('keydown', function (ev) {
+    var tag = document.activeElement ? document.activeElement.tagName : '';
+    if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 'z' && !/INPUT|TEXTAREA|SELECT/.test(tag)) { ev.preventDefault(); undo(); }
+    if (ev.key === 'Escape') { if (!$('intro').hidden) closeIntro(); else if (linkFrom) endLink(); else $('outlineWrap').hidden = true; }
+  });
+
+  /* ---------- outline ---------- */
+  function buildOutline() {
+    var root = state.nodes.filter(function (n) { return n.kind === 'hub'; })[0] || state.nodes[0];
+    if (!root) return '';
+    var kids = {};
+    state.edges.forEach(function (e) { (kids[e.t] = kids[e.t] || []).push(e.f); });
+    var seen = {}, lines = [];
+    function tagText(n) { return n.src === 'project' ? ' [from project docs]' : (n.src === 'idea' ? ' [suggested]' : ''); }
+    function walk(id, depth) {
+      var n = nb(id); if (!n) return;
+      var pad = new Array(depth + 1).join('  ');
+      if (seen[id]) { lines.push(pad + '- ' + n.label + ' (see above)'); return; }
+      seen[id] = true;
+      lines.push(pad + '- ' + n.label + tagText(n));
+      (kids[id] || []).forEach(function (c) { walk(c, depth + 1); });
+    }
+    walk(root.id, 0);
+    state.nodes.forEach(function (n) { if (!seen[n.id]) walk(n.id, 0); });
+    return lines.join('\n');
+  }
+  $('btnOutline').addEventListener('click', function () {
+    $('outlineTxt').value = buildOutline(); $('outlineWrap').hidden = false;
+  });
+  $('outlineClose').addEventListener('click', function () { $('outlineWrap').hidden = true; });
+  $('outlineCopy').addEventListener('click', function () {
+    var t = $('outlineTxt');
+    function fallback() { t.focus(); t.select(); setStatus('Selected. Press Ctrl+C to copy.'); }
+    try {
+      navigator.clipboard.writeText(t.value).then(function () { setStatus('Outline copied'); }, fallback);
+    } catch (e) { fallback(); }
+  });
+
+  /* ---------- saving and loading ---------- */
+  function saveSoon() {
+    if (!EDIT) return;
+    dirty = true; setStatus('Unsaved changes');
+    clearTimeout(saveTimer); saveTimer = setTimeout(flush, 700);
+  }
+  async function flush() {
+    if (saving || !dirty) return;
+    saving = true; dirty = false; setStatus('Saving…');
+    var payload = { v: 1, nodes: clone(state.nodes), edges: clone(state.edges) };
+    try {
+      if (db && dbOk) {
+        await db.doc('maps/kcgr').set(payload);
+        setStatus('Saved');
+      } else {
+        localStorage.setItem(LS, JSON.stringify(payload));
+        setStatus(dbOk ? 'Saved in this browser only' : 'Not shared: saved in this browser only');
+      }
+    } catch (err) {
+      if (db && dbOk) {
+        dbOk = false;
+        setStatus('Cannot save to the shared map. Changes stay in this session.');
+      } else {
+        setStatus('Could not save');
+      }
+    }
+    saving = false;
+    if (dirty) flush();
+  }
+  function valid(d) {
+    return d && Array.isArray(d.nodes) && Array.isArray(d.edges) && d.nodes.length > 0 &&
+      d.nodes.every(function (n) { return n && typeof n.id === 'string' && typeof n.x === 'number' && typeof n.y === 'number'; });
+  }
+  async function load() {
+    var data = null;
+    if (!EDIT) { ready = true; fit(); return; }
+    try {
+      if (window.claude && window.claude.use) {
+        db = await Promise.race([
+          window.claude.use('db'),
+          new Promise(function (r) { setTimeout(function () { r(null); }, 3000); })
+        ]);
+      }
+    } catch (e) { db = null; }
+    try {
+      if (db) {
+        var snap = await db.doc('maps/kcgr').get();
+        if (snap.exists) data = snap.data();
+      } else {
+        var raw = localStorage.getItem(LS);
+        if (raw) data = JSON.parse(raw);
+      }
+    } catch (e) { if (db) dbOk = false; }
+    if (valid(data)) { state = { nodes: clone(data.nodes), edges: clone(data.edges) }; sel = null; render(); }
+    ready = true;
+    setStatus(db && dbOk ? 'Ready. Edits save for everyone.' : 'Ready. Edits save in this browser only.');
+    fit();
+  }
+
+  /* ---------- viewer mode: read-only panel, nothing saved ---------- */
+  if (!EDIT) {
+    $('f-label').readOnly = true; $('f-note').readOnly = true;
+    $('f-kind').parentNode.hidden = true; $('f-src').parentNode.hidden = true;
+    document.querySelector('#insForm .btns').hidden = true;
+    document.querySelector('#insForm .lab').hidden = true; $('f-links').hidden = true;
+    document.querySelector('#insForm h2').textContent = 'About this box';
+    document.querySelector('#insEmpty h2').textContent = 'Click a box';
+    document.querySelector('#insEmpty p').textContent = 'Click any box to read its note here. Drag the background to move around. Scroll, or use + and \u2212, to zoom.';
+    $('introSave').textContent = 'Nothing you change is saved. Reload the page to put everything back.';
+  }
+
+  /* ---------- start-here card ---------- */
+  var SEEN = 'kcgr-intake-map-seen-v1', introReturn = null;
+  function openIntro() {
+    introReturn = document.activeElement; $('intro').hidden = false; $('introGo').focus();
+  }
+  function closeIntro() {
+    $('intro').hidden = true;
+    try { localStorage.setItem(SEEN, '1'); } catch (e) {}
+    if (introReturn && introReturn.focus) { try { introReturn.focus(); } catch (e) {} }
+  }
+  $('btnHelp').addEventListener('click', openIntro);
+  $('introGo').addEventListener('click', closeIntro);
+  $('intro').addEventListener('pointerdown', function (ev) { if (ev.target === this) closeIntro(); });
+  (function () {
+    var seen = false;
+    try { seen = !!localStorage.getItem(SEEN); } catch (e) {}
+    if (!seen) openIntro();
+    if (window.matchMedia && window.matchMedia('(max-width: 760px)').matches) $('keybox').open = false;
+  })();
+
+  /* ---------- start ---------- */
+  render();
+  applyView();
+  requestAnimationFrame(fit);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { updateEdges(); fit(); });
+  }
+  window.addEventListener('resize', function () { updateEdges(); });
+  load();
+})();
+</script>
+</body>
+</html>
